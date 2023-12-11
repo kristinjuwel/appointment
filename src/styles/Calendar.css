@@ -1,0 +1,20 @@
+/* custom-calendar-styles.css */
+
+/* Change the background color of the calendar */
+.rbc-calendar {
+    background-color: #f0f0f0; /* Replace with your desired background color */
+  }
+  
+  /* Change the background color of the events */
+  .rbc-event {
+    border: 1px dashed lightgray;
+    background-color: transparent; /* Replace with your desired event background color */
+    color: #000000; /* Replace with your desired event text color */
+  }
+  
+  /* Change the background color of the selected events */
+  .rbc-selected {
+    background-color: transparent; /* Replace with your desired selected event background color */
+    color: #ffffff; /* Replace with your desired selected event text color */
+  }
+  
