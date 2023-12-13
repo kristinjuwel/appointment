@@ -51,7 +51,7 @@ const DoctorProfile = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await fetch("https://spring-render-qpn7.onrender.com/doctorprofile");
+      const response = await fetch("http://localhost:8080/doctorprofile");
       if (response.ok) {
         const data = await response.json();
         setUser(data);
@@ -95,7 +95,7 @@ const DoctorProfile = () => {
   };
   useEffect(() => {
     // Replace 'http://localhost:8080' with your actual API URL
-    fetch('https://spring-render-qpn7.onrender.com/checkLoggedInDoctor')
+    fetch('http://localhost:8080/checkLoggedInDoctor')
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -105,7 +105,7 @@ const DoctorProfile = () => {
       .then((data) => {
         setDoctorUserId(data);
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`https://spring-render-qpn7.onrender.com/docappointments?doctorUserId=${data}`)
+        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -161,7 +161,7 @@ const DoctorProfile = () => {
 
   const handleCancel = async (appointmentId) => {
     try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
         method: 'PUT',
       });
 
@@ -218,7 +218,7 @@ const DoctorProfile = () => {
       <div className="doctorprofilecontainer" style={{marginTop: "1%", overflow: "hidden", height: "100%"}}>
         {user ? (
           <div className="parentelement">
-            <div className="columns" id="columnprofileicon" style={{marginTop: '1%'}}>
+            <div className="columns" id="columnprofileicon" style={{marginTop: '1%', height: "700px"}}>
               <div className="backgroundpop"></div>
               <div className="doctorprofileicon">
                 {selectedAvatar && <img src={selectedAvatar} alt="Selected Avatar" />}
@@ -235,18 +235,18 @@ const DoctorProfile = () => {
               </div>
               <div className="listofdocprofilecontent">
                 <ul className="profile-list">
-                <li><a href="#accountDetails" onClick={(e) => handleLinkClick(e, 'columnprofileinformation')}>View Account</a></li>
-                <li><a href="#personalDetails" onClick={(e) => handleLinkClick(e, 'personalDetails')}>View Personal Information</a></li>
-                <li><a href="#credDetails" onClick={(e) => handleLinkClick(e, 'credDetails')}>View Credentials</a></li>
-                <li><a href="#secDetails" onClick={(e) => handleLinkClick(e, 'secDetails')}>View Secretary</a></li>
+                  <li><a href="#accountDetails">Account Details</a></li>
+                  <li><a href="#personalDetails">Personal Information</a></li>
+                  <li><a href="#credDetails">Credentials</a></li>
+                  <li><a href="#secDetails">Secretary Details</a></li>
                 </ul>
               </div>
             </div>
-            <div className="columns" id="columnprofileinformation" style={{marginTop: '0%', overflowY: 'auto', maxHeight: '900px' }} >
+            <div className="columns" id="columnprofileinformation" style={{marginTop: '0%', overflowY: 'auto', maxHeight: '720px' }} >
               <div className="doctorprofilecontent">
                 <div className="mydoctorprofileaccount" id="accountDetails">
                   <div className="backgroundpop">
-                    <div className="doctorprofilecontenttitles" >
+                    <div className="doctorprofilecontenttitles">
                       <p><b>ACCOUNT</b></p>
                     </div>
                     <div className="contentcolumn">

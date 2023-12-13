@@ -50,7 +50,7 @@ const PatientProfile = () => {
     useEffect(() => {
     const fetchUser = async () => {
         try {
-          const response = await fetch("https://spring-render-qpn7.onrender.com/patientprofile");
+          const response = await fetch("http://localhost:8080/patientprofile");
           if (response.ok) {
             const data = await response.json();
             setUser(data);
@@ -97,7 +97,7 @@ const PatientProfile = () => {
 
     useEffect(() => {
       // Replace 'http://localhost:8080' with your actual API URL
-      fetch('https://spring-render-qpn7.onrender.com/checkLoggedInPatient')
+      fetch('http://localhost:8080/checkLoggedInPatient')
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -107,7 +107,7 @@ const PatientProfile = () => {
         .then((data) => {
           setPatientUserId(data);
           // Once you have the patientUserId, make another request to get appointments
-          fetch(`https://spring-render-qpn7.onrender.com/appointments?patientUserId=${data}`)
+          fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
             .then((appointmentsResponse) => {
               if (appointmentsResponse.ok) {
                 return appointmentsResponse.json();
@@ -166,7 +166,7 @@ const PatientProfile = () => {
   
     const handleCancel = async (appointmentId) => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+        const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
           method: 'PUT',
         });
   
@@ -206,7 +206,7 @@ const PatientProfile = () => {
         <div className="doctorprofilecontainer" style={{marginTop: "1%", overflow: "hidden", height: "100%"}}>
         {user ? (
           <div className="parentelement" style={{overflow: "hidden"}}>
-            <div className="columns" id="columnprofileicon" style={{marginTop: '0'}}>
+            <div className="columns" id="columnprofileicon" style={{marginTop: '1%', height: "700px"}}>
               <div className="backgroundpop"></div>
               <div className="doctorprofileicon">
                 {selectedAvatar && <img src={selectedAvatar} alt="Selected Avatar" />}
@@ -230,7 +230,7 @@ const PatientProfile = () => {
                 </ul>
               </div>
             </div>
-            <div className="columns" id="columnprofileinformation" style={{marginTop: '-1.1%', overflowY: 'auto', maxHeight: '900px' }} >
+            <div className="columns" id="columnprofileinformation" style={{marginTop: '0%', overflowY: 'auto', maxHeight: '760px' }} >
               <div className="doctorprofilecontent">
                 <div className="mydoctorprofileaccount" id="account">
                   <div className="backgroundpop">
@@ -361,17 +361,13 @@ const PatientProfile = () => {
                 </div>
               </div>
             </div>
-            <div
-                  className="columns"
-                  id="columnprofileappointments"
-                  style={{
-                    marginTop: "0%",
+            <div className="columns" id="columnprofileappointments" style={{
+                    marginTop: "-25px",
                     position: "sticky", /* Set the position to sticky */
                     top: "20px", /* Adjust the top value as needed */
                     zIndex: "100", /* Set a z-index to control stacking with other elements */
                     backgroundColor: "white", /* Background color if needed */
-                  }}
-                >
+                  }}>
               <div className="futureappointments">
                 <div className="doctorappoinmentcard">
                   <div className="backgroundpop">
@@ -405,7 +401,7 @@ const PatientProfile = () => {
       
         </div>
         <br />
-        <PatientFooter />
+        <div style={{bottom: "0", position: "fixed"}}><PatientFooter /></div>
     </div>
   );
 };

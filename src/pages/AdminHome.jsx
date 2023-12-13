@@ -295,7 +295,9 @@ function AdminHome() {
         <h1>Admin is not logged in.</h1>
         <Link to="/adminlog"><button>Login</button></Link>
       </div>
-      <HomeFooter/>
+      <div style={{bottom: "0", position: "fixed"}}>
+        <HomeFooter />
+      </div>
     </div>
       
     );
@@ -332,7 +334,9 @@ function AdminHome() {
             ))}
           </div>
       </div>
-      <HomeFooter />
+      <div style={{bottom: "0", position: "fixed"}}>
+        <HomeFooter />
+      </div>
 
     {/* Popup */}
     <Popup trigger={isPopupVisible}>

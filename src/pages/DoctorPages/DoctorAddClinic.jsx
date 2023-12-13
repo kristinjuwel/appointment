@@ -138,8 +138,6 @@ const DoctorAddClinic = () => {
       }
     });
   };
-  
-  
 
   const [showMondayTableData, setShowMondayTableData] = useState(false);
   const handleMondayCheckboxChange = (event) => {
@@ -313,21 +311,22 @@ const DoctorAddClinic = () => {
               </div>
               <div className='reg-row' style={{ overflowY: 'auto', maxHeight: '200px'}}>
                 <div className='reg-infield'>
-                  <table width={650}>
+                  <table style={{width: "710px"}}>
+                    <thead></thead>
+                    <tbody>
                     <tr name='mondayRow'>
-                      <td width={25}><input type='checkbox' name='mondayCheckbox' onChange={handleMondayCheckboxChange}/></td>
+                      <td width={10}><input type='checkbox' name='mondayCheckbox' onChange={handleMondayCheckboxChange}/></td>
                       <td width={0}>Monday</td>
                       {showMondayTableData && (<>
                         <td width={50}>Time: </td>
-                        <td width={85}>
-                          <input type="text" id='MondayStartTime' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
-                        <td width={85}><select name="MondayStartTime" id="MondayStartTime">
+                        <td width={65}><input type="text" id='MondayStartTime' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
+                        <td width={65}><select name="MondayStartTime" id="MondayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='MondayEndTime' placeholder='12:00'style={{paddingRight: "0px"}}/></td>
-                        <td width={85}><select name="MondayEndTime" id="MondayEndTime">
+                        <td width={65}><input type="text" id='MondayEndTime' placeholder='12:00'style={{paddingRight: "0px"}}/></td>
+                        <td width={65}><select name="MondayEndTime" id="MondayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -341,14 +340,14 @@ const DoctorAddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='MondayStartTime' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
-                        <td width={85}><select name="MondayStartTime" id="MondayStartTime">
+                        <td width={65}><input type="text" id='MondayStartTime' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
+                        <td width={65}><select name="MondayStartTime" id="MondayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='MondayEndTime' placeholder='12:00'style={{paddingRight: "0px"}}/></td>
-                        <td width={85}><select name="MondayEndTime" id="MondayEndTime">
+                        <td width={65}><input type="text" id='MondayEndTime' placeholder='12:00'style={{paddingRight: "0px"}}/></td>
+                        <td width={65}><select name="MondayEndTime" id="MondayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -357,18 +356,18 @@ const DoctorAddClinic = () => {
                     </tr>
                     </>)}
                     <tr name='tuesdayRow'>
-                      <td width={25}><input type='checkbox' name='tuesdayCheckbox' onChange={handleTuesdayCheckboxChange}/></td>
+                      <td width={10}><input type='checkbox' name='tuesdayCheckbox' onChange={handleTuesdayCheckboxChange}/></td>
                       <td width={0}>Tuesday</td>
                       {showTuesdayTableData && (<>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='TuesdayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="TuesdayStartTime" id="TuesdayStartTime">
+                        <td width={65}><input type="text" id='TuesdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="TuesdayStartTime" id="TuesdayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='TuesdayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="TuesdayEndTime" id="TuesdayEndTime">
+                        <td width={65}><input type="text" id='TuesdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="TuesdayEndTime" id="TuesdayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -382,14 +381,14 @@ const DoctorAddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='TuesdayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="TuesdayStartTime" id="TuesdayStartTime">
+                        <td width={65}><input type="text" id='TuesdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="TuesdayStartTime" id="TuesdayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='TuesdayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="TuesdayEndTime" id="TuesdayEndTime">
+                        <td width={65}><input type="text" id='TuesdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="TuesdayEndTime" id="TuesdayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -398,18 +397,18 @@ const DoctorAddClinic = () => {
                     </tr>
                     </>)}
                     <tr name='wednesdayRow'>
-                      <td width={25}><input type='checkbox' name='wednesdayCheckbox' onChange={handleWednesdayCheckboxChange}/></td>
+                      <td width={10}><input type='checkbox' name='wednesdayCheckbox' onChange={handleWednesdayCheckboxChange}/></td>
                       <td width={0}>Wednesday</td>
                       {showWednesdayTableData && (<>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='WednesdayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="WednesdayStartTime" id="WednesdayStartTime">
+                        <td width={65}><input type="text" id='WednesdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="WednesdayStartTime" id="WednesdayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='WednesdayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="WednesdayEndTime" id="WednesdayEndTime">
+                        <td width={65}><input type="text" id='WednesdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="WednesdayEndTime" id="WednesdayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -423,14 +422,14 @@ const DoctorAddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='WednesdayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="WednesdayStartTime" id="WednesdayStartTime">
+                        <td width={65}><input type="text" id='WednesdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="WednesdayStartTime" id="WednesdayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='WednesdayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="WednesdayEndTime" id="WednesdayEndTime">
+                        <td width={65}><input type="text" id='WednesdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="WednesdayEndTime" id="WednesdayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -439,18 +438,18 @@ const DoctorAddClinic = () => {
                     </tr>
                     </>)}
                     <tr name='thursdayRow'>
-                      <td width={25}><input type='checkbox' name='thursdayCheckbox' onChange={handleThursdayCheckboxChange}/></td>
+                      <td width={10}><input type='checkbox' name='thursdayCheckbox' onChange={handleThursdayCheckboxChange}/></td>
                       <td width={0}>Thursday</td>
                       {showThursdayTableData && (<>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='ThursdayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="ThursdayStartTime" id="ThursdayStartTime">
+                        <td width={65}><input type="text" id='ThursdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="ThursdayStartTime" id="ThursdayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='ThursdayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="ThursdayEndTime" id="ThursdayEndTime">
+                        <td width={65}><input type="text" id='ThursdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="ThursdayEndTime" id="ThursdayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -464,14 +463,14 @@ const DoctorAddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='ThursdayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="ThursdayStartTime" id="ThursdayStartTime">
+                        <td width={65}><input type="text" id='ThursdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="ThursdayStartTime" id="ThursdayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='ThursdayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="ThursdayEndTime" id="ThursdayEndTime">
+                        <td width={65}><input type="text" id='ThursdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="ThursdayEndTime" id="ThursdayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -480,18 +479,18 @@ const DoctorAddClinic = () => {
                     </tr>
                     </>)}
                     <tr name='fridayRow'>
-                      <td width={25}><input type='checkbox' name='fridayCheckbox' onChange={handleFridayCheckboxChange}/></td>
+                      <td width={10}><input type='checkbox' name='fridayCheckbox' onChange={handleFridayCheckboxChange}/></td>
                       <td width={0}>Friday</td>
                       {showFridayTableData && (<>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='FridayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="FridayStartTime" id="FridayStartTime">
+                        <td width={65}><input type="text" id='FridayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="FridayStartTime" id="FridayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='FridayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="FridayEndTime" id="FridayEndTime">
+                        <td width={65}><input type="text" id='FridayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="FridayEndTime" id="FridayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -505,14 +504,14 @@ const DoctorAddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='FridayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="FridayStartTime" id="FridayStartTime">
+                        <td width={65}><input type="text" id='FridayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="FridayStartTime" id="FridayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='FridayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="FridayEndTime" id="FridayEndTime">
+                        <td width={65}><input type="text" id='FridayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="FridayEndTime" id="FridayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -521,18 +520,18 @@ const DoctorAddClinic = () => {
                     </tr>
                     </>)}
                     <tr name='saturdayRow'>
-                      <td width={25}><input type='checkbox' name='saturdayCheckbox' onChange={handleSaturdayCheckboxChange}/></td>
+                      <td width={10}><input type='checkbox' name='saturdayCheckbox' onChange={handleSaturdayCheckboxChange}/></td>
                       <td width={0}>Saturday</td>
                       {showSaturdayTableData && (<>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='SaturdayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="SaturdayStartTime" id="SaturdayStartTime">
+                        <td width={65}><input type="text" id='SaturdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="SaturdayStartTime" id="SaturdayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='SaturdayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="SaturdayEndTime" id="SaturdayEndTime">
+                        <td width={65}><input type="text" id='SaturdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="SaturdayEndTime" id="SaturdayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -546,14 +545,14 @@ const DoctorAddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='SaturdayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="SaturdayStartTime" id="SaturdayStartTime">
+                        <td width={65}><input type="text" id='SaturdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="SaturdayStartTime" id="SaturdayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='SaturdayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="SaturdayEndTime" id="SaturdayEndTime">
+                        <td width={65}><input type="text" id='SaturdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="SaturdayEndTime" id="SaturdayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -562,18 +561,18 @@ const DoctorAddClinic = () => {
                     </tr>
                     </>)}
                     <tr name='sundayRow'>
-                      <td width={25}><input type='checkbox' name='sundayCheckbox' onChange={handleSundayCheckboxChange}/></td>
+                      <td width={10}><input type='checkbox' name='sundayCheckbox' onChange={handleSundayCheckboxChange}/></td>
                       <td width={0}>Sunday</td>
                       {showSundayTableData && (<>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='SundayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="SundayStartTime" id="SundayStartTime">
+                        <td width={65}><input type="text" id='SundayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="SundayStartTime" id="SundayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='SundayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="SundayEndTime" id="SundayEndTime">
+                        <td width={65}><input type="text" id='SundayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="SundayEndTime" id="SundayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -587,14 +586,14 @@ const DoctorAddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='SundayStartTime'  placeholder='08:00'/></td>
-                        <td width={85}><select name="SundayStartTime" id="SundayStartTime">
+                        <td width={65}><input type="text" id='SundayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><select name="SundayStartTime" id="SundayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={85}><input type="text" id='SundayEndTime'  placeholder='12:00'/></td>
-                        <td width={85}><select name="SundayEndTime" id="SundayEndTime">
+                        <td width={65}><input type="text" id='SundayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><select name="SundayEndTime" id="SundayEndTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                           </select></td>
@@ -602,6 +601,7 @@ const DoctorAddClinic = () => {
                         <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
                     </tr>
                     </>)}
+                    </tbody>
                   </table> 
                 </div>
             </div>
