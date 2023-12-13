@@ -12,8 +12,6 @@ const AddClinic = () => {
   const [officeEmail, setOfficeEmail] = useState('');
   const [hospital, setHospital] = useState('');
   const [addClinicMessage, setAddClinicMessage] = useState('');
-  const [registrationSuccessful, setRegistrationSuccessful] = useState(false);
-  const [slots, setSlots] = useState('');
   const [checkedDays, setCheckedDays] = useState([]);
 
 
@@ -44,7 +42,7 @@ const AddClinic = () => {
     }
 
     try {
-      const url = new URL('http://localhost:8080/clinic');
+      const url = new URL('https://spring-render-qpn7.onrender.com//clinic');
       const userData = {
         name,
         address,
@@ -65,8 +63,9 @@ const AddClinic = () => {
       if (response.ok) {
         // Signup successful
         setAddClinicMessage('Clinic added successfully');
-        setRegistrationSuccessful(true);
-        handleAddSchedule();
+        await handleAddSchedule();
+        await handleAddSchedule1();
+        window.location.href = '/doclogin';
  
       } else {
         // Signup failed
@@ -91,6 +90,24 @@ const AddClinic = () => {
     }
   };
   
+  function convertTo24Hour(time12h, period) {
+    let [hours, minutes] = time12h.split(':');
+  
+    hours = parseInt(hours, 10);
+    minutes = parseInt(minutes, 10);
+  
+    if (period === 'PM' && hours !== 12) {
+      hours += 12;
+    } else if (period === 'AM' && hours === 12) {
+      hours = 0;
+    }
+  
+    const formattedHours = hours.toString().padStart(2, '0');
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+  
+    return `${formattedHours}:${formattedMinutes}:00`;
+  }
+  
   const handleAddSchedule = async () => {
     if (checkedDays.length === 0) {
       console.error('No days selected for schedule.');
@@ -99,20 +116,80 @@ const AddClinic = () => {
   
     for (const day of checkedDays) {
       try {
-        const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${document.getElementById(`${day}StartTime`).value}&endTime=${document.getElementById(`${day}EndTime`).value}&slots=${slots}`;
-        const queryString1 = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${document.getElementById(`${day}StartTime1`).value}&endTime=${document.getElementById(`${day}EndTime1`).value}&slots=${slots}`;
+
+        const startTimeElement = document.getElementById(`${day}StartTime`);
+        const startPeriodElement = document.getElementById(`${day}StartPeriod`);
+        const endTimeElement = document.getElementById(`${day}EndTime`);
+        const endPeriodElement = document.getElementById(`${day}EndPeriod`);
+      
+        if (!startTimeElement || !startPeriodElement || !endTimeElement || !endPeriodElement) {
+          throw new Error(`Could not find elements for day: ${day}`);
+        }
+      
+        const startTime = startTimeElement.value;
+        const startPeriod = startPeriodElement.value;
+        const endTime = endTimeElement.value;
+        const endPeriod = endPeriodElement.value;
+      
+        const militaryStartTime = convertTo24Hour(startTime, startPeriod);
+        const militaryEndTime = convertTo24Hour(endTime, endPeriod);
+      
+        console.log(militaryStartTime);
+        console.log(militaryEndTime);
   
-        const response = await fetch(`http://localhost:8080/schedule?${queryString}`, { method: 'POST' });
-        const response1 = await fetch(`http://localhost:8080/schedule?${queryString1}`, { method: 'POST' });
+        const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${militaryStartTime}&endTime=${militaryEndTime}&slots=${document.getElementById(`${day}Slots`).value}`;
+
+        console.log(queryString);
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//schedule?${queryString}`, { method: 'POST' });
   
         if (response.ok) {
-          // Schedule added successfully for queryString
           console.log(`Schedule added successfully for ${day} using queryString`);
         } else {
           // Schedule addition failed for queryString
           const errorMessage = await response.text();
           console.error(`Schedule addition failed for ${day} using queryString: ${errorMessage}`);
         }
+  
+      } catch (error) {
+        console.error(`Error during schedule addition for ${day}:`, error);
+      }
+    }
+  };  
+
+  const handleAddSchedule1 = async () => {
+    if (checkedDays.length === 0) {
+      console.error('No days selected for schedule.');
+      return;
+    }
+  
+    for (const day of checkedDays) {
+      try {
+
+        const startTimeElement1 = document.getElementById(`${day}StartTime1`);
+        const startPeriodElement1 = document.getElementById(`${day}StartPeriod1`);
+        const endTimeElement1 = document.getElementById(`${day}EndTime1`);
+        const endPeriodElement1 = document.getElementById(`${day}EndPeriod1`);
+      
+        if (!startTimeElement1 || !startPeriodElement1 || !endTimeElement1 || !endPeriodElement1) {
+          console.log(`Could not find elements for day: ${day}`);
+          continue; // Skip this iteration and move to the next checked day
+        }
+      
+        const startTime1 = startTimeElement1.value;
+        const startPeriod1 = startPeriodElement1.value;
+        const endTime1 = endTimeElement1.value;
+        const endPeriod1 = endPeriodElement1.value;
+      
+        const militaryStartTime1 = convertTo24Hour(startTime1, startPeriod1);
+        const militaryEndTime1 = convertTo24Hour(endTime1, endPeriod1);
+      
+        console.log(militaryStartTime1);
+        console.log(militaryEndTime1);
+  
+        const queryString1 = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${militaryStartTime1}&endTime=${militaryEndTime1}&slots=${document.getElementById(`${day}Slots1`).value}`;
+
+        console.log(queryString1);
+        const response1 = await fetch(`https://spring-render-qpn7.onrender.com//schedule?${queryString1}`, { method: 'POST' });
   
         if (response1.ok) {
           // Schedule added successfully for queryString1
@@ -245,7 +322,7 @@ const AddClinic = () => {
     <HomeNavbar/>
     <div className="reg-container" id="reg-container">
       
-      <div className="register">
+    <div className="register">
         <h1 style={{ color: '#0094d4'}}>Add Clinic</h1>
         <form action="#" id="register-form" >
             <div className="reg-infield">              
@@ -310,19 +387,19 @@ const AddClinic = () => {
                       {showMondayTableData && (<>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='MondayStartTime' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
-                        <td width={65}><select name="meridian" id="MondayOption">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="MondayStartPeriod" id="MondayStartPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='MondayEndTime' placeholder='12:00'style={{paddingRight: "0px"}}/></td>
-                        <td width={65}><select name="MondayOption" id="MondayOption">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="MondayEndPeriod" id="MondayEndPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>                      
-                        <td width={40}><input type='text' placeholder='0'   onChange={(e) => setSlots(e.target.value)}/></td>
-                        <td style={{paddingLeft: "10px", verticalAlign: "middle", width: "150px"}}><a href='#' onClick={handleMondayAddTimeSlotClick}><u>Add Time Slot</u></a></td>
+                        <td width={40}><input type='text' placeholder='0'  id='MondaySlots' /></td>
+                        <td style={{paddingLeft: "10px", verticalAlign: "middle", width: "150px"}}><p  onClick={handleMondayAddTimeSlotClick}><u>Add Time Slot</u></p></td>
                       </>)}
                     </tr>
                     {showMondayTableData && showMondayAddTimeSlot && (<>
@@ -331,18 +408,18 @@ const AddClinic = () => {
                         <td width={0}></td>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='MondayStartTime1' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
-                        <td width={65}><select name="MondayStartTime" id="MondayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="MondayStartPeriod1" id="MondayStartPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='MondayEndTime1' placeholder='12:00'style={{paddingRight: "0px"}}/></td>
-                        <td width={65}><select name="MondayEndTime" id="MondayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="MondayEndPeriod1" id="MondayEndPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                        <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
+                        <td width={40}><input type='text' placeholder='0' id='MondaySlots1' /></td>
                     </tr>
                     </>)}
                     <tr name='tuesdayRow'>
@@ -351,19 +428,19 @@ const AddClinic = () => {
                       {showTuesdayTableData && (<>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='TuesdayStartTime'  placeholder='08:00'/></td>
-                        <td width={65}><select name="TuesdayStartTime" id="TuesdayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="TuesdayStartPeriod" id="TuesdayStartPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='TuesdayEndTime'  placeholder='12:00'/></td>
-                        <td width={65}><select name="TuesdayEndTime" id="TuesdayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="TuesdayEndPeriod" id="TuesdayEndPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                          <td width={40}><input type='text' placeholder='0' onChange={(e) => setSlots(e.target.value)}/></td>
-                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px", width: "150px"}}><a href='#' onClick={handleTuesdayAddTimeSlotClick}><u>Add Time Slot</u></a></td>
+                          <td width={40}><input type='text' placeholder='0' id='TuesdaySlots' /></td>
+                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px", width: "150px"}}><p  onClick={handleTuesdayAddTimeSlotClick}><u>Add Time Slot</u></p></td>
                       </>)}
                     </tr>
                     {showTuesdayTableData && showTuesdayAddTimeSlot && (<>
@@ -372,18 +449,18 @@ const AddClinic = () => {
                         <td width={0}></td>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='TuesdayStartTime1'  placeholder='08:00'/></td>
-                        <td width={65}><select name="TuesdayStartTime" id="TuesdayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="TuesdayStartPeriod1" id="TuesdayStartPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='TuesdayEndTime1'  placeholder='12:00'/></td>
-                        <td width={65}><select name="TuesdayEndTime" id="TuesdayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="TuesdayEndPeriod1" id="TuesdayEndPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                        <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)} /></td>
+                        <td width={40}><input type='text' placeholder='0'  id='TuesdaySlots1' /></td>
                     </tr>
                     </>)}
                     <tr name='wednesdayRow'>
@@ -392,19 +469,19 @@ const AddClinic = () => {
                       {showWednesdayTableData && (<>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='WednesdayStartTime'  placeholder='08:00'/></td>
-                        <td width={65}><select name="WednesdayStartTime" id="WednesdayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="WednesdayStartPeriod" id="WednesdayStartPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='WednesdayEndTime'  placeholder='12:00'/></td>
-                        <td width={65}><select name="WednesdayEndTime" id="WednesdayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="WednesdayEndPeriod" id="WednesdayEndPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                          <td width={40}><input type='text' placeholder='0' onChange={(e) => setSlots(e.target.value)}/></td>
-                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><a href='#' onClick={handleWednesdayAddTimeSlotClick}><u>Add Time Slot</u></a></td>
+                          <td width={40}><input type='text' placeholder='0' id='WednesdaySlots' /></td>
+                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><p  onClick={handleWednesdayAddTimeSlotClick}><u>Add Time Slot</u></p></td>
                       </>)}
                     </tr>
                     {showWednesdayTableData && showWednesdayAddTimeSlot && (<>
@@ -413,18 +490,18 @@ const AddClinic = () => {
                         <td width={0}></td>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='WednesdayStartTime1'  placeholder='08:00'/></td>
-                        <td width={65}><select name="WednesdayStartTime" id="WednesdayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="WednesdayStartPeriod1" id="WednesdayStartPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='WednesdayEndTime1'  placeholder='12:00'/></td>
-                        <td width={65}><select name="WednesdayEndTime" id="WednesdayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="WednesdayEndPeriod1" id="WednesdayEndPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                        <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
+                        <td width={40}><input type='text' placeholder='0' id='WednesdaySlots1' /></td>
                     </tr>
                     </>)}
                     <tr name='thursdayRow'>
@@ -433,19 +510,19 @@ const AddClinic = () => {
                       {showThursdayTableData && (<>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='ThursdayStartTime'  placeholder='08:00'/></td>
-                        <td width={65}><select name="ThursdayStartTime" id="ThursdayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="ThursdayStartPeriod" id="ThursdayStartPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='ThursdayEndTime'  placeholder='12:00'/></td>
-                        <td width={65}><select name="ThursdayEndTime" id="ThursdayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="ThursdayEndPeriod" id="ThursdayEndPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                          <td width={40}><input type='text' placeholder='0' onChange={(e) => setSlots(e.target.value)}/></td>
-                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><a href='#' onClick={handleThursdayAddTimeSlotClick}><u>Add Time Slot</u></a></td>
+                          <td width={40}><input type='text' placeholder='0' id='ThursdaySlots'/></td>
+                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><p  onClick={handleThursdayAddTimeSlotClick}><u>Add Time Slot</u></p></td>
                       </>)}
                     </tr>
                     {showThursdayTableData && showThursdayAddTimeSlot && (<>
@@ -454,18 +531,18 @@ const AddClinic = () => {
                         <td width={0}></td>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='ThursdayStartTime1'  placeholder='08:00'/></td>
-                        <td width={65}><select name="ThursdayStartTime" id="ThursdayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="ThursdayStartPeriod1" id="ThursdayStartPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='ThursdayEndTime1'  placeholder='12:00'/></td>
-                        <td width={65}><select name="ThursdayEndTime" id="ThursdayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="ThursdayEndPeriod1" id="ThursdayEndPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                        <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
+                        <td width={40}><input type='text' placeholder='0' id='ThursdaySlots1' /></td>
                     </tr>
                     </>)}
                     <tr name='fridayRow'>
@@ -474,19 +551,19 @@ const AddClinic = () => {
                       {showFridayTableData && (<>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='FridayStartTime'  placeholder='08:00'/></td>
-                        <td width={65}><select name="FridayStartTime" id="FridayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="FridayStartPeriod" id="FridayStartPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='FridayEndTime'  placeholder='12:00'/></td>
-                        <td width={65}><select name="FridayEndTime" id="FridayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="FridayEndPeriod" id="FridayEndPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                          <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
-                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><a href='#' onClick={handleFridayAddTimeSlotClick}><u>Add Time Slot</u></a></td>
+                          <td width={40}><input type='text' placeholder='0' id='FridaySlots' /></td>
+                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><p  onClick={handleFridayAddTimeSlotClick}><u>Add Time Slot</u></p></td>
                       </>)}
                     </tr>
                     {showFridayTableData && showFridayAddTimeSlot && (<>
@@ -495,18 +572,18 @@ const AddClinic = () => {
                         <td width={0}></td>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='FridayStartTime1'  placeholder='08:00'/></td>
-                        <td width={65}><select name="FridayStartTime" id="FridayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="FridayStartPeriod1" id="FridayStartPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='FridayEndTime1'  placeholder='12:00'/></td>
-                        <td width={65}><select name="FridayEndTime" id="FridayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="FridayEndPeriod1" id="FridayEndPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                        <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
+                        <td width={40}><input type='text' placeholder='0' id='FridaySlots1' /></td>
                     </tr>
                     </>)}
                     <tr name='saturdayRow'>
@@ -515,19 +592,19 @@ const AddClinic = () => {
                       {showSaturdayTableData && (<>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='SaturdayStartTime'  placeholder='08:00'/></td>
-                        <td width={65}><select name="SaturdayStartTime" id="SaturdayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="SaturdayStartPeriod" id="SaturdayStartPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='SaturdayEndTime'  placeholder='12:00'/></td>
-                        <td width={65}><select name="SaturdayEndTime" id="SaturdayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="SaturdayEndPeriod" id="SaturdayEndPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                          <td width={40}><input type='text' placeholder='0' onChange={(e) => setSlots(e.target.value)}/></td>
-                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><a href='#' onClick={handleSaturdayAddTimeSlotClick}><u>Add Time Slot</u></a></td>
+                          <td width={40}><input type='text' placeholder='0' id='SaturdaySlots' /></td>
+                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><p  onClick={handleSaturdayAddTimeSlotClick}><u>Add Time Slot</u></p></td>
                       </>)}
                     </tr>
                     {showSaturdayTableData && showSaturdayAddTimeSlot && (<>
@@ -536,18 +613,18 @@ const AddClinic = () => {
                         <td width={0}></td>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='SaturdayStartTime1'  placeholder='08:00'/></td>
-                        <td width={65}><select name="SaturdayStartTime" id="SaturdayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="SaturdayStartPeriod1" id="SaturdayStartPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='SaturdayEndTime1'  placeholder='12:00'/></td>
-                        <td width={65}><select name="SaturdayEndTime" id="SaturdayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="SaturdayEndPeriod1" id="SaturdayEndPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                        <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
+                        <td width={40}><input type='text' placeholder='0' id='SaturdaySlots1' /></td>
                     </tr>
                     </>)}
                     <tr name='sundayRow'>
@@ -556,19 +633,19 @@ const AddClinic = () => {
                       {showSundayTableData && (<>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='SundayStartTime'  placeholder='08:00'/></td>
-                        <td width={65}><select name="SundayStartTime" id="SundayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="SundayStartPeriod" id="SundayStartPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='SundayEndTime'  placeholder='12:00'/></td>
-                        <td width={65}><select name="SundayEndTime" id="SundayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="SundayEndPeriod" id="SundayEndPeriod">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                          <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
-                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><a href='#' onClick={handleSundayAddTimeSlotClick}><u>Add Time Slot</u></a></td>
+                          <td width={40}><input type='text' placeholder='0' id='SundaySlots' /></td>
+                          <td style={{verticalAlign: "middle", paddingLeft: "10px", paddingTop: "2px"}}><p  onClick={handleSundayAddTimeSlotClick}><u>Add Time Slot</u></p></td>
                       </>)}
                     </tr>
                     {showSundayTableData && showSundayAddTimeSlot && (<>
@@ -577,18 +654,18 @@ const AddClinic = () => {
                         <td width={0}></td>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='SundayStartTime1'  placeholder='08:00'/></td>
-                        <td width={65}><select name="SundayStartTime" id="SundayStartTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="SundayStartPeriod1" id="SundayStartPeriod1">
+                          <option value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='SundayEndTime1'  placeholder='12:00'/></td>
-                        <td width={65}><select name="SundayEndTime" id="SundayEndTime">
-                          <option id='AM' value="AM">AM</option>
-                          <option id='PM' value="PM">PM</option>
+                        <td width={65}><select name="SundayEndPeriod1" id="SundayEndPeriod1">
+                          <option  value="AM">AM</option>
+                          <option  value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
-                        <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
+                        <td width={40}><input type='text' placeholder='0' id='SundaySlots1' /></td>
                     </tr>
                     </>)}
                     </tbody>
@@ -597,6 +674,7 @@ const AddClinic = () => {
             </div>
         </form>
         <button type="button" onClick={handleAddClinic}>Register</button>
+        <p>{addClinicMessage}</p>
       </div>
       
     </div>

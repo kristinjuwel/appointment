@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import DoctorNavbar from '../../components/DoctorNavbar';
 import DoctorFooter from '../../components/DoctorFooter';
-import DoctorCalendar from '../../components/DoctorCalendar';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { parse, format } from 'date-fns';
 
@@ -12,7 +11,7 @@ import addWeeks from 'date-fns/addWeeks';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const DoctorResched = () => {
-  const { appointmentId } = useParams();
+  const { username, appointmentId } = useParams();
   const [rescheduleChoice, setRescheduleChoice] = useState('');
   const [error, setError] = useState('');
   const [rescheduleStatus, setRescheduleStatus] =  useState('');
@@ -25,7 +24,8 @@ const DoctorResched = () => {
       start: new Date(),
       end: new Date(),  // 5:00 PM
       transactionNo: '',
-      appointmentStatus: ''
+      appointmentStatus: '',
+      slots:''
     },
   ]);
   const [appointments, setAppointments] = useState([
@@ -37,20 +37,21 @@ const DoctorResched = () => {
       start: new Date(),
       end: new Date(),  // 5:00 PM
       transactionNo: '',
-      appointmentStatus: ''
+      appointmentStatus: '',
+      slots:''
     },
   ]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/checkLoggedInDoctor')
-      .then((response) => {
+    fetch(`https://spring-render-qpn7.onrender.com//getDoctorUserId?username=${username}`)
+        .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw new Error('Network response was not ok');
       })
       .then((data) => {
-        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com//docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -77,12 +78,12 @@ const DoctorResched = () => {
                 start: startDate,
                 end: endDate,
                 appointmentId: appointment.transactionNo,
-                appointmentStatus: appointment.status
+                appointmentStatus: appointment.status,
+                slots: appointment.slots
               };
             });
 
             setAppointments(formattedAppointments);
-            console.loh(formattedAppointments);
           })
           .catch((error) => {
             // Handle errors
@@ -93,12 +94,12 @@ const DoctorResched = () => {
       .catch((error) => {
         console.error('Error:', error);
       });
-  }, []);
+  }, [username]);
 
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/appointment/${appointmentId}`);
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//appointment/${appointmentId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -125,7 +126,8 @@ const DoctorResched = () => {
                   start: startDate,
                   end: endDate,
                   appointmentId: data.transactionNo,
-                  appointmentStatus: data.status
+                  appointmentStatus: data.status,
+                  slots: data.slots
                 };
 
                 setLatestAppointment([formattedAppointment]);
@@ -164,13 +166,13 @@ const DoctorResched = () => {
 
   const handleReschedule = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
         method: 'PUT',
         // No need for headers when not sending a JSON payload
       });
       if (response.ok) {
         setRescheduleStatus('Appointment Rescheduled Successfully!');
-        window.location.href = `/docresched/${appointmentId}`;
+        window.location.href = `/docresched/${username}/${appointmentId}`;
       }
       if (!response.ok) {
         setRescheduleStatus(`Failed to update appointment: ${response.statusText}`);
@@ -220,8 +222,11 @@ const DoctorResched = () => {
       <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
         Clinic: {event.clinic}
       </p>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBackgroundColor(event.appointmentStatus)}}>
         Status: {event.appointmentStatus}
+      </p>
+      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal'}}>
+        Remaining Slots: {event.slots}
       </p>
     </div>
   );
@@ -237,9 +242,6 @@ const DoctorResched = () => {
     getDay,
     locales
   })
-
-  
-
 
   const getBackgroundColor = (status) => {
     switch (status) {
@@ -274,7 +276,7 @@ const DoctorResched = () => {
 
   return (
     <div>
-      <DoctorNavbar />
+      <DoctorNavbar username={username}/>
         <div style={{ display: "flex", margin: "auto", width: "100vw", justifyContent: "center" }}>
       <Calendar
           localizer={localizer}

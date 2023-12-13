@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "../styles/Search.css";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import HomeFooter from '../components/HomeFooter';
 import HomeNavbar from '../components/HomeNavbar';
 import DoctorForApproval from '../components/DoctorsForApproval';
@@ -22,6 +22,7 @@ import avatar13 from '../assets/DoctorIcons/Icon13.png';
 import avatar14 from '../assets/DoctorIcons/Icon14.png';
 
 function AdminHome() {
+  const {username} = useParams();
   const [message, setMessage] = useState('');
   const [approved] = useState('Verified by Admin')
   const [reject] = useState('Rejected by Admin')
@@ -41,7 +42,6 @@ function AdminHome() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentDoctor, setCurrentDoctor] = useState('');
-  const [avatar] = useState(currentDoctor.profilePicture ||'');
   const [schedules, setSchedules] = useState([
     {
       doctorUserId: '',
@@ -55,9 +55,9 @@ function AdminHome() {
   ]);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState('')
   useEffect(() => {
-    const fetchLoggedInPatientId = async () => {
+    const fetchLoggedInAdmin = async () => {
       try {
-        const response = await fetch('http://localhost:8080/checkLoggedInAdmin');
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//admindetails/${username}`);
         if (response.ok) {
           setIsAdminLoggedIn(true);
         } else {
@@ -65,16 +65,16 @@ function AdminHome() {
         }
       } catch (error) {
         setIsAdminLoggedIn(false);
-        // Handle the error or provide feedback to the user
       }
     };
 
-    fetchLoggedInPatientId();
-  }, []); // 
+    fetchLoggedInAdmin();
+  }, [username]); 
+
     useEffect(() => {
       const fetchSchedules = async () => {
         try {
-          const response = await fetch('http://localhost:8080/schedules');
+          const response = await fetch('https://spring-render-qpn7.onrender.com//schedules');
           
           if (!response.ok) {
             throw new Error('Failed to fetch schedules');
@@ -106,7 +106,7 @@ function AdminHome() {
     useEffect(() => {
       const fetchAllDoctors = async () => {
         try {
-          const response = await fetch('http://localhost:8080/allusers');
+          const response = await fetch('https://spring-render-qpn7.onrender.com//allusers');
   
           if (response.ok) {
             const data = await response.json();
@@ -204,7 +204,7 @@ function AdminHome() {
     }
   const handleLogout = async () => {
     try {
-        const response = await fetch("http://localhost:8080/adminlogout", {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//adminlogout/${username}`, {
         method: 'POST',
         });
 
@@ -223,7 +223,7 @@ function AdminHome() {
 
   const handleApprovalSubmit = async (doctorId) => {
     try {
-      const url = `http://localhost:8080/approval?userId=${doctorId}&approvalStatus=${approved}`;
+      const url = `https://spring-render-qpn7.onrender.com//approval?userId=${doctorId}&approvalStatus=${approved}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -245,7 +245,7 @@ function AdminHome() {
 
   const handleRejectSubmit = async (doctorId) => {
     try {
-      const url = `http://localhost:8080/approval?userId=${doctorId}&approvalStatus=${reject}`;
+      const url = `https://spring-render-qpn7.onrender.com//approval?userId=${doctorId}&approvalStatus=${reject}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {

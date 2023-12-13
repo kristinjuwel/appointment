@@ -1,48 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import "../styles/Profile.css";
 import { Link } from 'react-router-dom';
 
-const DoctorNavbar = () => {
+const DoctorNavbar = ({ username }) => {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
   const [isError, setIsError] = useState(false);
 
-  useEffect(() => {
-        fetchUser();
-      }, []);
 
-  const fetchUser = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/doctorprofile");
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-        } else {
-          setIsError(true);
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error);
+  const fetchUser = useCallback(async () => {
+    try {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//doctordetails/${username}`);
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data);
+        setIsError(false); // Reset error state on successful fetch
+      } else {
         setIsError(true);
       }
-  };
-  
-  
+    } catch (error) {
+      setIsError(true);
+    }
+  }, [username]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
   const handleLogout = async () => {
     try {
-        const response = await fetch("http://localhost:8080/doctorlogout", {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//doctorlogout/${username}`, {
         method: 'POST',
-        });
+      });
 
-        if (response.status === 200) {
+      if (response.status === 200) {
         setMessage('Logged out successfully');
         window.location.href = '/doclogin';
-        } else if (response.status === 401) {
+      } else if (response.status === 401) {
         setMessage('No user is currently logged in');
-        } else {
+      } else {
         setMessage('An error occurred');
-        }
+      }
     } catch (error) {
-        setMessage('An error occurred');
+      setMessage('An error occurred');
     }
   };
   return (
@@ -50,7 +51,7 @@ const DoctorNavbar = () => {
       <nav>
         <ul>
           <li style={{ float: 'left' }}>
-            <Link to="/docprofile">
+            <Link to={`/docprofile/${username}`}>
               <img
                 src={require('../images/DOC LOGO.png')}
                 alt="Doc Click Connect"
@@ -60,14 +61,14 @@ const DoctorNavbar = () => {
           </li>
         </ul>
         <ul>
-          <li><Link to="/docprofile">My Profile</Link></li>
-          <li><Link to="/editdocprofile">Edit Profile</Link></li>
-          <li><Link to="/docappointments">My Appointments</Link></li>
-          <li><Link to="/docaddclinic">Add Clinic</Link></li>
-          <li><Link to="/docclinic">My Clinics</Link></li>
+          <li><Link to={`/docprofile/${username}`}>My Profile</Link></li>
+          <li><Link to={`/editdocprofile/${username}`}>Edit Profile</Link></li>
+          <li><Link to={`/docappointments/${username}`}>My Appointments</Link></li>
+          <li><Link to={`/docaddclinic/${username}`}>Add Clinic</Link></li>
+          <li><Link to={`/docclinic/${username}`}>My Clinics</Link></li>
           <li style={{ float: 'right' }}>
             {user ? (
-              <span style={{color: "white", fontSize: "15px"}}>Hello, {user.user.firstName}! </span>
+              <span style={{ color: "white", fontSize: "15px" }}>Hello, {user.user.firstName}! </span>
             ) : (
               isError ? (
                 <p>Error fetching user profile</p>

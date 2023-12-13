@@ -4,12 +4,17 @@ import DoctorFooter from '../../components/DoctorFooter';
 import React, { useState, useEffect } from 'react';
 import ClinicCard from "../../components/Clinics";
 import Popup from '../../components/Popup'
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const DoctorClinics= () => {
-  const [doctorUserId, setDoctorUserId] = useState(''); // To store the patient's user ID
-  const [isError, setIsError] = useState(false);
+  const {username} = useParams();
   const [isPopupVisible, setPopupVisibility] = useState(false);
+  const [name, setName] = useState(false);
+  const [address, setAddress] = useState(false);
+  const [officeNumber, setOfficeNumber] = useState(false);
+  const [officeEmail, setOfficeEmail] = useState(false);
+  const [hospital, setHospital] = useState(false);
+
 
   const [schedules, setSchedules] = useState([
     {
@@ -20,9 +25,9 @@ const DoctorClinics= () => {
   ]);
 
   useEffect(() => {
-      // Replace 'http://localhost:8080' with your actual API URL
-      fetch('http://localhost:8080/checkLoggedInDoctor')
-        .then((response) => {
+      // Replace 'https://spring-render-qpn7.onrender.com/' with your actual API URL
+      fetch(`https://spring-render-qpn7.onrender.com//getDoctorUserId?username=${username}`)
+          .then((response) => {
           if (response.ok) {
             return response.json();
            
@@ -32,9 +37,8 @@ const DoctorClinics= () => {
         .then((data) => {
           
           console.log({data});
-          setDoctorUserId(data);
           // Once you have the patientUserId, make another request to get appointments
-          fetch(`http://localhost:8080/docsched/${data}`)
+          fetch(`https://spring-render-qpn7.onrender.com//docsched/${data}`)
             .then((clinicsResponse) => {
               if (clinicsResponse.ok) {
 
@@ -58,7 +62,9 @@ const DoctorClinics= () => {
                   formattedClinics.push({
                     name: '' + schedule.clinic.name,
                     address: '' + schedule.clinic.address,
-                    doctor: '' + schedule.doctor.user.firstName,
+                    officeNumber:  '' + schedule.clinic.officeNumber,
+                    officeEmail:  '' + schedule.clinic.officeEmail,
+                    hospital: '' + schedule.clinic.hospital,
                   });
             
                   // Mark the clinicId as added to avoid duplicates
@@ -67,6 +73,7 @@ const DoctorClinics= () => {
               });
             
               setSchedules(formattedClinics);
+              console.log(formattedClinics);
             })
             .catch((error) => {
               // Handle errors
@@ -75,14 +82,21 @@ const DoctorClinics= () => {
             
         })
         .catch((error) => {
-          setIsError(true);
           console.error('Error:', error);
         });
-    }, []);
+    }, [username]);
 
   const handleEdit = (schedule) => {
     setPopupVisibility(true);
     console.log('Edit clicked for clinic:', schedule);
+    setName(schedule.name);
+    setAddress(schedule.address);
+    setOfficeNumber(schedule.officeNumber);
+    setOfficeEmail(schedule.officeEmail);
+    setHospital(schedule.hospital);
+
+    console.log(name);
+    
   };
 
   const closePopup = () => {
@@ -96,7 +110,7 @@ const DoctorClinics= () => {
 
   return (
     <div className="info-container" id="container" style={{height: "100vh"}}>
-      <DoctorNavbar />
+      <DoctorNavbar username={username} />
       <div className="info-container">
         <h1>All My Clinics</h1>
         <br />
@@ -106,7 +120,7 @@ const DoctorClinics= () => {
             <ClinicCard
               key={index}
               clinic={schedule}
-              onEdit={handleEdit}
+              onEdit={() => handleEdit(schedule[0])}
               onDelete={handleDelete}
             />
           ))}
@@ -121,29 +135,35 @@ const DoctorClinics= () => {
               <div className="infield">
                 <h1 style={{marginTop: "-10px"}}>Edit Clinic</h1>
                 <div>
+         
                   <h3>Clinic Name</h3>
-                  <input type="text" name="clinic" placeholder="Clinic Name"></input>
+                  <input value={name} type="text" name="clinic" placeholder="Clinic Name"></input>
                 </div>
                 <div>
                   <h3>Clinic Address</h3>
-                  <input type="text" name="clinicaddress" placeholder="Clinic Address"></input>
+                  <input value={address}  type="text" name="clinicaddress" placeholder="Clinic Address"></input>
                 </div>
-                <div>
-                  <h3>Clinic Schedule</h3>
-                  <input type="text" name="docname" placeholder="11/06/23 MONDAY 2:00-5:00 PM"></input>
-                </div>
-                <div>
-                  <h3>Hospital Affiliation</h3>
-                  <input type="text" name="clinic" placeholder="Hospital Affliation"></input>
-                </div>
+                
+               
                 <div>
                   <h3>Office Number</h3>
-                  <input type="text" name="clinic" placeholder="09991234567"></input>
+                  <input value={officeNumber} type="text" name="clinic" placeholder="09991234567"></input>
                 </div>
                 <div>
-                  <h3>Office Mail</h3>
-                  <input type="text" name="clinic" placeholder="clinic@gmail.com"></input>
+                  <h3>Office Email</h3>
+                  <input value={officeEmail} type="text" name="clinic" placeholder="clinic@gmail.com"></input>
                 </div>
+
+                <div>
+                  <h3>Hospital Affiliation</h3>
+                  <input value={hospital} type="text" name="clinic" placeholder="Hospital Affliation"></input>
+                </div>
+
+                <div>
+                  <h3>Clinic Schedule</h3>
+                  <input  type="text" name="docname" placeholder="11/06/23 MONDAY 2:00-5:00 PM"></input>
+                </div>
+
                 <Link to="/addremove"><button style={{padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px"}}>Add/Remove Slots</button></Link>
                 <button style={{padding: 5, borderRadius: 0, width: "48.7%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px"}}>Submit Changes</button>
                 <button className='cancel' onClick={closePopup} style={{padding: 5, borderRadius: 0, width: "49%", textAlign: "center", marginTop: "10px", height: "40px"}}>Discard Changes</button>

@@ -11,7 +11,7 @@ import parse from 'date-fns/parse';
 import getDay from 'date-fns/getDay';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 const SetAppointment = () => {
-  const { doctorId } = useParams();
+  const {  username, doctorId } = useParams();
   const [error, setError] = useState(null);
   const [selectedDay, setSelectedDay] = useState('');
   const [selectedSched, setSelectedSched] = useState('');
@@ -52,8 +52,8 @@ const SetAppointment = () => {
     },
   ]);
   useEffect(() => {
-    // Replace 'http://localhost:8080' with your actual API URL
-    fetch('http://localhost:8080/checkLoggedInPatient')
+    // Replace 'https://spring-render-qpn7.onrender.com/' with your actual API URL
+    fetch(`https://spring-render-qpn7.onrender.com//patuserid/${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -63,7 +63,7 @@ const SetAppointment = () => {
       .then((data) => {
         setPatientUserId(data);
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com//appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -97,15 +97,27 @@ const SetAppointment = () => {
             setAppointments(formattedAppointments);
           })
           .catch((error) => {
-            // Handle errors
-            console.error(error);
+            setError(error);
           });
 
       })
       .catch((error) => {
-        console.error('Error:', error);
+        setError('Error:', error);
       });
-  }, []);
+
+      
+  }, [username]);
+
+  const [response, setResponse] = useState('');
+
+
+  const getSlots = async (selectedDate) => {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//checkSlots/${selectedSched}/${selectedDate}`);
+        if (response.ok) {
+          const data = await response.text();
+          setResponse(data);
+        }
+    };
 
   const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -125,8 +137,6 @@ const SetAppointment = () => {
       const appointmentToCancel = appointments.find(appointment => appointment.appointmentId === appointmentId);
   
       if (!appointmentToCancel) {
-        // Handle the case where the appointment with the given ID is not found
-        console.error('Appointment not found');
         return;
       }
   
@@ -138,18 +148,15 @@ const SetAppointment = () => {
       }
   
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//appointmentChange/${appointmentId}?newStatus=Cancelled`, {
         method: 'PUT',
       });
   
       if (response.ok) {
-        console.log('Appointment cancelled successfully');
         window.location.reload();
-      } else {
-        console.error('Error cancelling appointment');
       }
     } catch (error) {
-      console.error('Error cancelling appointment:', error);
+      setError('Error cancelling appointment:', error);
     }
   };
   
@@ -160,7 +167,6 @@ const SetAppointment = () => {
   
     if (!appointmentToCancel) {
       // Handle the case where the appointment with the given ID is not found
-      console.error('Appointment not found');
       return;
     }
 
@@ -170,14 +176,14 @@ const SetAppointment = () => {
       window.alert('Appointment is already cancelled. It cannot be rescheduled.');
       return;
     }
-    window.location.href = `/patresched/${appointmentId}`;
+    window.location.href = `/patresched/${username}/${appointmentId}`;
   };
 
 
   useEffect(() => {
     const fetchDoctorSchedules = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/docsched/${doctorId}`);
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//docsched/${doctorId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -296,10 +302,11 @@ const SetAppointment = () => {
     setSelectedDate('');
 
   };
+
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch('http://localhost:8080/checkLoggedInPatient');
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//patuserid/${username}`);
         if (response.ok) {
           const userId = await response.json();
           setPatientUserId(userId);
@@ -316,7 +323,7 @@ const SetAppointment = () => {
     };
 
     fetchLoggedInPatientId();
-  }, []); // The empty dependency array ensures that this effect runs once when the component mounts
+  }, [username]); // The empty dependency array ensures that this effect runs once when the component mounts
 
   // Change this line
 
@@ -325,7 +332,7 @@ const SetAppointment = () => {
       <div>
         <HomeNavbar />
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <h1>No patient is logged in.</h1>
+          <h1>Patient not logged in.</h1>
           <Link to="/login"><button>Login</button></Link>
         </div>
         <HomeFooter />
@@ -337,7 +344,7 @@ const SetAppointment = () => {
     try {
       // Validate your appointment data here if needed
 
-      const url = `http://localhost:8080/appointment?patientId=${patientUserId}&scheduleId=${selectedSched}&scheduleDate=${selectedDate}&status=${status}`;
+      const url = `https://spring-render-qpn7.onrender.com//appointment?patientId=${patientUserId}&scheduleId=${selectedSched}&scheduleDate=${selectedDate}&status=${status}`;
 
       const response = await fetch(url, {
         method: 'POST',
@@ -345,11 +352,7 @@ const SetAppointment = () => {
 
       if (response.ok) {
         setError('Appointment added successfully!');
-        console.log('Clinic ID:', selectedClinicId);
-        console.log('Selected Day:', selectedDay);
-        console.log('Selected Timeslot:', selectedSched);
-        console.log('Selected Date:', selectedDate);
-        window.location.href = `/setappointment/${doctorId}`;
+        window.location.href = `/setappointment/${username}/${doctorId}`;
 
         // You can handle any other logic after a successful appointment addition here
       } else {
@@ -377,7 +380,7 @@ const SetAppointment = () => {
 
   return (
     <div>
-      <PatientNavBar />
+      <PatientNavBar username={username} />
       <div style={{ display: "flex", margin: "auto", width: "90vw", justifyContent: "center",  marginTop: "2%" }}>
         <Calendar
           localizer={localizer}
@@ -447,7 +450,6 @@ const SetAppointment = () => {
                     setSelectedDay(e.target.value);
                     setSelectedSched('');
                     setSelectedDate('');
-                    console.log("Selected Day changed:", e.target.value);
                   }}
                 >
                   {/* Initial blank option */}
@@ -477,7 +479,6 @@ const SetAppointment = () => {
                     const selectedTimeslot = e.target.value;
                     setSelectedDate('');
                     setSelectedSched(selectedTimeslot);
-                    console.log('Selected Schedule ID:', selectedTimeslot);
                   }}
                 >
                   {/* Initial blank option */}
@@ -509,7 +510,7 @@ const SetAppointment = () => {
                   onChange={(e) => {
                     const selectedDateString = e.target.value;
                     setSelectedDate(selectedDateString);
-                    console.log('Selected Date:', selectedDateString);
+                    getSlots(selectedDateString);
                   }}
                 >
                   {/* Initial blank option */}
@@ -532,6 +533,7 @@ const SetAppointment = () => {
               </td>
             </tr>
             <tr><td colSpan={2}><button style={{ marginTop: "10px", borderRadius: 0, width: "100%" }} onClick={handleBookAppointment}>Book an Appointment</button></td></tr>
+            <tr><td colSpan={2} style={{ justifyContent: 'center', textAlign:'center'}}><h3><i>{response}</i></h3></td></tr>
             <tr><td colSpan={2}><h3><i>{error}</i></h3></td></tr>
           </table>
 

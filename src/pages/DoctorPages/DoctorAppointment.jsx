@@ -6,12 +6,11 @@ import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import "../../styles/Calendar.css";
+import { useParams } from 'react-router-dom';
+
 
 const DoctorAppointment = () => {
-  const [isError, setIsError] = useState(false);
-  const [doctorUserId, setDoctorUserId] = useState('');
+  const {username} = useParams();
   const [appointments, setAppointments] = useState([
     {
       title: '',
@@ -28,18 +27,17 @@ const DoctorAppointment = () => {
 
 
   useEffect(() => {
-    // Replace 'http://localhost:8080' with your actual API URL
-    fetch('http://localhost:8080/checkLoggedInDoctor')
-      .then((response) => {
+    // Replace 'https://spring-render-qpn7.onrender.com/' with your actual API URL
+    fetch(`https://spring-render-qpn7.onrender.com//getDoctorUserId?username=${username}`)
+        .then((response) => {
         if (response.ok) {
           return response.json();
         }
         throw new Error('Network response was not ok');
       })
       .then((data) => {
-        setDoctorUserId(data);
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com//docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -73,17 +71,15 @@ const DoctorAppointment = () => {
 
             setAppointments(formattedAppointments);
           })
-          .catch((error) => {
+          .catch(() => {
             // Handle errors
-            console.error(error);
           });
 
       })
       .catch((error) => {
-        setIsError(true);
         console.error('Error:', error);
       });
-  }, [appointments]);
+  }, [username]);
 
   const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -96,7 +92,8 @@ const DoctorAppointment = () => {
     getDay,
     locales
   })
-  const getBorderColor = (status) => {
+  
+  const getBackgroundColor = (status) => {
     switch (status) {
       case 'Cancelled':
         return '#FCA694';
@@ -110,23 +107,10 @@ const DoctorAppointment = () => {
         return 'lightgray';
     }
   };
-  const CustomEvent = ({ event }) => (
-    <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "60px", textOverflow: 'ellipsis' }}>
-      <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        {event.clinic}
-      </strong>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        {event.title}
-      </p>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBorderColor(event.appointmentStatus)  }}>
-        {event.appointmentStatus}
-      </p>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        {event.slots}
-      </p>
-    </div>
-   
-  );
+
+  
+
+
   const filterAndAggregateAppointments = (appointments) => {
     // Create an object to store unique appointments based on title
     const uniqueAppointments = {};
@@ -155,26 +139,44 @@ const DoctorAppointment = () => {
     return resultAppointments;
   };
 
-  // Usage example
+
   const resultAppointments = filterAndAggregateAppointments(appointments);
 
 
     
 
   const handleManage = async (patientUserId) => {
-    window.location.href = `/manageappointments/${patientUserId}`;
+    window.location.href = `/manageappointments/${username}/${patientUserId}`;
   };
+  
+  const CustomEvent = ({ event }) => (
+    <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
+      <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+        {event.clinic}
+      </strong>
+      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+        {event.title}
+      </p>
+      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBackgroundColor(event.appointmentStatus) }}>
+        {event.appointmentStatus}
+      </p>
+      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+        Remaining Slots: {event.slots}
+      </p>
+    </div>
+
+  );
 
   return (
     <div>
-      <DoctorNavbar />
+      <DoctorNavbar username={username} />
       <div style={{ display: "flex", margin: "auto", width: "100vw", justifyContent: "center" }}>
-      <Calendar
+        <Calendar
           localizer={localizer}
           events={appointments}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 700, width: '70%' }}
+          style={{ height: 700, width: "70%" }}
           components={{
             event: CustomEvent, // Use the custom Event component
           }}
@@ -186,23 +188,26 @@ const DoctorAppointment = () => {
               <table key={index} style={{borderBottom: "1px solid lightgrey"}}>
                 <tr>
                   <td width={250}>{appointment.title}</td>
-                  <td ><button style={{ borderRadius: 0, width: "260px", height: "40px"}} onClick={() => handleManage(appointment.patientUserId)}>Manage Appointments</button></td>
+                  
                 </tr>
                 <tr >
                   <td width={250}>
-                    {/* Display unique clinics for the current unique appointment */}
+                
                     {Array.from(new Set(appointment.clinics)).map((clinic, clinicIndex) => (
                       <span key={clinicIndex}>{clinic}{clinicIndex !== appointment.clinics.length - 1 ? <br /> : ''}</span>
                     ))}
                   </td>
-                  <td><button className='cancel' style={{ width: "100%", height: "40px" }}>Cancel Appointments</button></td>
+                  
                 </tr>
+                <tr>
+                  <td ><button style={{ borderRadius: 0, width: "260px", height: "40px"}} onClick={() => handleManage(appointment.patientUserId)}>Manage Appointments</button></td>
+                  </tr>
               </table>
 
             ))}
           </div>
         ) : (
-          // Display a message if there are no appointments with appointmentStatus === "Approved by Doctor"
+          
           <div style={{ marginLeft: "1%" }}>
             <p>You have no appointments yet.</p>
           </div>

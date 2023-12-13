@@ -14,9 +14,10 @@ import avatar11 from '../assets/DoctorIcons/Icon11.png';
 import avatar12 from '../assets/DoctorIcons/Icon12.png';
 import avatar13 from '../assets/DoctorIcons/Icon13.png';
 import avatar14 from '../assets/DoctorIcons/Icon14.png';
+import { useParams } from 'react-router-dom';
 
 const DoctorCard = ({ doctor }) => {
-  const [avatar, setAvatar] = useState('');
+  const {username} = useParams();
   const [selectedAvatar, setSelectedAvatar] = useState('');
   const [schedules, setSchedules] = useState([
     {
@@ -63,7 +64,7 @@ const DoctorCard = ({ doctor }) => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await fetch('http://localhost:8080/schedules');
+        const response = await fetch('https://spring-render-qpn7.onrender.com//schedules');
         
         if (!response.ok) {
           throw new Error('Failed to fetch schedules');
@@ -125,7 +126,7 @@ const DoctorCard = ({ doctor }) => {
   }, [doctor, schedules]); 
 
   const handleGoToAppointment = async () => {
-    window.location.href = `/setappointment/${doctor.doctorId}`;
+    window.location.href = `/setappointment/${username}/${doctor.doctorId}`;
   };
   return (
     <div className="doctor-card">

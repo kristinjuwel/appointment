@@ -8,7 +8,7 @@ import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import avatar00 from '../../images/defaultIcon.png';
 import avatar01 from '../../assets/DoctorIcons/Icon01.png';
 import avatar02 from '../../assets/DoctorIcons/Icon02.png';
@@ -29,11 +29,11 @@ import HomeFooter from '../../components/HomeFooter';
 
 
 const DoctorProfile = () => {
+  const {username} = useParams();
   const [avatar, setAvatar] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('');
   const [user, setUser] = useState(null);
   const [isError, setIsError] = useState(false);
-  const [doctorUserId, setDoctorUserId] = useState('');
   const [appointments, setAppointments] = useState([
     {
       title: '',
@@ -45,13 +45,10 @@ const DoctorProfile = () => {
   ]);
   const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
+  useEffect( () => {
   const fetchUser = async () => {
     try {
-      const response = await fetch("http://localhost:8080/doctorprofile");
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//doctordetails/${username}`);
       if (response.ok) {
         const data = await response.json();
         setUser(data);
@@ -59,7 +56,6 @@ const DoctorProfile = () => {
         setIsDoctorLoggedIn(true);
 
       } else {
-        setIsError(true);
         setIsDoctorLoggedIn(false);
 
       }
@@ -70,6 +66,8 @@ const DoctorProfile = () => {
 
     }
   };
+  fetchUser();
+}, [username]);
 
 
   const setDisplayedAvatars = (avatar) => {
@@ -94,8 +92,7 @@ const DoctorProfile = () => {
     setSelectedAvatar(avatarImports[avatar] || avatar00);
   };
   useEffect(() => {
-    // Replace 'http://localhost:8080' with your actual API URL
-    fetch('http://localhost:8080/checkLoggedInDoctor')
+    fetch(`https://spring-render-qpn7.onrender.com//getDoctorUserId?username=${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -103,9 +100,7 @@ const DoctorProfile = () => {
         throw new Error('Network response was not ok');
       })
       .then((data) => {
-        setDoctorUserId(data);
-        // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com//docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -145,7 +140,7 @@ const DoctorProfile = () => {
         setIsError(true);
         console.error('Error:', error);
       });
-  }, []);
+  }, [username]);
 
   const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -159,24 +154,7 @@ const DoctorProfile = () => {
     locales
   })
 
-  const handleCancel = async (appointmentId) => {
-    try {
-      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
-        method: 'PUT',
-      });
 
-      if (response.ok) {
-        // Handle success if needed
-        console.log('Appointment cancelled successfully');
-        window.location.reload();
-      } else {
-        setIsError(true);
-      }
-    } catch (error) {
-      console.error('Error cancelling appointment:', error);
-      setIsError(true);
-    }
-  };
   useEffect(() => {
     setDisplayedAvatars(avatar);
 
@@ -194,27 +172,10 @@ const DoctorProfile = () => {
 
     );
   }
-  const handleLinkClick = (event, targetId) => {
-    event.preventDefault();
-
-    const targetElement = document.getElementById(targetId);
-
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' });
-
-      // Add the 'active' class to trigger the fadeIn animation
-      targetElement.classList.add('active');
-
-      // Remove the 'active' class after the animation completes
-      setTimeout(() => {
-        targetElement.classList.remove('active');
-      }, 500); // Adjust the timeout based on the animation duration
-    }
-  };
-  
+ 
   return (
     <div className="profile-container" id="container">
-      <DoctorNavbar />
+      <DoctorNavbar username={username} />
       <div className="doctorprofilecontainer" style={{marginTop: "1%", overflow: "hidden", height: "100%"}}>
         {user ? (
           <div className="parentelement">

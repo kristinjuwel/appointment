@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import "../styles/Profile.css";
 import { Link } from 'react-router-dom';
 
@@ -7,27 +7,32 @@ const PatientNavBar = ({ username }) => {
   const [user, setUser] = useState(null);
   const [isError, setIsError] = useState(false);
 
-  useEffect(() => {
-        fetchUser();
-      }, []);
 
-  const fetchUser = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/patientdetails/${username}`);
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-        } else {
-          setIsError(true);
-        }
-      } catch (error) {
+  const fetchUser = useCallback(async () => {
+    try {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//patientdetails/${username}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data);
+        setIsError(false); // Reset error state on successful fetch
+      } else {
         setIsError(true);
+        console.error(`Failed to fetch user details. Status: ${response.status}`);
       }
-  };
-  
+    } catch (error) {
+      setIsError(true);
+      console.error('Error during fetchUser:', error);
+    }
+  }, [username]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
   const handleLogout = async () => {
     try {
-        const response = await fetch(`http://localhost:8080/patientlogout/${username}`, {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//patientlogout/${username}`, {
         method: 'POST',
         });
 
@@ -61,10 +66,10 @@ const PatientNavBar = ({ username }) => {
         </li>
       </ul>
       <ul>
-        <li><Link to="/patprofile">My Profile</Link></li>
-        <li><Link to="/editpatprofile">Edit Profile</Link></li>
-        <li><Link to="/patappointments">My Appointments</Link></li>
-        <li><Link to="/docsearch">Search Doctors</Link></li>
+      <li><Link to={`/patprofile/${username}`}>My Profile</Link></li>
+        <li><Link to={`/editpatprofile/${username}`}>Edit Profile</Link></li>
+        <li><Link to={`/patappointments/${username}`}>My Appointments</Link></li>
+        <li><Link to={`/docsearch/${username}`}>Search Doctors</Link></li>
         <li style={{ float: 'right' }}>
           {user ? (
             <span style={{ color: "white", fontSize: "15px" }}>Hello, {user.user.firstName}! </span>

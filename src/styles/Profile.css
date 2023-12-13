@@ -261,11 +261,30 @@ h1{
     -moz-box-shadow: -1px 8px 24px -12px rgba(0,0,0,0.66);
 }
 
+#columnprofileicon1 {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  overflow: hidden;
+  position: fixed;
+  width: 18vw;
+  height: 770px;
+  border-radius: 20px;
+  margin: 42vh 5vh;
+}
+
 .backgroundpop {
     height: 350px;
     width: 500px;
     background-image: linear-gradient(to right, #98daf8, #0094d4);
     margin-bottom: -140px;
+}
+
+.backgroundpopuser {
+  height: 65px;
+  width: 85vhpx;
+  background-image: linear-gradient(to right, #98daf8, #0094d4);
+  margin-bottom: -140px;
 }
 
 .doctorprofileicon img{
@@ -287,14 +306,27 @@ h1{
     margin-bottom: -5vh;
 }
 
+#columnprofiledoctor {
+  justify-content: flex-start;
+  align-items: start;
+  margin-top: 40vh;
+  margin-left: 23vw;
+  margin-bottom: -5vh;
+}
+
 .doctorprofilecontent {
     width: 55vw;
+}
+
+.doctoruserprofilecontent {
+  width: 72vw;
 }
 
 .doctorprofilecontenttitles p {
     margin-left: 20px;
     font-size: 30px;
 }
+
 
 .contentcolumn {
     display: flex;

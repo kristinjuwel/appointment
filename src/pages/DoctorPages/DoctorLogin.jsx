@@ -4,7 +4,6 @@ import HomeNavbar from '../../components/HomeNavbar';
 import HomeFooter from '../../components/HomeFooter';
 
 function DoctorLogin() {
-    const h1Style = { color: '#0094d4' };
     const overlayH1Style = { color: '#ffffff' };
     
     const [username, setUsername] = useState('');
@@ -23,7 +22,7 @@ function DoctorLogin() {
 
   const handleLogin = async () => {
     try {
-      const url = new URL('http://localhost:8080/doctorlogin');
+      const url = new URL('https://spring-render-qpn7.onrender.com//doctorlogin');
       url.searchParams.append('username', username);
       url.searchParams.append('password', password);
 
@@ -34,16 +33,13 @@ function DoctorLogin() {
       if (response.ok) {
         // Login successful
         setLoginError('');
-        console.log('Login successful');
-        window.location.href = '/docprofile'; // Redirect to the profile page
+        window.location.href = `/docprofile/${username}`; // Redirect to the profile page
       } else {
         // Login failed
         const errorMessage = await response.text();
         setLoginError(errorMessage);
-        console.log('Login failed:', errorMessage);
       }
     } catch (error) {
-      console.error('Error during login:', error);
       setLoginError('An error occurred during login');
     }
   };

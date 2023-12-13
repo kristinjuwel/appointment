@@ -3,18 +3,22 @@ import PatientNavBar from '../../components/PatientNavBar';
 import PatientFooter from '../../components/PatientFooter';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { parse, format } from 'date-fns';
-
+import HomeFooter from '../../components/HomeFooter';
+import HomeNavbar from '../../components/HomeNavbar';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import addWeeks from 'date-fns/addWeeks';
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const PatientResched = () => {
-  const { appointmentId } = useParams();
+  const { username, appointmentId } = useParams();
+  const [isPatientLoggedIn, setIsPatientLoggedIn] = useState('');
+  const [response, setResponse] = useState('');
   const [rescheduleChoice, setRescheduleChoice] = useState('');
   const [error, setError] = useState('');
   const [rescheduleStatus, setRescheduleStatus] =  useState('');
+
   const [latestAppointment, setLatestAppointment] = useState([
     {
       title: '',
@@ -43,7 +47,7 @@ const PatientResched = () => {
 
 
   useEffect(() => {
-    fetch('http://localhost:8080/checkLoggedInPatient')
+    fetch(`https://spring-render-qpn7.onrender.com//patuserid/${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -52,7 +56,7 @@ const PatientResched = () => {
       })
       .then((data) => {
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com//appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -94,12 +98,12 @@ const PatientResched = () => {
       .catch((error) => {
         console.error('Error:', error);
       });
-  }, []);
+  }, [username]);
 
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/appointment/${appointmentId}`);
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//appointment/${appointmentId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -150,6 +154,63 @@ const PatientResched = () => {
     fetchAppointment();
   }, [appointmentId]);
 
+  useEffect(() => {
+    const fetchLoggedInPatientId = async () => {
+      try {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//patuserid/${username}`);
+        if (response.ok) {
+          setIsPatientLoggedIn(true);
+        } else {
+          setIsPatientLoggedIn(false);
+        }
+      } catch (error) {
+        setIsPatientLoggedIn(false);
+        // Handle the error or provide feedback to the user
+      }
+    };
+
+    fetchLoggedInPatientId();
+  }, [username]); 
+
+  if (!isPatientLoggedIn) {
+    return (
+      <div>
+        <HomeNavbar />
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h1>Patient not logged in.</h1>
+          <Link to="/login"><button>Login</button></Link>
+        </div>
+        <HomeFooter />
+      </div>
+
+    );
+  }
+
+  const getSlots = async (selectedDate) => {
+    try {
+      // Step 1: Get the scheduleId based on the appointmentId
+      const response1 = await fetch(`https://spring-render-qpn7.onrender.com//getScheduleId/${appointmentId}`);
+
+      if (response1.ok) {
+        const data1 = await response1.json();
+
+        // Step 2: Get slots information based on the scheduleId and selectedDate
+        const response2 = await fetch(`https://spring-render-qpn7.onrender.com//checkSlots/${data1}/${selectedDate}`);
+
+        if (response2.ok) {
+          const data2 = await response2.text();
+          setResponse(data2);
+        } else {
+          console.error('Failed to fetch slots information:', response2.statusText);
+        }
+      } else {
+        console.error('Failed to fetch scheduleId:', response1.statusText);
+      }
+    } catch (error) {
+      console.error('Error during fetch:', error);
+    }
+  };
+
   const handleRescheduleChange = (event) => {
     const match = event.target.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
 
@@ -160,12 +221,13 @@ const PatientResched = () => {
     const [, month, day, year] = match;
     const sourceDate = new Date(`${year}-${month}-${day}`);
     setRescheduleChoice(`${sourceDate.getFullYear()}-${(sourceDate.getMonth() + 1).toString().padStart(2, '0')}-${sourceDate.getDate().toString().padStart(2, '0')}`);
-
+    console.log(rescheduleChoice);
+    getSlots(rescheduleChoice);
   };
 
   const handleReschedule = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
         method: 'PUT',
         // No need for headers when not sending a JSON payload
       });
@@ -272,7 +334,7 @@ const PatientResched = () => {
   
   return (
     <div>
-      <PatientNavBar />
+      <PatientNavBar username={username}/>
       <div style={{ display: "flex", margin: "auto", width: "100vw", justifyContent: "center" }}>
       <Calendar
           localizer={localizer}
@@ -325,6 +387,8 @@ const PatientResched = () => {
                 </tr>
                 <tr key={2}>
                   <td>
+                    
+                  <h4 style={{justifyContent:"center", textAlign:"center"}}>{response}</h4>
                     <button style={{ marginTop: "10px", borderRadius: 0, width: "100%" }} onClick={handleReschedule}>Submit</button>
                     <p>{rescheduleStatus}</p>
                     <p>{error}</p>

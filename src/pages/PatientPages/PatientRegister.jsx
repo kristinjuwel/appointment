@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import "../../styles/Register.css";
 import Popup from '../../components/Popup';
 import HomeNavbar from '../../components/HomeNavbar';
@@ -73,7 +73,7 @@ const PatientRegister = () => {
     }
 
     try {
-      const url = new URL('http://localhost:8080/patients');
+      const url = new URL('https://spring-render-qpn7.onrender.com//patients');
       const userData = {
         user: {
         username,
@@ -114,7 +114,6 @@ const PatientRegister = () => {
  
       } else {
         // Signup failed
-        const errorMessage = await response.text();
         setSignupMessage(`Signup failed`);
         // Handle the error or display an error message to the user
       }
@@ -128,7 +127,7 @@ const PatientRegister = () => {
 
   const handleVerification = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/patientverify?email=${email}&otp=${otp}`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//patientverify?email=${email}&otp=${otp}`, {
         method: 'GET',
       });
 
@@ -153,11 +152,9 @@ const PatientRegister = () => {
     const inputOtp = e.target.value;
     setOtp(inputOtp);
   };
-  useEffect(() => {
-    calculateAge();
-  }, [birthday]);
 
-  const calculateAge = () => {
+
+  const calculateAge = useCallback(() => {
     // Ensure the birthday is not empty
     if (birthday) {
       const birthDate = new Date(birthday);
@@ -176,13 +173,11 @@ const PatientRegister = () => {
 
       setAge(calculatedAge);
     }
-  };
-
-  const handleClick = () => {
-    if (!contactNumber.startsWith('+63 ')) {
-      setContactNumber('+63');
-    }
-  };
+  }, [birthday]);
+  useEffect(() => {
+    calculateAge();
+  }, [birthday, calculateAge]);
+  
 
   const handleChange = (e) => {
     const userInput = e.target.value.replace(/\D/g, '').slice(0, 10);

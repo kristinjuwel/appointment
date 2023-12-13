@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import "../styles/Login.css";
-import { Link } from 'react-router-dom';
 
 const AdminLogin = () => {
     const h1Style = { color: '#0094d4' };
@@ -11,7 +10,7 @@ const AdminLogin = () => {
     
     const handleLogin = async () => {
         try {
-        const url = new URL('http://localhost:8080/adminlogin');
+        const url = new URL('https://spring-render-qpn7.onrender.com//adminlogin');
         url.searchParams.append('username', username);
         url.searchParams.append('password', password);
 
@@ -23,7 +22,7 @@ const AdminLogin = () => {
             // Login successful
             setLoginError('');
             console.log('Login successful');
-            window.location.href = '/adminhome'; // Redirect to the profile page
+            window.location.href = `/adminhome/${username}`; // Redirect to the profile page
         } else {
             // Login failed
             const errorMessage = await response.text();

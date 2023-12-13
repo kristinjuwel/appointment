@@ -8,6 +8,8 @@ import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import HomeFooter from '../../components/HomeFooter';
+import HomeNavbar from '../../components/HomeNavbar';
 import avatar00 from '../../images/defaultIcon.png';
 import avatar01 from '../../assets/PatientIcons/Avatar01.png';
 import avatar02 from '../../assets/PatientIcons/Avatar02.png';
@@ -27,10 +29,11 @@ import avatar15 from '../../assets/PatientIcons/Avatar15.png';
 import avatar16 from '../../assets/PatientIcons/Avatar16.png';
 import avatar17 from '../../assets/PatientIcons/Avatar17.png';
 import avatar18 from '../../assets/PatientIcons/Avatar18.png';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const PatientProfile = () => {
     const { username } = useParams();
+    const [isPatientLoggedIn, setIsPatientLoggedIn] = useState('');
     const [avatar, setAvatar] = useState('');
     const [selectedAvatar, setSelectedAvatar] = useState('');
     const [user, setUser] = useState(null);
@@ -48,11 +51,12 @@ const PatientProfile = () => {
         appointmentStatus: ''
       },
     ]);
-  
+
+ 
     useEffect(() => {
     const fetchUser = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/patientdetails/${username}`);
+          const response = await fetch(`https://spring-render-qpn7.onrender.com//patientdetails/${username}`);
           if (response.ok) {
             const data = await response.json();
             setUser(data);
@@ -69,7 +73,7 @@ const PatientProfile = () => {
 
     
       fetchUser();
-    }, []);
+    }, [username]);
 
   const setDisplayedAvatars = (avatar) => {
     const avatarImports = {
@@ -122,10 +126,12 @@ const PatientProfile = () => {
       });
     };
 
+
+
     // Fetch appointments when the component mounts
     const fetchAppointments = async () => {
       try {
-        const appointmentsResponse = await fetch(`http://localhost:8080/appointments?patientUserId=${patientUserId}`);
+        const appointmentsResponse = await fetch(`https://spring-render-qpn7.onrender.com//appointments?patientUserId=${patientUserId}`);
 
         if (appointmentsResponse.ok) {
           const appointmentsData = await appointmentsResponse.json();
@@ -174,6 +180,40 @@ const PatientProfile = () => {
       </div>
     );   
 
+    useEffect(() => {
+      const fetchLoggedInPatientId = async () => {
+        try {
+          const response = await fetch(`https://spring-render-qpn7.onrender.com//patuserid/${username}`);
+          if (response.ok) {
+            const userId = await response.json();
+            setPatientUserId(userId);
+            setIsPatientLoggedIn(true);
+          } else {
+            setIsPatientLoggedIn(false);
+          }
+        } catch (error) {
+          setIsPatientLoggedIn(false);
+          // Handle the error or provide feedback to the user
+        }
+      };
+  
+      fetchLoggedInPatientId();
+    }, [username]); 
+  
+    if (!isPatientLoggedIn) {
+      return (
+        <div>
+          <HomeNavbar />
+          <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <h1>Patient not logged in.</h1>
+            <Link to="/login"><button>Login</button></Link>
+          </div>
+          <HomeFooter />
+        </div>
+  
+      );
+    }
+    
   return (
     <div className="profile-container" id="container" style={{overflow: "hidden"}}>
         <PatientNavBar username={username}/>

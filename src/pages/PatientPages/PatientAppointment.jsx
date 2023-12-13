@@ -7,10 +7,15 @@ import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import "../../styles/Calendar.css";
+import HomeFooter from '../../components/HomeFooter';
+import HomeNavbar from '../../components/HomeNavbar';
 
 const PatientAppointment = () => {
+  const {username} = useParams();
+  const [isPatientLoggedIn, setIsPatientLoggedIn] = useState('');
+
   const [appointments, setAppointments] = useState([
     {
       title: '',
@@ -24,8 +29,8 @@ const PatientAppointment = () => {
     },
   ]);
   useEffect(() => {
-    // Replace 'http://localhost:8080' with your actual API URL
-    fetch('http://localhost:8080/checkLoggedInPatient')
+    // Replace 'https://spring-render-qpn7.onrender.com/' with your actual API URL
+    fetch(`https://spring-render-qpn7.onrender.com//patuserid/${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -34,7 +39,7 @@ const PatientAppointment = () => {
       })
       .then((data) => {
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com//appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -76,7 +81,39 @@ const PatientAppointment = () => {
       .catch((error) => {
         console.error('Error:', error);
       });
-  }, []);
+  }, [username]);
+
+  useEffect(() => {
+    const fetchLoggedInPatientId = async () => {
+      try {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com//patuserid/${username}`);
+        if (response.ok) {
+          setIsPatientLoggedIn(true);
+        } else {
+          setIsPatientLoggedIn(false);
+        }
+      } catch (error) {
+        setIsPatientLoggedIn(false);
+        // Handle the error or provide feedback to the user
+      }
+    };
+
+    fetchLoggedInPatientId();
+  }, [username]); 
+
+  if (!isPatientLoggedIn) {
+    return (
+      <div>
+        <HomeNavbar />
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h1>Patient not logged in.</h1>
+          <Link to="/login"><button>Login</button></Link>
+        </div>
+        <HomeFooter />
+      </div>
+
+    );
+  }
 
   const locales = {
     "en-US": require("date-fns/locale/en-US")
@@ -109,7 +146,7 @@ const PatientAppointment = () => {
       }
   
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//appointmentChange/${appointmentId}?newStatus=Cancelled`, {
         method: 'PUT',
       });
   
@@ -141,7 +178,7 @@ const PatientAppointment = () => {
       window.alert('Appointment is already cancelled. It cannot be rescheduled.');
       return;
     }
-    window.location.href = `/patresched/${appointmentId}`;
+    window.location.href = `/patresched/${username}/${appointmentId}`;
   };
 
   
@@ -204,7 +241,7 @@ appointments.sort((a, b) => {
   
   return (
     <div>
-      <PatientNavBar />
+      <PatientNavBar username={username}/>
       <div style={{ display: "flex", margin: "auto", width: "90vw",justifyContent: "center",  marginTop: "2%" }}>
         <Calendar
           localizer={localizer}

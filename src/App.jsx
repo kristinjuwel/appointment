@@ -35,26 +35,26 @@ function App() {
         <Route path="patlogin" element={<PatientLogin />} />
         <Route path="patreg" element={<PatientRegister />} />
         <Route path="patprofile/:username" element={<PatientProfile />} />
-        <Route path="patappointments" element={<PatientAppointment />} />
-        <Route path="editpatprofile" element={<EditPatientProfile />} />
-        <Route path="patresched/:appointmentId" element={<PatientResched />}/>
-        <Route path="setappointment/:doctorId" element={<SetAppointment />}/>
-        <Route path="docappointments" element={<DoctorAppointment />} />
-        <Route path="editdocprofile" element={<EditDoctorProfile />} />
-        <Route path="docsearch" element={<DoctorSearch />} />
+        <Route path="patappointments/:username" element={<PatientAppointment />} />
+        <Route path="editpatprofile/:loggedInUsername" element={<EditPatientProfile />} />
+        <Route path="patresched/:username/:appointmentId" element={<PatientResched />}/>
+        <Route path="setappointment/:username/:doctorId" element={<SetAppointment />}/>
+        <Route path="docappointments/:username" element={<DoctorAppointment />} />
+        <Route path="editdocprofile/:loggedInUsername" element={<EditDoctorProfile />} />
+        <Route path="docsearch/:username" element={<DoctorSearch />} />
         <Route path="doclogin" element={<DoctorLogin />} />
         <Route path="docreg" element={<DoctorRegister />} />
-        <Route path="docprofile" element={<DoctorProfile />} />
-        <Route path="docclinic" element={<DoctorClinics />} />
-        <Route path="docaddclinic" element={<DoctorAddClinic />} />
+        <Route path="docprofile/:username" element={<DoctorProfile />} />
+        <Route path="docclinic/:username" element={<DoctorClinics />} />
+        <Route path="docaddclinic/:username" element={<DoctorAddClinic />} />
         <Route path="doceditclinic" element={<DoctorEditClinic />} />
         <Route path="addclinic/:doctorUserId" element={<AddClinic />} />
-        <Route path="manageappointments/:patientUserId" element={<ManageAppointments />} />
-        <Route path="docresched/:appointmentId" element={<DoctorResched />} />
-        <Route path="viewprofile/:patientUserId" element={<ViewProfile />} />
+        <Route path="manageappointments/:username/:patientUserId" element={<ManageAppointments />} />
+        <Route path="docresched/:username/:appointmentId" element={<DoctorResched />} />
+        <Route path="viewprofile/:username/:patientUserId" element={<ViewProfile />} />
         <Route path="addremove" element={<AddRemoveSlots />} />
         <Route path="adminlog" element={<AdminLogin />} />
-        <Route path="adminhome" element={<AdminHome />} />
+        <Route path="adminhome/:username" element={<AdminHome />} />
         <Route path="*" element={<PatientLogin />} />
         <Route path="faqs" element={<FAQs />} />
         <Route path="about" element={<AboutUs />} />

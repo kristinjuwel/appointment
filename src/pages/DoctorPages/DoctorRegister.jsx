@@ -74,7 +74,7 @@ const DoctorRegister = () => {
     }
 
     try {
-      const url = new URL('http://localhost:8080/doctors');
+      const url = new URL('https://spring-render-qpn7.onrender.com//doctors');
       const userData = {
         user: {
         username,
@@ -130,7 +130,7 @@ const DoctorRegister = () => {
 
   const handleVerification = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/doctorverify?email=${email}&otp=${otp}`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com//doctorverify?email=${email}&otp=${otp}`, {
         method: 'GET',
       });
 
@@ -139,7 +139,7 @@ const DoctorRegister = () => {
         setMessage(verificationResult);
         if (verificationResult === 'Successful verification.') {
           // Now, get the doctor's user ID
-          const response = await fetch(`http://localhost:8080/getDoctorUserId?username=${username}`);
+          const response = await fetch(`https://spring-render-qpn7.onrender.com//getDoctorUserId?username=${username}`);
           if (response.ok) {
             const data = await response.json();
             const doctorUserId = data;
