@@ -73,7 +73,7 @@ const PatientRegister = () => {
     }
 
     try {
-      const url = new URL('http://localhost:8080/patients');
+      const url = new URL('https://spring-render-qpn7.onrender.com/patients');
       const userData = {
         user: {
         username,
@@ -128,7 +128,7 @@ const PatientRegister = () => {
 
   const handleVerification = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/patientverify?email=${email}&otp=${otp}`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/patientverify?email=${email}&otp=${otp}`, {
         method: 'GET',
       });
 
@@ -185,10 +185,11 @@ const PatientRegister = () => {
   };
 
   const handleChange = (e) => {
-    setContactNumber(e.target.value);
-
-    console.log(e.target.value);
-  };
+    const userInput = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setContactNumber(userInput);
+  
+    console.log(userInput);
+  };  
 
   return (
     <div>
@@ -292,14 +293,22 @@ const PatientRegister = () => {
             </div>
           </div>
           <div className="reg-row">
-            <div className="reg-infield">
+          <div className="reg-infield" style={{marginRight: "-300px"}}>
+              <input
+                type="text"
+                placeholder="+63 "
+                name="+63"
+                readOnly
+                style={{width: "50px"}}
+              />
+            </div>
+            <div className="reg-infield" style={{width: "290px"}}>
               <input
                 type="text"
                 id="contactNumber"
-                placeholder="+63 "
+                placeholder="9999999999"
                 name="contactNumber"
                 value={contactNumber}
-                onClick={handleClick}
                 onChange={handleChange}
               />
             </div>
@@ -315,36 +324,45 @@ const PatientRegister = () => {
             </div>
           </div>
           <div className="reg-row">
-            <div className="reg-infield">
+          <div className="reg-infield" style={{ width: "250px", marginRight: "-125px"}}> 
+              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*Senior Citizen ID</p>
+            </div>
+            <div className="reg-infield" style={{ width: "200px"}}>
               <input
                 type="text"
-                placeholder="Senior Citizen ID Number"
+                placeholder="00000"
                 id="seniorId"
                 name="seniorId"
                 value={seniorId}
-                onChange={(e) => setSeniorId(e.target.value)}
+                onChange={(e) => setSeniorId(e.target.value.replace(/\D/g, '').slice(0, 5))}
               />
             </div>
-            <div className="reg-infield">
+            <div className="reg-infield" style={{ width: "250px", marginRight: "-125px"}}> 
+              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*PWD ID</p>
+            </div>
+            <div className="reg-infield" style={{ width: "200px"}}>
               <input
                 type="text"
-                placeholder="PWD ID Number"
+                placeholder="00000-00000-00000"
                 id="pwdId"
                 name="pwdId"
                 value={pwdId}
-                onChange={(e) => setPwdId(e.target.value)}
+                onChange={(e) => setPwdId(e.target.value.replace(/\D/g, '').slice(0, 15))}
               />
             </div>
           </div>
           <div className="reg-row">
-            <div className="reg-infield">
+          <div className="reg-infield" style={{ width: "250px", marginRight: "-125px"}}> 
+              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*PhilHealth ID</p>
+            </div>
+            <div className="reg-infield" style={{ width: "200px"}}>
               <input
                 type="text"
-                placeholder="PhilHealth ID Number"
+                placeholder="0000-0000-0000"
                 id="philhealthId"
                 name="philhealthId"
                 value={philhealthId}
-                onChange={(e) => setPhilhealthId(e.target.value)}
+                onChange={(e) => setPhilhealthId(e.target.value.replace(/\D/g, '').slice(0, 12))}
               />
             </div>
             <div className="reg-infield">

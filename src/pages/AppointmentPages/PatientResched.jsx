@@ -43,7 +43,7 @@ const PatientResched = () => {
 
 
   useEffect(() => {
-    fetch('http://localhost:8080/checkLoggedInPatient')
+    fetch('https://spring-render-qpn7.onrender.com/checkLoggedInPatient')
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -52,7 +52,7 @@ const PatientResched = () => {
       })
       .then((data) => {
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com/appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -99,7 +99,7 @@ const PatientResched = () => {
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/appointment/${appointmentId}`);
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/appointment/${appointmentId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -165,7 +165,7 @@ const PatientResched = () => {
 
   const handleReschedule = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
         method: 'PUT',
         // No need for headers when not sending a JSON payload
       });

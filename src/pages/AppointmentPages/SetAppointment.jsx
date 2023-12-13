@@ -53,7 +53,7 @@ const SetAppointment = () => {
   ]);
   useEffect(() => {
     // Replace 'http://localhost:8080' with your actual API URL
-    fetch('http://localhost:8080/checkLoggedInPatient')
+    fetch('https://spring-render-qpn7.onrender.com/checkLoggedInPatient')
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -63,7 +63,7 @@ const SetAppointment = () => {
       .then((data) => {
         setPatientUserId(data);
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com/appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -138,7 +138,7 @@ const SetAppointment = () => {
       }
   
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
         method: 'PUT',
       });
   
@@ -177,7 +177,7 @@ const SetAppointment = () => {
   useEffect(() => {
     const fetchDoctorSchedules = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/docsched/${doctorId}`);
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/docsched/${doctorId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -299,7 +299,7 @@ const SetAppointment = () => {
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch('http://localhost:8080/checkLoggedInPatient');
+        const response = await fetch('https://spring-render-qpn7.onrender.com/checkLoggedInPatient');
         if (response.ok) {
           const userId = await response.json();
           setPatientUserId(userId);
@@ -337,7 +337,7 @@ const SetAppointment = () => {
     try {
       // Validate your appointment data here if needed
 
-      const url = `http://localhost:8080/appointment?patientId=${patientUserId}&scheduleId=${selectedSched}&scheduleDate=${selectedDate}&status=${status}`;
+      const url = `https://spring-render-qpn7.onrender.com/appointment?patientId=${patientUserId}&scheduleId=${selectedSched}&scheduleDate=${selectedDate}&status=${status}`;
 
       const response = await fetch(url, {
         method: 'POST',

@@ -51,7 +51,7 @@ function App() {
         <Route path="addclinic/:doctorUserId" element={<AddClinic />} />
         <Route path="manageappointments/:patientUserId" element={<ManageAppointments />} />
         <Route path="docresched/:appointmentId" element={<DoctorResched />} />
-        <Route path="viewprofile" element={<ViewProfile />} />
+        <Route path="viewprofile/:patientUserId" element={<ViewProfile />} />
         <Route path="addremove" element={<AddRemoveSlots />} />
         <Route path="adminlog" element={<AdminLogin />} />
         <Route path="adminhome" element={<AdminHome />} />

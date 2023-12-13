@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import "../../styles/Profile.css";
+import { useParams } from 'react-router-dom';
+
 import DoctorNavbar from '../../components/DoctorNavbar';
 import DoctorFooter from '../../components/DoctorFooter';
 import { Link } from 'react-router-dom';
 
 
 const ViewProfile = () => {
+    const { patientUserId } = useParams();
     const [user, setUser] = useState(null);
     const [isError, setIsError] = useState(false);
 
@@ -15,7 +18,7 @@ const ViewProfile = () => {
 
     const fetchUser = async () => {
         try {
-          const response = await fetch("http://localhost:8080/patientprofile");
+          const response = await fetch(`https://spring-render-qpn7.onrender.com/patientview/${patientUserId}`);
           if (response.ok) {
             const data = await response.json();
             setUser(data);

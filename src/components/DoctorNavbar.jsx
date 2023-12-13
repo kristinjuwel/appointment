@@ -68,8 +68,10 @@ const DoctorNavbar = () => {
                 {user ? (
                 <li style={{color: "white", fontSize: "15px"}}>Hello, {user.user.firstName}! </li>
                 ) : (
-                  (
-                    <p></p>
+                  isError ? (
+                    <p>Error fetching user profile</p>
+                  ) : (
+                    <p>Loading user profile...</p>
                   )
                 )}
                 <button onClick={handleLogout}>Log Out</button>

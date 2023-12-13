@@ -37,7 +37,7 @@ const ManageAppointments = () => {
     getDay,
     locales
   })
-  const getBorderColor = (status) => {
+  const getBackgroundColor = (status) => {
     switch (status) {
       case 'Cancelled':
         return '#FCA694';
@@ -51,6 +51,21 @@ const ManageAppointments = () => {
         return 'lightgray';
     }
   };
+
+  const getBorderColor = (status) => {
+    switch (status) {
+      case 'Cancelled':
+        return '#A41D00';
+      case 'Rescheduled':
+        return '#FF7400';
+      case 'Scheduled by Patient':
+        return '#F8F547';
+      case 'Approved by Doctor':
+        return '#48DE66';
+      default:
+        return 'lightgray';
+    }
+  };
   const CustomEvent = ({ event }) => (
     <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
       <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
@@ -59,7 +74,7 @@ const ManageAppointments = () => {
       <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
         {event.title}
       </p>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBorderColor(event.appointmentStatus)  }}>
+      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBackgroundColor(event.appointmentStatus)  }}>
         {event.appointmentStatus}
       </p>
       <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
@@ -72,7 +87,7 @@ const ManageAppointments = () => {
 
   useEffect(() => {
     // Replace 'http://localhost:8080' with your actual API URL
-    fetch(`http://localhost:8080/appointments?patientUserId=${patientUserId}`)  // Assuming you already have the patientUserId
+    fetch(`https://spring-render-qpn7.onrender.com/appointments?patientUserId=${patientUserId}`)  // Assuming you already have the patientUserId
       .then((appointmentsResponse) => {
         if (appointmentsResponse.ok) {
           return appointmentsResponse.json();
@@ -133,7 +148,7 @@ const ManageAppointments = () => {
       }
   
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
         method: 'PUT',
       });
   
@@ -168,6 +183,18 @@ const ManageAppointments = () => {
     window.location.href = `/docresched/${appointmentId}`;
   };
 
+  const handleViewProfile = async (patientUserId) => {
+    const appointmentToCancel = appointments.find(appointment => appointment.patientUserId === patientUserId);
+  
+    if (!appointmentToCancel) {
+      // Handle the case where the appointment with the given ID is not found
+      console.error('Appointment not found');
+      return;
+    }
+    
+    window.location.href = `/viewprofile/${patientUserId}`;
+  };
+
   const handleApprove = async (appointmentId) => {
     try {
       // Find the appointment with the provided appointmentId
@@ -187,7 +214,7 @@ const ManageAppointments = () => {
       }
   
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Approved by Doctor`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/appointmentChange/${appointmentId}?newStatus=Approved by Doctor`, {
         method: 'PUT',
       });
   
@@ -211,7 +238,7 @@ const ManageAppointments = () => {
   
     return statusOrder[a.appointmentStatus] - statusOrder[b.appointmentStatus];
   });
-  
+
   return (
     <div>
     <DoctorNavbar />
@@ -228,32 +255,43 @@ const ManageAppointments = () => {
         />
 
         <div style={{ marginLeft: "30px" }}>
-    <h1 style={{marginTop: "0"}}>My Clinic</h1>
-    <table style={{width: "500px"}}>
-          <tr>
-            <td style={{ width: "600", marginRight: "10px", fontSize: "20px" }}>
-              <b>{appointments[0].title}</b>
-            </td>
-            <td>
-              <Link to="/viewprofile">
-                <button style={{ borderRadius: 0, padding: 10, width: "200px" }}>
-                  View Profile
-                </button>
-              </Link>
+    <h1 style={{marginTop: "0"}}>Appointment History</h1>
+    <table style={{width: "520px"}}>
+          <tr >
+          <td colSpan={2} onClick={() => handleViewProfile(appointments[0].patientUserId)}>
+              <div style={{
+              width: '600',
+              fontSize: '20px',
+              textAlign: 'left',
+              cursor: 'pointer', 
+            }}> <b>{appointments[0].title}</b> </div>
             </td>
           </tr>
     </table>
-    <div style={{ overflowY: 'auto', maxHeight: '500px'}}>
+
+    <div style={{ overflowY: 'auto', maxHeight: '580px'}}>
     {appointments.map((appointment, index) => (
         <table key={index} style={{width: "480px"}}>
           <br />
           <tr>
-            <td rowSpan={2} width={200}>
+          <td
+            rowSpan={2}
+            width={200}
+            style={{
+            backgroundColor: getBackgroundColor(appointment.appointmentStatus),
+            paddingTop : '0',
+            paddingBottom : '0',
+            paddingLeft: '10px',
+            borderStyle: 'dashed',
+            borderWidth: '2px',
+            borderColor: getBorderColor(appointment.appointmentStatus),
+            }}
+          >
                       {appointment.clinic} <br />
                       {appointment.address} <br />
                       {format(appointment.start, 'MM/dd/yyyy EEEE')} <br />
                       {format(appointment.start, 'h:mm a')} - {format(appointment.end, 'h:mm a')} <br />
-                      <div style={{borderColor: getBorderColor(appointment.appointmentStatus)}}>{appointment.appointmentStatus}</div> <br />
+                      <div style={{borderColor: getBorderColor(appointment.appointmentStatus)}}>{appointment.appointmentStatus}</div> 
             </td>
             
             <td colSpan={2}>
@@ -264,7 +302,7 @@ const ManageAppointments = () => {
           </tr>
           <tr>
             <td>
-              <button style={{ padding: 10, marginLeft: "10px", height: "65px", borderRadius: 0, width: "100%", backgroundColor: "#005C29" }} onClick={() => handleApprove(appointment.appointmentId)}  type='submit'>
+              <button style={{ padding: 10, marginLeft: "10px", height: "65px", borderRadius: 0, width: "100%", backgroundColor: "#76AD83" }} onClick={() => handleApprove(appointment.appointmentId)}  type='submit'>
                 Approve Appointment
               </button>
             </td>
@@ -272,14 +310,6 @@ const ManageAppointments = () => {
               <button className='cancel' style={{ padding: 0, marginLeft: "10px", height: "65px", width: "100%" }} onClick={() => handleCancel(appointment.appointmentId)}  type='submit'>
                 Cancel Appointment
               </button>
-            </td>
-          </tr>
-          <br />
-          <tr>
-            <td colSpan={2}>
-              <Link to="/appointmenthistory" style={{ fontSize: "18px" }}>
-                <i>View Appointment History</i>
-              </Link>
             </td>
           </tr>
         </table>

@@ -17,7 +17,7 @@ const DoctorAddClinic = () => {
 
   useEffect(() => {
     // Replace 'http://localhost:8080' with your actual API URL
-    fetch('http://localhost:8080/checkLoggedInDoctor')
+    fetch('https://spring-render-qpn7.onrender.com/checkLoggedInDoctor')
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -60,7 +60,7 @@ const DoctorAddClinic = () => {
     }
 
     try {
-      const url = new URL('http://localhost:8080/clinic');
+      const url = new URL('https://spring-render-qpn7.onrender.com/clinic');
       const userData = {
         name,
         address,
@@ -119,7 +119,7 @@ const DoctorAddClinic = () => {
       const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${document.getElementById(`${day}StartTime`).value}&endTime=${document.getElementById(`${day}EndTime`).value}&slots=${slots}`;
       
       try {
-        const response = await fetch(`http://localhost:8080/schedule?${queryString}`, {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/schedule?${queryString}`, {
           method: 'POST',
         });
   
@@ -319,7 +319,8 @@ const DoctorAddClinic = () => {
                       <td width={0}>Monday</td>
                       {showMondayTableData && (<>
                         <td width={50}>Time: </td>
-                        <td width={85}><input type="text" id='MondayStartTime' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
+                        <td width={85}>
+                          <input type="text" id='MondayStartTime' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
                         <td width={85}><select name="MondayStartTime" id="MondayStartTime">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>

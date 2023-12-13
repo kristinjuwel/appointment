@@ -21,7 +21,7 @@ const DoctorClinics= () => {
 
   useEffect(() => {
       // Replace 'http://localhost:8080' with your actual API URL
-      fetch('http://localhost:8080/checkLoggedInDoctor')
+      fetch('https://spring-render-qpn7.onrender.com/checkLoggedInDoctor')
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -34,7 +34,7 @@ const DoctorClinics= () => {
           console.log({data});
           setDoctorUserId(data);
           // Once you have the patientUserId, make another request to get appointments
-          fetch(`http://localhost:8080/docsched/${data}`)
+          fetch(`https://spring-render-qpn7.onrender.com/docsched/${data}`)
             .then((clinicsResponse) => {
               if (clinicsResponse.ok) {
 
@@ -121,8 +121,8 @@ const DoctorClinics= () => {
               <div className="infield">
                 <h1 style={{marginTop: "-10px"}}>Edit Clinic</h1>
                 <div>
-                  <h3>Clinic or Hospital Name</h3>
-                  <input type="text" name="clinic" placeholder="Clinic or Hospital Name"></input>
+                  <h3>Clinic Name</h3>
+                  <input type="text" name="clinic" placeholder="Clinic Name"></input>
                 </div>
                 <div>
                   <h3>Clinic Address</h3>
@@ -131,6 +131,18 @@ const DoctorClinics= () => {
                 <div>
                   <h3>Clinic Schedule</h3>
                   <input type="text" name="docname" placeholder="11/06/23 MONDAY 2:00-5:00 PM"></input>
+                </div>
+                <div>
+                  <h3>Hospital Affiliation</h3>
+                  <input type="text" name="clinic" placeholder="Hospital Affliation"></input>
+                </div>
+                <div>
+                  <h3>Office Number</h3>
+                  <input type="text" name="clinic" placeholder="09991234567"></input>
+                </div>
+                <div>
+                  <h3>Office Mail</h3>
+                  <input type="text" name="clinic" placeholder="clinic@gmail.com"></input>
                 </div>
                 <Link to="/addremove"><button style={{padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px"}}>Add/Remove Slots</button></Link>
                 <button style={{padding: 5, borderRadius: 0, width: "48.7%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px"}}>Submit Changes</button>

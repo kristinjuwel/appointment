@@ -95,7 +95,7 @@ const EditDoctorProfile = () => {
 
     const fetchUser = async () => {
         try {
-          const response = await fetch("http://localhost:8080/doctorprofile");
+          const response = await fetch("https://spring-render-qpn7.onrender.com/doctorprofile");
           if (response.ok) {
             const data = await response.json();
             setUser(data);
@@ -160,7 +160,7 @@ const EditDoctorProfile = () => {
             return secretaryRegex.test(secretary);
           };
         try {
-          const url = new URL('http://localhost:8080/editdoctor');
+          const url = new URL('https://spring-render-qpn7.onrender.com/editdoctor');
           const userData = {
             user: {
             username,

@@ -23,7 +23,7 @@ function DoctorLogin() {
 
   const handleLogin = async () => {
     try {
-      const url = new URL('http://localhost:8080/doctorlogin');
+      const url = new URL('https://spring-render-qpn7.onrender.com/doctorlogin');
       url.searchParams.append('username', username);
       url.searchParams.append('password', password);
 

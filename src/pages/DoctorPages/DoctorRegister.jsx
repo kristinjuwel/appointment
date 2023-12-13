@@ -72,7 +72,7 @@ const DoctorRegister = () => {
     }
 
     try {
-      const url = new URL('http://localhost:8080/doctors');
+      const url = new URL('https://spring-render-qpn7.onrender.com/doctors');
       const userData = {
         user: {
         username,
@@ -126,7 +126,7 @@ const DoctorRegister = () => {
 
   const handleVerification = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/doctorverify?email=${email}&otp=${otp}`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/doctorverify?email=${email}&otp=${otp}`, {
         method: 'GET',
       });
 
@@ -135,7 +135,7 @@ const DoctorRegister = () => {
         setMessage(verificationResult);
         if (verificationResult === 'Successful verification.') {
           // Now, get the doctor's user ID
-          const response = await fetch(`http://localhost:8080/getDoctorUserId?username=${username}`);
+          const response = await fetch(`https://spring-render-qpn7.onrender.com/getDoctorUserId?username=${username}`);
           if (response.ok) {
             const data = await response.json();
             const doctorUserId = data;
@@ -297,16 +297,24 @@ const DoctorRegister = () => {
             </div>
           </div>
           <div className="reg-row">
-            <div className="reg-infield">
-            <input
-              type="text"
-              id="contactNumber"
-              placeholder="+63 "
-              name="contactNumber"
-              value={contactNumber}
-              // onClick={handleClick}
-              onChange={handleChange}
-            />
+          <div className="reg-infield" style={{marginRight: "-300px"}}>
+              <input
+                type="text"
+                placeholder="+63 "
+                name="+63"
+                readOnly
+                style={{width: "50px"}}
+              />
+            </div>
+            <div className="reg-infield" style={{width: "290px"}}>
+              <input
+                type="text"
+                id="contactNumber"
+                placeholder="9999999999"
+                name="contactNumber"
+                value={contactNumber}
+                onChange={handleChange}
+              />
             </div>
             <div className="reg-infield">
               <input
@@ -320,17 +328,20 @@ const DoctorRegister = () => {
             </div>
           </div>
           <div className="reg-row">
-            <div className="reg-infield">
+          <div className="reg-infield" style={{ width: "250px", marginRight: "-125px"}}> 
+              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*PRC ID</p>
+            </div>
+            <div className="reg-infield" style={{ width: "200px"}}>
               <input
                 type="text"
-                placeholder="*PRC ID Number"
+                placeholder="0000000"
                 id="prcId"
                 name="prcId"
                 value={prcId}
-                onChange={(e) => setPrcId(e.target.value)}
+                onChange={(e) => setPrcId(e.target.value.replace(/\D/g, '').slice(0, 7))}
               />
             </div>
-            <div className="reg-infield">
+            <div className="reg-infield" >
               <input
                 type="text"
                 placeholder="Specialization"
@@ -351,7 +362,7 @@ const DoctorRegister = () => {
                 placeholder="00000"
                 name="licenseNumber"
                 // value={licenseNumber}
-                // onChange={(e) => setAge(e.target.value)}
+                // onChange={(e) => setlicenseNumber(e.target.value.replace(/\D/g, '').slice(0, 5))}
               />
             </div>
             <div className="reg-infield" style={{ width: "250px", marginRight: "-155px"}}> 
@@ -363,7 +374,7 @@ const DoctorRegister = () => {
                 placeholder="0000000"
                 name="ptrNumber"
                 // value={ptrNumber}
-                // onChange={(e) => setAge(e.target.value)}
+                // onChange={(e) => setptrNumber(e.target.value.replace(/\D/g, '').slice(0, 7))}
               />
             </div>
           </div>

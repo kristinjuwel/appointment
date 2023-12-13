@@ -29,7 +29,7 @@ const DoctorAppointment = () => {
 
   useEffect(() => {
     // Replace 'http://localhost:8080' with your actual API URL
-    fetch('http://localhost:8080/checkLoggedInDoctor')
+    fetch('https://spring-render-qpn7.onrender.com/checkLoggedInDoctor')
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -39,7 +39,7 @@ const DoctorAppointment = () => {
       .then((data) => {
         setDoctorUserId(data);
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com/docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -72,7 +72,6 @@ const DoctorAppointment = () => {
             });
 
             setAppointments(formattedAppointments);
-            console.log(appointments);
           })
           .catch((error) => {
             // Handle errors
@@ -112,7 +111,7 @@ const DoctorAppointment = () => {
     }
   };
   const CustomEvent = ({ event }) => (
-    <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
+    <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "60px", textOverflow: 'ellipsis' }}>
       <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
         {event.clinic}
       </strong>
