@@ -20,7 +20,7 @@ function PatientLogin() {
 
   const handleLogin = async () => {
     try {
-      const url = new URL('https://spring-render-qpn7.onrender.com/patientlogin');
+      const url = new URL('http://localhost:8080/patientlogin');
       url.searchParams.append('username', username);
       url.searchParams.append('password', password);
 
@@ -32,7 +32,7 @@ function PatientLogin() {
         // Login successful
         setLoginError('');
         console.log('Login successful');
-        window.location.href = '/patprofile'; // Redirect to the profile page
+        window.location.href = `/patprofile/${username}`; // Redirect to the profile page
       } else {
         // Login failed
         const errorMessage = await response.text();

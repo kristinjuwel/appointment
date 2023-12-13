@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../styles/Profile.css";
 import { Link } from 'react-router-dom';
 
-const PatientNavBar = () => {
+const PatientNavBar = ({ username }) => {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
   const [isError, setIsError] = useState(false);
@@ -13,7 +13,7 @@ const PatientNavBar = () => {
 
   const fetchUser = async () => {
       try {
-        const response = await fetch("http://localhost:8080/patientprofile");
+        const response = await fetch(`http://localhost:8080/patientdetails/${username}`);
         if (response.ok) {
           const data = await response.json();
           setUser(data);
@@ -21,14 +21,13 @@ const PatientNavBar = () => {
           setIsError(true);
         }
       } catch (error) {
-        console.error('Error fetching user:', error);
         setIsError(true);
       }
   };
   
   const handleLogout = async () => {
     try {
-        const response = await fetch("http://localhost:8080/patientlogout", {
+        const response = await fetch(`http://localhost:8080/patientlogout/${username}`, {
         method: 'POST',
         });
 
@@ -36,9 +35,9 @@ const PatientNavBar = () => {
         setMessage('Logged out successfully');
         window.location.href = '/patlogin';
         } else if (response.status === 401) {
-        setMessage('No user is currently logged in');
+        console.log('No user is currently logged in');
         } else {
-        setMessage('An error occurred');
+          console.log('An error occurred');
         }
     } catch (error) {
         setMessage('An error occurred');
@@ -71,9 +70,9 @@ const PatientNavBar = () => {
             <span style={{ color: "white", fontSize: "15px" }}>Hello, {user.user.firstName}! </span>
           ) : (
             isError ? (
-              <p>Error fetching user profile</p>
+              <p> </p>
             ) : (
-              <p>Loading user profile...</p>
+              <p>Loading...</p>
             )
           )}
           <button onClick={handleLogout}>Log Out</button>

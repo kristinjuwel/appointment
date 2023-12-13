@@ -27,8 +27,10 @@ import avatar15 from '../../assets/PatientIcons/Avatar15.png';
 import avatar16 from '../../assets/PatientIcons/Avatar16.png';
 import avatar17 from '../../assets/PatientIcons/Avatar17.png';
 import avatar18 from '../../assets/PatientIcons/Avatar18.png';
+import { useParams } from 'react-router-dom';
 
 const PatientProfile = () => {
+    const { username } = useParams();
     const [avatar, setAvatar] = useState('');
     const [selectedAvatar, setSelectedAvatar] = useState('');
     const [user, setUser] = useState(null);
@@ -50,10 +52,11 @@ const PatientProfile = () => {
     useEffect(() => {
     const fetchUser = async () => {
         try {
-          const response = await fetch("http://localhost:8080/patientprofile");
+          const response = await fetch(`http://localhost:8080/patientdetails/${username}`);
           if (response.ok) {
             const data = await response.json();
             setUser(data);
+            setPatientUserId(data.userId);
             setAvatar(data.user.avatar);
           } else {
             setIsError(true);
@@ -95,63 +98,52 @@ const PatientProfile = () => {
   };
 
 
-    useEffect(() => {
-      // Replace 'http://localhost:8080' with your actual API URL
-      fetch('http://localhost:8080/checkLoggedInPatient')
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
+  useEffect(() => {
+    // Define a function to format appointments
+    const formatAppointments = (appointmentsData) => {
+      return appointmentsData.map((appointment) => {
+        const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
+        const [hours, minutes] = appointment.startTime.split(':').map(Number);
+        const [hours2, minutes2] = appointment.endTime.split(':').map(Number);
+
+        const startDate = new Date(year, month - 1, day, hours, minutes);
+        const endDate = new Date(year, month - 1, day, hours2, minutes2);
+
+        return {
+          title: 'Dr. ' + appointment.doctorName,
+          clinic: appointment.clinicName,
+          address: appointment.address,
+          number: appointment.clinic.officeNumber,
+          start: startDate,
+          end: endDate,
+          appointmentId: appointment.transactionNo,
+          appointmentStatus: appointment.status,
+        };
+      });
+    };
+
+    // Fetch appointments when the component mounts
+    const fetchAppointments = async () => {
+      try {
+        const appointmentsResponse = await fetch(`http://localhost:8080/appointments?patientUserId=${patientUserId}`);
+
+        if (appointmentsResponse.ok) {
+          const appointmentsData = await appointmentsResponse.json();
+          const formattedAppointments = formatAppointments(appointmentsData);
+          setAppointments(formattedAppointments);
+        } else {
           throw new Error('Network response was not ok');
-        })
-        .then((data) => {
-          setPatientUserId(data);
-          // Once you have the patientUserId, make another request to get appointments
-          fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
-            .then((appointmentsResponse) => {
-              if (appointmentsResponse.ok) {
-                return appointmentsResponse.json();
-              }
-              throw new Error('Network response was not ok');
-            })
-            .then((appointmentsData) => {
-              const formattedAppointments = appointmentsData.map((appointment) => {
-                // Extract date and time components
-                const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
-                const [hours, minutes] = appointment.startTime.split(':').map(Number);
-                const [hours2, minutes2] = appointment.endTime.split(':').map(Number);
-  
-                // Create Date objects for start and end times
-                const startDate = new Date(year, month - 1, day, hours, minutes);
-                const endDate = new Date(year, month - 1, day, hours2, minutes2);
-  
-                // Create an appointment object
-                return {
-                  title: 'Dr. ' + appointment.doctorName,
-                  clinic: appointment.clinicName,
-                  address: appointment.address,
-                  number: appointment.clinic.officeNumber,
-                  start: startDate,
-                  end: endDate,
-                  appointmentId: appointment.transactionNo,
-                  appointmentStatus: appointment.status
-                };
-              });
-  
-              setAppointments(formattedAppointments);
-            })
-            .catch((error) => {
-              // Handle errors
-              console.error(error);
-            });
-  
-        })
-        .catch((error) => {
-          setIsError(true);
-          console.error('Error:', error);
-        });
-    }, []);
-  
+        }
+      } catch (error) {
+        // Handle errors
+        console.error(error);
+      }
+    };
+
+    fetchAppointments();
+  }, [patientUserId]); 
+
+
     const locales = {
       "en-US": require("date-fns/locale/en-US")
     }
@@ -164,24 +156,6 @@ const PatientProfile = () => {
       locales
     })
   
-    const handleCancel = async (appointmentId) => {
-      try {
-        const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
-          method: 'PUT',
-        });
-  
-        if (response.ok) {
-          // Handle success if needed
-          console.log('Appointment cancelled successfully');
-          window.location.reload();
-        } else {
-          setIsError(true);
-        }
-      } catch (error) {
-        console.error('Error cancelling appointment:', error);
-        setIsError(true);
-      }
-    };
     useEffect(() => {
       setDisplayedAvatars(avatar);
   
@@ -202,7 +176,7 @@ const PatientProfile = () => {
 
   return (
     <div className="profile-container" id="container" style={{overflow: "hidden"}}>
-        <PatientNavBar />
+        <PatientNavBar username={username}/>
         <div className="doctorprofilecontainer" style={{marginTop: "1%", overflow: "hidden", height: "100%"}}>
         {user ? (
           <div className="parentelement" style={{overflow: "hidden"}}>

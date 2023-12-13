@@ -34,7 +34,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="patlogin" element={<PatientLogin />} />
         <Route path="patreg" element={<PatientRegister />} />
-        <Route path="patprofile" element={<PatientProfile />} />
+        <Route path="patprofile/:username" element={<PatientProfile />} />
         <Route path="patappointments" element={<PatientAppointment />} />
         <Route path="editpatprofile" element={<EditPatientProfile />} />
         <Route path="patresched/:appointmentId" element={<PatientResched />}/>

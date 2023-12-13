@@ -53,7 +53,7 @@ const EditPatientProfile = () => {
 
     const fetchUser = async () => {
         try {
-          const response = await fetch("https://spring-render-qpn7.onrender.com/patientprofile");
+          const response = await fetch("http://localhost:8080/patientprofile");
           if (response.ok) {
             const data = await response.json();
             setUser(data);
@@ -142,7 +142,7 @@ const EditPatientProfile = () => {
         }
       
         try {
-          const url = new URL('https://spring-render-qpn7.onrender.com/editpatient');
+          const url = new URL('http://localhost:8080/editpatient');
           const userData = {
             user: {
             username,

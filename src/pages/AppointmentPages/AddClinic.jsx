@@ -13,7 +13,7 @@ const AddClinic = () => {
   const [hospital, setHospital] = useState('');
   const [addClinicMessage, setAddClinicMessage] = useState('');
   const [registrationSuccessful, setRegistrationSuccessful] = useState(false);
-  const [slots, setSlots] = useState(''); //needs to be not hardcoded zzz
+  const [slots, setSlots] = useState('');
   const [checkedDays, setCheckedDays] = useState([]);
 
 
@@ -44,7 +44,7 @@ const AddClinic = () => {
     }
 
     try {
-      const url = new URL('https://spring-render-qpn7.onrender.com/clinic');
+      const url = new URL('http://localhost:8080/clinic');
       const userData = {
         name,
         address,
@@ -97,33 +97,37 @@ const AddClinic = () => {
       return;
     }
   
-    // Iterate through the list of checked days and make API calls for each day
-    checkedDays.forEach(async (day) => {
-      // Construct the query string for the specific day
-      const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${document.getElementById(`${day}StartTime`).value}&endTime=${document.getElementById(`${day}EndTime`).value}&slots=${slots}`;
-      
+    for (const day of checkedDays) {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/schedule?${queryString}`, {
-          method: 'POST',
-        });
+        const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${document.getElementById(`${day}StartTime`).value}&endTime=${document.getElementById(`${day}EndTime`).value}&slots=${slots}`;
+        const queryString1 = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${document.getElementById(`${day}StartTime1`).value}&endTime=${document.getElementById(`${day}EndTime1`).value}&slots=${slots}`;
+  
+        const response = await fetch(`http://localhost:8080/schedule?${queryString}`, { method: 'POST' });
+        const response1 = await fetch(`http://localhost:8080/schedule?${queryString1}`, { method: 'POST' });
   
         if (response.ok) {
-          // Schedule added successfully for the current day
-          window.location.href = '/doclogin'
+          // Schedule added successfully for queryString
+          console.log(`Schedule added successfully for ${day} using queryString`);
         } else {
-          // Schedule addition failed for the current day
+          // Schedule addition failed for queryString
           const errorMessage = await response.text();
-          console.error(`Schedule addition failed for ${day}: ${errorMessage}`);
-          
+          console.error(`Schedule addition failed for ${day} using queryString: ${errorMessage}`);
         }
+  
+        if (response1.ok) {
+          // Schedule added successfully for queryString1
+          console.log(`Schedule added successfully for ${day} using queryString1`);
+        } else {
+          // Schedule addition failed for queryString1
+          const errorMessage1 = await response1.text();
+          console.error(`Schedule addition failed for ${day} using queryString1: ${errorMessage1}`);
+        }
+  
       } catch (error) {
         console.error(`Error during schedule addition for ${day}:`, error);
-        
       }
-    });
-  };
-  
-  
+    }
+  };  
 
   const [showMondayTableData, setShowMondayTableData] = useState(false);
   const handleMondayCheckboxChange = (event) => {
@@ -306,15 +310,15 @@ const AddClinic = () => {
                       {showMondayTableData && (<>
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='MondayStartTime' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
-                        <td width={65}><select name="MondayStartTime" id="MondayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                        <td width={65}><select name="meridian" id="MondayOption">
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='MondayEndTime' placeholder='12:00'style={{paddingRight: "0px"}}/></td>
-                        <td width={65}><select name="MondayEndTime" id="MondayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                        <td width={65}><select name="MondayOption" id="MondayOption">
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>                      
                         <td width={40}><input type='text' placeholder='0'   onChange={(e) => setSlots(e.target.value)}/></td>
@@ -326,16 +330,16 @@ const AddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={65}><input type="text" id='MondayStartTime' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
+                        <td width={65}><input type="text" id='MondayStartTime1' placeholder='08:00' style={{paddingRight: "0px"}}/></td>
                         <td width={65}><select name="MondayStartTime" id="MondayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={65}><input type="text" id='MondayEndTime' placeholder='12:00'style={{paddingRight: "0px"}}/></td>
+                        <td width={65}><input type="text" id='MondayEndTime1' placeholder='12:00'style={{paddingRight: "0px"}}/></td>
                         <td width={65}><select name="MondayEndTime" id="MondayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                         <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
@@ -348,14 +352,14 @@ const AddClinic = () => {
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='TuesdayStartTime'  placeholder='08:00'/></td>
                         <td width={65}><select name="TuesdayStartTime" id="TuesdayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='TuesdayEndTime'  placeholder='12:00'/></td>
                         <td width={65}><select name="TuesdayEndTime" id="TuesdayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                           <td width={40}><input type='text' placeholder='0' onChange={(e) => setSlots(e.target.value)}/></td>
@@ -367,16 +371,16 @@ const AddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={65}><input type="text" id='TuesdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><input type="text" id='TuesdayStartTime1'  placeholder='08:00'/></td>
                         <td width={65}><select name="TuesdayStartTime" id="TuesdayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={65}><input type="text" id='TuesdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><input type="text" id='TuesdayEndTime1'  placeholder='12:00'/></td>
                         <td width={65}><select name="TuesdayEndTime" id="TuesdayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                         <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)} /></td>
@@ -389,14 +393,14 @@ const AddClinic = () => {
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='WednesdayStartTime'  placeholder='08:00'/></td>
                         <td width={65}><select name="WednesdayStartTime" id="WednesdayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='WednesdayEndTime'  placeholder='12:00'/></td>
                         <td width={65}><select name="WednesdayEndTime" id="WednesdayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                           <td width={40}><input type='text' placeholder='0' onChange={(e) => setSlots(e.target.value)}/></td>
@@ -408,16 +412,16 @@ const AddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={65}><input type="text" id='WednesdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><input type="text" id='WednesdayStartTime1'  placeholder='08:00'/></td>
                         <td width={65}><select name="WednesdayStartTime" id="WednesdayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={65}><input type="text" id='WednesdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><input type="text" id='WednesdayEndTime1'  placeholder='12:00'/></td>
                         <td width={65}><select name="WednesdayEndTime" id="WednesdayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                         <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
@@ -430,14 +434,14 @@ const AddClinic = () => {
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='ThursdayStartTime'  placeholder='08:00'/></td>
                         <td width={65}><select name="ThursdayStartTime" id="ThursdayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='ThursdayEndTime'  placeholder='12:00'/></td>
                         <td width={65}><select name="ThursdayEndTime" id="ThursdayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                           <td width={40}><input type='text' placeholder='0' onChange={(e) => setSlots(e.target.value)}/></td>
@@ -449,16 +453,16 @@ const AddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={65}><input type="text" id='ThursdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><input type="text" id='ThursdayStartTime1'  placeholder='08:00'/></td>
                         <td width={65}><select name="ThursdayStartTime" id="ThursdayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={65}><input type="text" id='ThursdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><input type="text" id='ThursdayEndTime1'  placeholder='12:00'/></td>
                         <td width={65}><select name="ThursdayEndTime" id="ThursdayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                         <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
@@ -471,14 +475,14 @@ const AddClinic = () => {
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='FridayStartTime'  placeholder='08:00'/></td>
                         <td width={65}><select name="FridayStartTime" id="FridayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='FridayEndTime'  placeholder='12:00'/></td>
                         <td width={65}><select name="FridayEndTime" id="FridayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                           <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
@@ -490,16 +494,16 @@ const AddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={65}><input type="text" id='FridayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><input type="text" id='FridayStartTime1'  placeholder='08:00'/></td>
                         <td width={65}><select name="FridayStartTime" id="FridayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={65}><input type="text" id='FridayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><input type="text" id='FridayEndTime1'  placeholder='12:00'/></td>
                         <td width={65}><select name="FridayEndTime" id="FridayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                         <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
@@ -512,14 +516,14 @@ const AddClinic = () => {
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='SaturdayStartTime'  placeholder='08:00'/></td>
                         <td width={65}><select name="SaturdayStartTime" id="SaturdayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='SaturdayEndTime'  placeholder='12:00'/></td>
                         <td width={65}><select name="SaturdayEndTime" id="SaturdayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                           <td width={40}><input type='text' placeholder='0' onChange={(e) => setSlots(e.target.value)}/></td>
@@ -531,16 +535,16 @@ const AddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={65}><input type="text" id='SaturdayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><input type="text" id='SaturdayStartTime1'  placeholder='08:00'/></td>
                         <td width={65}><select name="SaturdayStartTime" id="SaturdayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={65}><input type="text" id='SaturdayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><input type="text" id='SaturdayEndTime1'  placeholder='12:00'/></td>
                         <td width={65}><select name="SaturdayEndTime" id="SaturdayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                         <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
@@ -553,14 +557,14 @@ const AddClinic = () => {
                         <td width={50}>Time: </td>
                         <td width={65}><input type="text" id='SundayStartTime'  placeholder='08:00'/></td>
                         <td width={65}><select name="SundayStartTime" id="SundayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
                         <td width={65}><input type="text" id='SundayEndTime'  placeholder='12:00'/></td>
                         <td width={65}><select name="SundayEndTime" id="SundayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                           <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                           <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>
@@ -572,16 +576,16 @@ const AddClinic = () => {
                         <td width={25}></td>
                         <td width={0}></td>
                         <td width={50}>Time: </td>
-                        <td width={65}><input type="text" id='SundayStartTime'  placeholder='08:00'/></td>
+                        <td width={65}><input type="text" id='SundayStartTime1'  placeholder='08:00'/></td>
                         <td width={65}><select name="SundayStartTime" id="SundayStartTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={20}>to</td>
-                        <td width={65}><input type="text" id='SundayEndTime'  placeholder='12:00'/></td>
+                        <td width={65}><input type="text" id='SundayEndTime1'  placeholder='12:00'/></td>
                         <td width={65}><select name="SundayEndTime" id="SundayEndTime">
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
+                          <option id='AM' value="AM">AM</option>
+                          <option id='PM' value="PM">PM</option>
                           </select></td>
                         <td width={60} style={{paddingBottom: "0px", paddingLeft: "5px"}}>Slots: </td>
                         <td width={40}><input type='text' placeholder='0'  onChange={(e) => setSlots(e.target.value)}/></td>

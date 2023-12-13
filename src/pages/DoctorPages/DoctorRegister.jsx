@@ -16,6 +16,8 @@ const DoctorRegister = () => {
   const [contactNumber, setContactNumber] = useState('');
   const [email, setEmail] = useState('');
   const [prcId, setPrcId] = useState('');
+  const [licenseNumber, setlicenseNumber] = useState('');
+  const [ptrNumber, setptrNumber] = useState('');
   const [specialization, setSpecialization] = useState('');
   const [credentials, setCredentials] = useState('');
   const [approvalStatus] = useState('not yet verified');
@@ -58,9 +60,9 @@ const DoctorRegister = () => {
       return;
     }
 
-    const contactNumberRegex = /^\d{11}$/;
+    const contactNumberRegex = /^\d{10}$/;
     if (!contactNumberRegex.test(contactNumber)) {
-      setSignupMessage('Contact number should be exactly 11 digits and contain only numbers (0-9).');
+      setSignupMessage('Contact number should be exactly 10 digits and contain only numbers (0-9).');
       return;
     }
 
@@ -72,7 +74,7 @@ const DoctorRegister = () => {
     }
 
     try {
-      const url = new URL('https://spring-render-qpn7.onrender.com/doctors');
+      const url = new URL('http://localhost:8080/doctors');
       const userData = {
         user: {
         username,
@@ -90,6 +92,8 @@ const DoctorRegister = () => {
       },
         doctor: {
         prcId,
+        licenseNumber,
+        ptrNumber,
         specialization,
         credentials,
         approvalStatus
@@ -126,7 +130,7 @@ const DoctorRegister = () => {
 
   const handleVerification = async () => {
     try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com/doctorverify?email=${email}&otp=${otp}`, {
+      const response = await fetch(`http://localhost:8080/doctorverify?email=${email}&otp=${otp}`, {
         method: 'GET',
       });
 
@@ -135,7 +139,7 @@ const DoctorRegister = () => {
         setMessage(verificationResult);
         if (verificationResult === 'Successful verification.') {
           // Now, get the doctor's user ID
-          const response = await fetch(`https://spring-render-qpn7.onrender.com/getDoctorUserId?username=${username}`);
+          const response = await fetch(`http://localhost:8080/getDoctorUserId?username=${username}`);
           if (response.ok) {
             const data = await response.json();
             const doctorUserId = data;
@@ -361,8 +365,8 @@ const DoctorRegister = () => {
                 id="licenseNumber"
                 placeholder="00000"
                 name="licenseNumber"
-                // value={licenseNumber}
-                // onChange={(e) => setlicenseNumber(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                value={licenseNumber}
+                onChange={(e) => setlicenseNumber(e.target.value.replace(/\D/g, '').slice(0, 5))}
               />
             </div>
             <div className="reg-infield" style={{ width: "250px", marginRight: "-155px"}}> 
@@ -373,8 +377,8 @@ const DoctorRegister = () => {
                 id="ptrNumber"
                 placeholder="0000000"
                 name="ptrNumber"
-                // value={ptrNumber}
-                // onChange={(e) => setptrNumber(e.target.value.replace(/\D/g, '').slice(0, 7))}
+                value={ptrNumber}
+                onChange={(e) => setptrNumber(e.target.value.replace(/\D/g, '').slice(0, 7))}
               />
             </div>
           </div>

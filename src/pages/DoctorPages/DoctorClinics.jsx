@@ -21,7 +21,7 @@ const DoctorClinics= () => {
 
   useEffect(() => {
       // Replace 'http://localhost:8080' with your actual API URL
-      fetch('https://spring-render-qpn7.onrender.com/checkLoggedInDoctor')
+      fetch('http://localhost:8080/checkLoggedInDoctor')
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -34,7 +34,7 @@ const DoctorClinics= () => {
           console.log({data});
           setDoctorUserId(data);
           // Once you have the patientUserId, make another request to get appointments
-          fetch(`https://spring-render-qpn7.onrender.com/docsched/${data}`)
+          fetch(`http://localhost:8080/docsched/${data}`)
             .then((clinicsResponse) => {
               if (clinicsResponse.ok) {
 

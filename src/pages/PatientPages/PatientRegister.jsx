@@ -59,7 +59,7 @@ const PatientRegister = () => {
       return;
     }
 
-    const contactNumberRegex = /^\d{11}$/;
+    const contactNumberRegex = /^\d{10}$/;
     if (!contactNumberRegex.test(contactNumber)) {
       setSignupMessage('Contact number should be exactly 10 digits and contain only numbers (0-9).');
       return;
@@ -73,7 +73,7 @@ const PatientRegister = () => {
     }
 
     try {
-      const url = new URL('https://spring-render-qpn7.onrender.com/patients');
+      const url = new URL('http://localhost:8080/patients');
       const userData = {
         user: {
         username,
@@ -128,7 +128,7 @@ const PatientRegister = () => {
 
   const handleVerification = async () => {
     try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com/patientverify?email=${email}&otp=${otp}`, {
+      const response = await fetch(`http://localhost:8080/patientverify?email=${email}&otp=${otp}`, {
         method: 'GET',
       });
 
@@ -325,7 +325,7 @@ const PatientRegister = () => {
           </div>
           <div className="reg-row">
           <div className="reg-infield" style={{ width: "250px", marginRight: "-125px"}}> 
-              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*Senior Citizen ID</p>
+              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>Senior Citizen ID</p>
             </div>
             <div className="reg-infield" style={{ width: "200px"}}>
               <input
@@ -338,7 +338,7 @@ const PatientRegister = () => {
               />
             </div>
             <div className="reg-infield" style={{ width: "250px", marginRight: "-125px"}}> 
-              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*PWD ID</p>
+              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>PWD ID</p>
             </div>
             <div className="reg-infield" style={{ width: "200px"}}>
               <input
@@ -353,7 +353,7 @@ const PatientRegister = () => {
           </div>
           <div className="reg-row">
           <div className="reg-infield" style={{ width: "250px", marginRight: "-125px"}}> 
-              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*PhilHealth ID</p>
+              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>PhilHealth ID</p>
             </div>
             <div className="reg-infield" style={{ width: "200px"}}>
               <input
