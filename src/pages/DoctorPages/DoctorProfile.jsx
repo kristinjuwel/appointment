@@ -48,7 +48,7 @@ const DoctorProfile = () => {
   useEffect( () => {
   const fetchUser = async () => {
     try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com//doctordetails/${username}`);
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
       if (response.ok) {
         const data = await response.json();
         setUser(data);
@@ -92,7 +92,7 @@ const DoctorProfile = () => {
     setSelectedAvatar(avatarImports[avatar] || avatar00);
   };
   useEffect(() => {
-    fetch(`https://spring-render-qpn7.onrender.com//getDoctorUserId?username=${username}`)
+    fetch(`https://spring-render-qpn7.onrender.com/getDoctorUserId?username=${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -100,7 +100,7 @@ const DoctorProfile = () => {
         throw new Error('Network response was not ok');
       })
       .then((data) => {
-        fetch(`https://spring-render-qpn7.onrender.com//docappointments?doctorUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com/docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();

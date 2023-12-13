@@ -93,7 +93,7 @@ const EditDoctorProfile = () => {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com//doctordetails/${loggedInUsername}`);
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${loggedInUsername}`);
         if (response.ok) {
           const data = await response.json();
           setUsername(data.user.username);
@@ -162,7 +162,7 @@ const EditDoctorProfile = () => {
 
 
     try {
-      const url = new URL(`https://spring-render-qpn7.onrender.com//editdoctor/${loggedInUsername}`);
+      const url = new URL(`https://spring-render-qpn7.onrender.com/editdoctor/${loggedInUsername}`);
       const userData = {
         user: {
           username,
@@ -244,7 +244,7 @@ const EditDoctorProfile = () => {
       return;
     }
     try {
-      const response = await fetch('https://spring-render-qpn7.onrender.com//changePass/doctor', {
+      const response = await fetch('https://spring-render-qpn7.onrender.com/changePass/doctor', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

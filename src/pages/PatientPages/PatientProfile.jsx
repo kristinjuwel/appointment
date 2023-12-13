@@ -56,7 +56,7 @@ const PatientProfile = () => {
     useEffect(() => {
     const fetchUser = async () => {
         try {
-          const response = await fetch(`https://spring-render-qpn7.onrender.com//patientdetails/${username}`);
+          const response = await fetch(`https://spring-render-qpn7.onrender.com/patientdetails/${username}`);
           if (response.ok) {
             const data = await response.json();
             setUser(data);
@@ -131,7 +131,7 @@ const PatientProfile = () => {
     // Fetch appointments when the component mounts
     const fetchAppointments = async () => {
       try {
-        const appointmentsResponse = await fetch(`https://spring-render-qpn7.onrender.com//appointments?patientUserId=${patientUserId}`);
+        const appointmentsResponse = await fetch(`https://spring-render-qpn7.onrender.com/appointments?patientUserId=${patientUserId}`);
 
         if (appointmentsResponse.ok) {
           const appointmentsData = await appointmentsResponse.json();
@@ -183,7 +183,7 @@ const PatientProfile = () => {
     useEffect(() => {
       const fetchLoggedInPatientId = async () => {
         try {
-          const response = await fetch(`https://spring-render-qpn7.onrender.com//patuserid/${username}`);
+          const response = await fetch(`https://spring-render-qpn7.onrender.com/patuserid/${username}`);
           if (response.ok) {
             const userId = await response.json();
             setPatientUserId(userId);

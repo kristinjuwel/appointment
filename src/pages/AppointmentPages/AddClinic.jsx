@@ -42,7 +42,7 @@ const AddClinic = () => {
     }
 
     try {
-      const url = new URL('https://spring-render-qpn7.onrender.com//clinic');
+      const url = new URL('https://spring-render-qpn7.onrender.com/clinic');
       const userData = {
         name,
         address,
@@ -140,7 +140,7 @@ const AddClinic = () => {
         const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${militaryStartTime}&endTime=${militaryEndTime}&slots=${document.getElementById(`${day}Slots`).value}`;
 
         console.log(queryString);
-        const response = await fetch(`https://spring-render-qpn7.onrender.com//schedule?${queryString}`, { method: 'POST' });
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/schedule?${queryString}`, { method: 'POST' });
   
         if (response.ok) {
           console.log(`Schedule added successfully for ${day} using queryString`);
@@ -189,7 +189,7 @@ const AddClinic = () => {
         const queryString1 = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${militaryStartTime1}&endTime=${militaryEndTime1}&slots=${document.getElementById(`${day}Slots1`).value}`;
 
         console.log(queryString1);
-        const response1 = await fetch(`https://spring-render-qpn7.onrender.com//schedule?${queryString1}`, { method: 'POST' });
+        const response1 = await fetch(`https://spring-render-qpn7.onrender.com/schedule?${queryString1}`, { method: 'POST' });
   
         if (response1.ok) {
           // Schedule added successfully for queryString1

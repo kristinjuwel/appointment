@@ -34,7 +34,7 @@ const ViewProfile = () => {
     useEffect(() => {
     const fetchUser = async () => {
         try {
-          const response = await fetch(`https://spring-render-qpn7.onrender.com//patientview/${patientUserId}`);
+          const response = await fetch(`https://spring-render-qpn7.onrender.com/patientview/${patientUserId}`);
           if (response.ok) {
             const data = await response.json();
             setUser(data);

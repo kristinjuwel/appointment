@@ -46,7 +46,7 @@ function  DoctorEditClinic() {
       }
   
       try {
-        const url = new URL('https://spring-render-qpn7.onrender.com//clinic');
+        const url = new URL('https://spring-render-qpn7.onrender.com/clinic');
         const userData = {
           name,
           address,
@@ -105,7 +105,7 @@ function  DoctorEditClinic() {
         const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${document.getElementById(`${day}StartTime`).value}&endTime=${document.getElementById(`${day}EndTime`).value}&slots=${slots}`;
         
         try {
-          const response = await fetch(`https://spring-render-qpn7.onrender.com//schedule?${queryString}`, {
+          const response = await fetch(`https://spring-render-qpn7.onrender.com/schedule?${queryString}`, {
             method: 'POST',
           });
     

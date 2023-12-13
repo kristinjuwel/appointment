@@ -10,7 +10,7 @@ const AdminLogin = () => {
     
     const handleLogin = async () => {
         try {
-        const url = new URL('https://spring-render-qpn7.onrender.com//adminlogin');
+        const url = new URL('https://spring-render-qpn7.onrender.com/adminlogin');
         url.searchParams.append('username', username);
         url.searchParams.append('password', password);
 

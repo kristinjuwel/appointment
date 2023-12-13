@@ -73,7 +73,7 @@ const PatientRegister = () => {
     }
 
     try {
-      const url = new URL('https://spring-render-qpn7.onrender.com//patients');
+      const url = new URL('https://spring-render-qpn7.onrender.com/patients');
       const userData = {
         user: {
         username,
@@ -127,7 +127,7 @@ const PatientRegister = () => {
 
   const handleVerification = async () => {
     try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com//patientverify?email=${email}&otp=${otp}`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/patientverify?email=${email}&otp=${otp}`, {
         method: 'GET',
       });
 

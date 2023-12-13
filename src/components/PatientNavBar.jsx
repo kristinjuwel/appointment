@@ -10,7 +10,7 @@ const PatientNavBar = ({ username }) => {
 
   const fetchUser = useCallback(async () => {
     try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com//patientdetails/${username}`);
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/patientdetails/${username}`);
       
       if (response.ok) {
         const data = await response.json();
@@ -32,7 +32,7 @@ const PatientNavBar = ({ username }) => {
 
   const handleLogout = async () => {
     try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com//patientlogout/${username}`, {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/patientlogout/${username}`, {
         method: 'POST',
         });
 

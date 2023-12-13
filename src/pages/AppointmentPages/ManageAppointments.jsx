@@ -85,7 +85,7 @@ const ManageAppointments = () => {
 
 
   useEffect(() => {
-    fetch(`https://spring-render-qpn7.onrender.com//appointments?patientUserId=${patientUserId}`)
+    fetch(`https://spring-render-qpn7.onrender.com/appointments?patientUserId=${patientUserId}`)
       .then((appointmentsResponse) => {
         if (appointmentsResponse.ok) {
           return appointmentsResponse.json();
@@ -146,7 +146,7 @@ const ManageAppointments = () => {
       }
 
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`https://spring-render-qpn7.onrender.com//appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
         method: 'PUT',
       });
 
@@ -212,7 +212,7 @@ const ManageAppointments = () => {
       }
 
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`https://spring-render-qpn7.onrender.com//appointmentChange/${appointmentId}?newStatus=Approved by Doctor`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/appointmentChange/${appointmentId}?newStatus=Approved by Doctor`, {
         method: 'PUT',
       });
 

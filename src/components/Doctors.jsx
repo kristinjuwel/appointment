@@ -64,7 +64,7 @@ const DoctorCard = ({ doctor }) => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await fetch('https://spring-render-qpn7.onrender.com//schedules');
+        const response = await fetch('https://spring-render-qpn7.onrender.com/schedules');
         
         if (!response.ok) {
           throw new Error('Failed to fetch schedules');

@@ -57,7 +57,7 @@ function AdminHome() {
   useEffect(() => {
     const fetchLoggedInAdmin = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com//admindetails/${username}`);
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/admindetails/${username}`);
         if (response.ok) {
           setIsAdminLoggedIn(true);
         } else {
@@ -74,7 +74,7 @@ function AdminHome() {
     useEffect(() => {
       const fetchSchedules = async () => {
         try {
-          const response = await fetch('https://spring-render-qpn7.onrender.com//schedules');
+          const response = await fetch('https://spring-render-qpn7.onrender.com/schedules');
           
           if (!response.ok) {
             throw new Error('Failed to fetch schedules');
@@ -106,7 +106,7 @@ function AdminHome() {
     useEffect(() => {
       const fetchAllDoctors = async () => {
         try {
-          const response = await fetch('https://spring-render-qpn7.onrender.com//allusers');
+          const response = await fetch('https://spring-render-qpn7.onrender.com/allusers');
   
           if (response.ok) {
             const data = await response.json();
@@ -204,7 +204,7 @@ function AdminHome() {
     }
   const handleLogout = async () => {
     try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com//adminlogout/${username}`, {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/adminlogout/${username}`, {
         method: 'POST',
         });
 
@@ -223,7 +223,7 @@ function AdminHome() {
 
   const handleApprovalSubmit = async (doctorId) => {
     try {
-      const url = `https://spring-render-qpn7.onrender.com//approval?userId=${doctorId}&approvalStatus=${approved}`;
+      const url = `https://spring-render-qpn7.onrender.com/approval?userId=${doctorId}&approvalStatus=${approved}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -245,7 +245,7 @@ function AdminHome() {
 
   const handleRejectSubmit = async (doctorId) => {
     try {
-      const url = `https://spring-render-qpn7.onrender.com//approval?userId=${doctorId}&approvalStatus=${reject}`;
+      const url = `https://spring-render-qpn7.onrender.com/approval?userId=${doctorId}&approvalStatus=${reject}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {

@@ -43,7 +43,7 @@ const DoctorResched = () => {
   ]);
 
   useEffect(() => {
-    fetch(`https://spring-render-qpn7.onrender.com//getDoctorUserId?username=${username}`)
+    fetch(`https://spring-render-qpn7.onrender.com/getDoctorUserId?username=${username}`)
         .then((response) => {
         if (response.ok) {
           return response.json();
@@ -51,7 +51,7 @@ const DoctorResched = () => {
         throw new Error('Network response was not ok');
       })
       .then((data) => {
-        fetch(`https://spring-render-qpn7.onrender.com//docappointments?doctorUserId=${data}`)
+        fetch(`https://spring-render-qpn7.onrender.com/docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -99,7 +99,7 @@ const DoctorResched = () => {
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com//appointment/${appointmentId}`);
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/appointment/${appointmentId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -166,7 +166,7 @@ const DoctorResched = () => {
 
   const handleReschedule = async () => {
     try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com//appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
+      const response = await fetch(`https://spring-render-qpn7.onrender.com/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
         method: 'PUT',
         // No need for headers when not sending a JSON payload
       });
