@@ -17,7 +17,9 @@ const DoctorAddClinic = () => {
  const [hospital, setHospital] = useState('');
  const [addClinicMessage, setAddClinicMessage] = useState('');
  const [checkedDays, setCheckedDays] = useState([]);
+ const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
+ 
 
  useEffect(() => {
    // Replace 'https://spring-render-qpn7.onrender.com' with your actual API URL
@@ -31,10 +33,13 @@ const DoctorAddClinic = () => {
      .then((data) => {
        // Assuming setDoctorUserId is a state setter function
        setDoctorUserId(data);
+       setIsDoctorLoggedIn(true);
      })
      .catch((error) => {
        console.error('Error fetching data:', error.message);
+       setIsDoctorLoggedIn(false);
      });
+     setIsDoctorLoggedIn(false);
  }, [username]);
  
  const handleAddClinic = async () => {
@@ -155,7 +160,7 @@ const DoctorAddClinic = () => {
     
        console.log(militaryStartTime);
        console.log(militaryEndTime);
-        const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${militaryStartTime}&endTime=${militaryEndTime}&slots=${document.getElementById(`${day}Slots`).value}`;
+      const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${militaryStartTime}&endTime=${militaryEndTime}&slots=${document.getElementById(`${day}Slots`).value}`;
 
 
        console.log(queryString);
@@ -342,28 +347,7 @@ const DoctorAddClinic = () => {
  const handleSundayAddTimeSlotClick = () => {
    setShowSundayAddTimeSlot(!showSundayAddTimeSlot);
  };
- const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
- useEffect( () => {
-   const fetchUser = async () => {
-     try {
-       const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
-       if (response.ok) {
-        setIsDoctorLoggedIn(true);
-
-       } else {
-         setIsDoctorLoggedIn(false);
- 
-       }
-     } catch (error) {
-       console.error('Error fetching user:', error);
-       setIsDoctorLoggedIn(false);
- 
-     }
-   };
-   fetchUser();
- }, [username]);
- 
  if (!isDoctorLoggedIn) {
    return (
      <div>
