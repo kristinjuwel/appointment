@@ -37,7 +37,7 @@ const DoctorSearch = () => {
 
   useEffect(() => {
     const fetchSchedules = async () => {
-      const response = await fetch('https://spring-render-qpn7.onrender.com/schedules');
+      const response = await fetch('http://localhost:8080/schedules');
 
       if (!response.ok) {
         throw new Error('Failed to fetch schedules');
@@ -59,7 +59,7 @@ const DoctorSearch = () => {
   useEffect(() => {
     const fetchAllDoctors = async () => {
       try {
-        const response = await fetch('https://spring-render-qpn7.onrender.com/allusers');
+        const response = await fetch('http://localhost:8080/allusers');
 
         if (response.ok) {
           const data = await response.json();
@@ -106,7 +106,7 @@ const DoctorSearch = () => {
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/patuserid/${username}`);
+        const response = await fetch(`http://localhost:8080/patuserid/${username}`);
         if (response.ok) {
           setIsPatientLoggedIn(true);
         } else {

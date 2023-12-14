@@ -37,7 +37,7 @@ const DoctorClinics= () => {
     const fetchData = async () => {
       try {
         // Fetch doctor's user ID
-        const userResponse = await fetch(`https://spring-render-qpn7.onrender.com/getDoctorUserId?username=${username}`);
+        const userResponse = await fetch(`http://localhost:8080/getDoctorUserId?username=${username}`);
   
         if (!userResponse.ok) {
           throw new Error('Failed to fetch doctor user ID');
@@ -47,7 +47,7 @@ const DoctorClinics= () => {
         console.log({ userData });
   
         // Fetch doctor's schedule and clinics
-        const clinicsResponse = await fetch(`https://spring-render-qpn7.onrender.com/docsched/${userData}`);
+        const clinicsResponse = await fetch(`http://localhost:8080/docsched/${userData}`);
   
         if (!clinicsResponse.ok) {
           throw new Error('Failed to fetch doctor schedule and clinics');
@@ -107,7 +107,7 @@ const DoctorClinics= () => {
     const handleSubmit = async () => {
       try {
         if (clinicId) {
-          const response = await fetch(`https://spring-render-qpn7.onrender.com/clinic/${clinicId}`, {
+          const response = await fetch(`http://localhost:8080/clinic/${clinicId}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ const DoctorClinics= () => {
 
   const fetchScheduleByClinicId = async () => {
     try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com/searchByClinicId/${clinicId}`);
+      const response = await fetch(`http://localhost:8080/searchByClinicId/${clinicId}`);
   
       if (!response.ok) {
         throw new Error('Failed to fetch schedule data');
@@ -169,7 +169,7 @@ const DoctorClinics= () => {
   };
   const updateSchedule = async (scheduleId) => {
     try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com/schedule/${scheduleId}`, {
+      const response = await fetch(`http://localhost:8080/schedule/${scheduleId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -201,7 +201,7 @@ const DoctorClinics= () => {
   useEffect( () => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
+        const response = await fetch(`http://localhost:8080/doctordetails/${username}`);
         if (response.ok) {
          setIsDoctorLoggedIn(true);
  
