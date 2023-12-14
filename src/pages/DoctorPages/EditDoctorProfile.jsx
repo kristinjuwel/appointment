@@ -149,15 +149,15 @@ const EditDoctorProfile = () => {
       setEditMessage('Invalid email format.');
       return;
     }
-
     const secretaryRegex = /^([^ -]+) - (\d{10}) - (\S+@\S+\.\S+) - ([^ -]+)$/;
-
+    
     if (!secretaryRegex.test(secretary)) {
       // Handle invalid format
-      setEditMessage('Invalid secretary format.');
-      return false;
+      console.log('Invalid secretary format.');
+    } else {
+      // Valid format, you can proceed with further processing
+      console.log('Valid secretary format.');
     }
-
 
 
 
@@ -267,7 +267,23 @@ const EditDoctorProfile = () => {
     }
     setPasswordsMatchError('');
   };
+
+
   
+  if (!isDoctorLoggedIn) {
+    return (
+      <div>
+        <HomeNavbar />
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h1>No doctor is logged in.</h1>
+          <Link to="/doclogin"><button>Login</button></Link>
+        </div>
+        <HomeFooter />
+      </div>
+  
+    );
+  }
+ 
   return (
     <div className="profile-container" id="container" style={{ overflow: "hidden" }}>
       <DoctorNavbar username={loggedInUsername} />

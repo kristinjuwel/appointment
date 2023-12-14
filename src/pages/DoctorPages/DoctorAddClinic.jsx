@@ -15,7 +15,6 @@ const DoctorAddClinic = () => {
  const [officeNumber, setOfficeNumber] = useState('');
  const [officeEmail, setOfficeEmail] = useState('');
  const [hospital, setHospital] = useState('');
- const [addClinicMessage, setAddClinicMessage] = useState('');
  const [checkedDays, setCheckedDays] = useState([]);
  const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
@@ -50,14 +49,12 @@ const DoctorAddClinic = () => {
      !officeNumber ||
      !officeEmail
    ) {
-     setAddClinicMessage('Please fill in all required fields.');
      return;
    }
 
 
    const officeNumberRegex = /^\d{11}$/;
    if (!officeNumberRegex.test(officeNumber)) {
-     setAddClinicMessage('Contact number should be exactly 11 digits and contain only numbers (0-9).');
      return;
    }
 
@@ -65,7 +62,6 @@ const DoctorAddClinic = () => {
    // Validate email format using regular expression
    const officeEmailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
    if (!officeEmailRegex.test(officeEmail)) {
-     setAddClinicMessage('Invalid email format.');
      return;
    }
 
@@ -94,19 +90,15 @@ const DoctorAddClinic = () => {
 
      if (response.ok) {
        // Signup successful
-       setAddClinicMessage('Clinic added successfully');
        handleAddSchedule();
        handleAddSchedule1();
      } else {
        // Signup failed
        const errorMessage = await response.text();
-       setAddClinicMessage(errorMessage);
-       setAddClinicMessage(`Signup failed`);
        // Handle the error or display an error message to the user
      }
    } catch (error) {
      console.error('Error during signup:', error);
-     setAddClinicMessage('Error during signup. Please try again later.');
      // Handle the error or display an error message to the user
    }
  }
@@ -720,7 +712,6 @@ const DoctorAddClinic = () => {
            </div>
        </form>
        <button type="button" onClick={handleAddClinic}>Register</button>
-       <p>{addClinicMessage}</p>
      </div>
     
    </div>
