@@ -2,9 +2,8 @@
   "short_name": "DCC",
   "name": "Doc Click Connect",
   "description": "A brief description of your web app",
-  "start_url": ".",
+  "start_url": "/homepage",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }
-
