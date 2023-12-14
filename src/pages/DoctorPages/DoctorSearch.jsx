@@ -54,7 +54,7 @@ const DoctorSearch = () => {
     };
 
     fetchSchedules();
-  }, [schedules]);
+  }, []);
 
   useEffect(() => {
     const fetchAllDoctors = async () => {
@@ -100,7 +100,7 @@ const DoctorSearch = () => {
     };
 
     fetchAllDoctors();
-  }, [schedules]);
+  }, []);
 
 
   useEffect(() => {
