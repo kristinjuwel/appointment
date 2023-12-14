@@ -131,7 +131,7 @@ const DoctorRegister = () => {
   const handleVerification = async () => {
     try {
       const response = await fetch(`https://spring-render-qpn7.onrender.com/doctorverify?email=${email}&otp=${otp}`, {
-        method: 'GET',
+        method: 'POST',
       });
 
       if (response.ok) {
