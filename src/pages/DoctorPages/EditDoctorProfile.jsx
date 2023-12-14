@@ -150,7 +150,7 @@ const EditDoctorProfile = () => {
       return;
     }
 
-    const secretaryRegex = /^([^ -]+) - (\d{10}) - (\S+@\S+\.\S+)$/;
+    const secretaryRegex = /^([^ -]+) - (\d{10}) - (\S+@\S+\.\S+) - ([^ -]+)$/;
 
     if (!secretaryRegex.test(secretary)) {
       // Handle invalid format
