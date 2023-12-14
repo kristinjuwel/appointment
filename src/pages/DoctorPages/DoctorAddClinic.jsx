@@ -21,7 +21,7 @@ const DoctorAddClinic = () => {
 
  useEffect(() => {
    // Replace 'https://spring-render-qpn7.onrender.com' with your actual API URL
-   fetch(`https://spring-render-qpn7.onrender.com/patuserid/${username}`)
+   fetch(`https://spring-render-qpn7.onrender.com/docuserid/${username}`)
         .then((response) => {
        if (response.ok) {
          return response.json();
