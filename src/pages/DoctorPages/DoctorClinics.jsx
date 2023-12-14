@@ -4,7 +4,7 @@ import DoctorFooter from '../../components/DoctorFooter';
 import React, { useState, useEffect } from 'react';
 import ClinicCard from "../../components/Clinics";
 import Popup from '../../components/Popup'
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const DoctorClinics= () => {
   const {username} = useParams();
@@ -220,10 +220,9 @@ const DoctorClinics= () => {
       {/* Popup */}
       <Popup trigger={isPopupVisible}>
         <form action="#" id="signin-form" onSubmit={(e) => e.preventDefault()}>
-              <div className="infield">
+              <div className="infield" style={{maxHeight: "300px", overflowY: "auto", overflowX: "hidden"}}>
                 <h1 style={{marginTop: "-10px"}}>Edit Clinic</h1>
                 <div>
-         
                   <h3>Clinic Name</h3>
                   <input
                     value={name}
@@ -308,7 +307,7 @@ const DoctorClinics= () => {
             placeholder={schedule.slots}
             onChange={(e) => setSlots(e.target.value)}
           />
-          <button onClick={() => updateSchedule(schedule.scheduleId)}>
+          <button onClick={() => updateSchedule(schedule.scheduleId)} style={{justifyContent: 'center', padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px"}}>
             Edit Schedule
           </button>
         </div>

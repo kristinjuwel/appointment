@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import "../../styles/Register.css";
 import Popup from '../../components/Popup';
 import HomeNavbar from '../../components/HomeNavbar';
@@ -28,7 +28,6 @@ const DoctorRegister = () => {
   const [message, setMessage] = useState('');
   const [userType] = useState('doctor');
   const [registrationSuccessful, setRegistrationSuccessful] = useState(false);
-  const [doctorUserId, setDoctorUserId] = useState('');
   
   const handleSignup = async () => {
     // Check if any of the fields are empty
@@ -117,7 +116,6 @@ const DoctorRegister = () => {
  
       } else {
         // Signup failed
-        const errorMessage = await response.text();
         setSignupMessage(`Signup failed`);
         // Handle the error or display an error message to the user
       }
@@ -165,11 +163,7 @@ const DoctorRegister = () => {
 
 
 
-  useEffect(() => {
-    calculateAge();
-  }, [birthday]);
-
-  const calculateAge = () => {
+  const calculateAge = useCallback(() => {
     // Ensure the birthday is not empty
     if (birthday) {
       const birthDate = new Date(birthday);
@@ -188,13 +182,13 @@ const DoctorRegister = () => {
 
       setAge(calculatedAge);
     }
-  };
+  }, [birthday]);
+  useEffect(() => {
+    calculateAge();
+  }, [birthday, calculateAge]);
+  
 
-  const handleClick = () => {
-    if (!contactNumber.startsWith('+63 ')) {
-      setContactNumber('+63 ');
-    }
-  };
+
 
   const handleChange = (e) => {
     setContactNumber(e.target.value);
@@ -434,7 +428,6 @@ const DoctorRegister = () => {
               </div>
               <button type="button" onClick={handleVerification}>Submit Code</button>
               {message && <p>{message}</p>}
-              <p style={{ color: '#0094d4', marginTop: '0', marginBottom: '0' }}>Did not receive it? <a href='/'>Resend Code</a></p>
             </form>
           </Popup>
           )} 

@@ -410,7 +410,6 @@ const PatientRegister = () => {
               </div>
               <button type="button" onClick={handleVerification}>Submit Code</button>
               {message && <p>{message}</p>}
-              <p style={{ color: '#0094d4', marginTop: '0', marginBottom: '0' }}>Did not receive it? <a href='/'>Resend Code</a></p>
             </form>
           </Popup>
           )} 

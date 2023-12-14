@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import "../styles/Faqs.css";
 import FAQ from "../pages/FAQ";
-import {Link} from "react-router-dom";
 import HomeNavbar from '../components/HomeNavbar';
 import HomeFooter from '../components/HomeFooter';
 

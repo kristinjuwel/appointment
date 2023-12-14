@@ -1,6 +1,5 @@
 import React from 'react';
 import "../styles/Profile.css";
-import {Link} from "react-router-dom";
 import HomeNavbar from '../components/HomeNavbar';
 import HomeFooter from '../components/HomeFooter';
 

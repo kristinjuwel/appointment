@@ -24,7 +24,6 @@ import AddRemoveSlots from './pages/AppointmentPages/AddRemoveSlots';
 import SetAppointment from './pages/AppointmentPages/SetAppointment';
 import DoctorClinics from './pages/DoctorPages/DoctorClinics';
 import DoctorAddClinic from './pages/DoctorPages/DoctorAddClinic';
-import DoctorEditClinic from './pages/DoctorPages/DoctorEditClinic';
 import AdminHome from './pages/AdminHome';
 
 function App() {
@@ -47,7 +46,6 @@ function App() {
         <Route path="docprofile/:username" element={<DoctorProfile />} />
         <Route path="docclinic/:username" element={<DoctorClinics />} />
         <Route path="docaddclinic/:username" element={<DoctorAddClinic />} />
-        <Route path="doceditclinic" element={<DoctorEditClinic />} />
         <Route path="addclinic/:doctorUserId" element={<AddClinic />} />
         <Route path="manageappointments/:username/:patientUserId" element={<ManageAppointments />} />
         <Route path="docresched/:username/:appointmentId" element={<DoctorResched />} />

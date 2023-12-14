@@ -33,7 +33,7 @@ const DoctorAddClinic = () => {
      .catch((error) => {
        console.error('Error fetching data:', error.message);
      });
- }, []);
+ }, [username]);
  
  const handleAddClinic = async () => {
    // Check if any of the fields are empty
@@ -340,12 +340,6 @@ const DoctorAddClinic = () => {
  const handleSundayAddTimeSlotClick = () => {
    setShowSundayAddTimeSlot(!showSundayAddTimeSlot);
  };
-
-
- // useEffect(() => {
- //   console.log('Checked Days:', checkedDays.join(', '));
- // }, [checkedDays]);
-
 
 
 

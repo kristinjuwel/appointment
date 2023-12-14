@@ -13,7 +13,6 @@ const AddClinic = () => {
  const [officeEmail, setOfficeEmail] = useState('');
  const [hospital, setHospital] = useState('');
  const [addClinicMessage, setAddClinicMessage] = useState('');
- const [registrationSuccessful, setRegistrationSuccessful] = useState(false);
  const [checkedDays, setCheckedDays] = useState([]);
   const handleAddClinic = async () => {
    // Check if any of the fields are empty
@@ -68,7 +67,6 @@ const AddClinic = () => {
      if (response.ok) {
        // Signup successful
        setAddClinicMessage('Clinic added successfully');
-       setRegistrationSuccessful(true);
        await handleAddSchedule();
        await handleAddSchedule1();
        window.location.href = '/doclogin';
@@ -688,7 +686,7 @@ const AddClinic = () => {
            </div>
        </form>
        <button type="button" onClick={handleAddClinic}>Register</button>
-       <p></p>
+       <p>{addClinicMessage}</p>
      </div>
     
    </div>
