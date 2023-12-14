@@ -14,7 +14,6 @@ const AddClinic = () => {
  const [hospital, setHospital] = useState('');
  const [addClinicMessage, setAddClinicMessage] = useState('');
  const [registrationSuccessful, setRegistrationSuccessful] = useState(false);
- const [slots, setSlots] = useState('');
  const [checkedDays, setCheckedDays] = useState([]);
   const handleAddClinic = async () => {
    // Check if any of the fields are empty
@@ -689,6 +688,7 @@ const AddClinic = () => {
            </div>
        </form>
        <button type="button" onClick={handleAddClinic}>Register</button>
+       <p></p>
      </div>
     
    </div>

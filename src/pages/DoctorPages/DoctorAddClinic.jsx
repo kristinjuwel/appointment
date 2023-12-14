@@ -2,9 +2,11 @@ import "../../styles/Register.css";
 import DoctorNavbar from '../../components/DoctorNavbar';
 import DoctorFooter from '../../components/DoctorFooter'
 import React, { useState, useEffect }  from 'react';
+import { useParams } from "react-router-dom";
 
 
 const DoctorAddClinic = () => {
+ const {username} = useParams();
  const [doctorUserId, setDoctorUserId] = useState('');
  const [name, setName] = useState('');
  const [address, setAddress] = useState('');
@@ -12,8 +14,6 @@ const DoctorAddClinic = () => {
  const [officeEmail, setOfficeEmail] = useState('');
  const [hospital, setHospital] = useState('');
  const [addClinicMessage, setAddClinicMessage] = useState('');
- const [registrationSuccessful, setRegistrationSuccessful] = useState(false);
- const [slots, setSlots] = useState(''); //needs to be not hardcoded zzz
  const [checkedDays, setCheckedDays] = useState([]);
 
 
@@ -88,7 +88,6 @@ const DoctorAddClinic = () => {
      if (response.ok) {
        // Signup successful
        setAddClinicMessage('Clinic added successfully');
-       setRegistrationSuccessful(true);
        handleAddSchedule();
        handleAddSchedule1();
      } else {
@@ -352,7 +351,7 @@ const DoctorAddClinic = () => {
 
  return (
    <div>
-   <DoctorNavbar/>
+   <DoctorNavbar username={username}/>
    <div className="reg-container" id="reg-container">
     
      <div className="register">
@@ -707,6 +706,7 @@ const DoctorAddClinic = () => {
            </div>
        </form>
        <button type="button" onClick={handleAddClinic}>Register</button>
+       <p>{addClinicMessage}</p>
      </div>
     
    </div>

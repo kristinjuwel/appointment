@@ -196,7 +196,7 @@ const EditPatientProfile = () => {
       if (response.ok) {
         // Edit successful
         setEditMessage('User details updated successfully');
-        window.location.href = '/patprofile';
+        window.location.href = `/patprofile/${username}`;
 
       } else {
         // Edit failed

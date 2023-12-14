@@ -323,7 +323,7 @@ function AdminHome() {
             </ul>
         </nav>
     </div>
-    <div style={{ display: "block", width: "100%", marginTop: "10%"}}>
+    <div style={{ display: "block", width: "100%", marginTop: "5%"}}>
           <h1 style={{textAlign: "center"}}>Doctor Profiles to Review</h1>
           <div className="doctor-grid" style={{marginLeft: "7%"}}>
             {doctors.map((doctor, index) => (
