@@ -20,22 +20,26 @@ const DoctorAddClinic = () => {
  
 
  useEffect(() => {
-   // Replace 'https://spring-render-qpn7.onrender.com' with your actual API URL
-   fetch(`https://spring-render-qpn7.onrender.com/docuserid/${username}`)
-        .then((response) => {
-       if (response.ok) {
-         return response.json();
-       }
-       throw new Error('Network response was not ok');
-     })
-     .then((data) => {
-       // Assuming setDoctorUserId is a state setter function
-       setDoctorUserId(data);
-     })
-     .catch((error) => {
-       console.error('Error fetching data:', error.message);
-     });
- }, [username]);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`/getDoctorUserId?username=${username}`);
+
+      if (response.ok) {
+        const data = await response.json();
+        setDoctorUserId(data);
+      } else {
+        // Handle the case when the doctor's user is not found
+        setDoctorUserId(null);
+        console.error('Doctor not found');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchData(); // Invoke the async function immediately
+
+}, []);
  
  const handleAddClinic = async () => {
    // Check if any of the fields are empty
