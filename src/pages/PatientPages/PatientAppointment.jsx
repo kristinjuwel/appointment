@@ -336,7 +336,7 @@ appointments.sort((a, b) => {
               // Display a message if there are no appointments with appointmentStatus === "Approved by Doctor"
               <div>
                 <p>You have no appointments yet.</p>
-                <Link to="/docsearch">
+                <Link to={`/docsearch/${username}`}>
                   <button>Set an appointment now</button>
                 </Link>
               </div>
