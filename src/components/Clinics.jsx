@@ -4,6 +4,7 @@ const ClinicCard = ({ clinic, onEdit, onDelete }) => {
   return (
     <div className="doctor-card" style={{maxHeight: "200px"}}>
       <div className="doctor-info">
+
           <div className="dinfo" style={{height: "140px"}}>
           <h2 style={{lineHeight: 1, padding: '5px 10px', justifyContent: 'center', textAlign: "center"}}>{clinic.name}</h2>
           <p style={{margin: 0, marginLeft: '6px'}}>Address: {clinic.address}</p>
