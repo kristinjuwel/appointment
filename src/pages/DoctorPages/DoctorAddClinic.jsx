@@ -16,7 +16,6 @@ const DoctorAddClinic = () => {
  const [officeEmail, setOfficeEmail] = useState('');
  const [hospital, setHospital] = useState('');
  const [checkedDays, setCheckedDays] = useState([]);
- const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
  
 
@@ -32,13 +31,10 @@ const DoctorAddClinic = () => {
      .then((data) => {
        // Assuming setDoctorUserId is a state setter function
        setDoctorUserId(data);
-       setIsDoctorLoggedIn(true);
      })
      .catch((error) => {
        console.error('Error fetching data:', error.message);
-       setIsDoctorLoggedIn(false);
      });
-     setIsDoctorLoggedIn(false);
  }, [username]);
  
  const handleAddClinic = async () => {
@@ -340,19 +336,7 @@ const DoctorAddClinic = () => {
    setShowSundayAddTimeSlot(!showSundayAddTimeSlot);
  };
 
- if (!isDoctorLoggedIn) {
-   return (
-     <div>
-       <HomeNavbar />
-       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-         <h1>No doctor is logged in.</h1>
-         <Link to="/doclogin"><button>Login</button></Link>
-       </div>
-       <HomeFooter />
-     </div>
- 
-   );
- }
+
 
 
  return (
