@@ -1,5 +1,5 @@
 {
-  "homepage" : ".",
+  "homepage" : "/",
   "name": "appointment",
   "version": "0.1.0",
   "proxy": "https://spring-render-qpn7.onrender.com",
