@@ -37,7 +37,7 @@ const DoctorAddClinic = () => {
 
   fetchData(); // Invoke the async function immediately
 
-}, []);
+}, [username]);
  
  const handleAddClinic = async () => {
    // Check if any of the fields are empty
