@@ -36,6 +36,8 @@ function AdminHome() {
       contactNumber: '',
       specialization: '',
       credentials: '',
+      email: '',
+      prcID: '',
       profilePicture: '',
     }]);
   const [result, setResult] = useState('');
@@ -117,7 +119,9 @@ function AdminHome() {
               contactNumber: doctorData.user.contactNumber,
               specialization: doctorData.specialization,
               credentials: doctorData.credentials,
-              profilePicture: doctorData.user.avatar
+              profilePicture: doctorData.user.avatar,
+              prcId: doctorData.prcId,
+              email: doctorData.user.email
             }));
   
             setDoctors(formattedDoctors);
@@ -368,7 +372,7 @@ function AdminHome() {
                     </div>
                     <div>
                   <h3>PRC Id</h3>
-                  <input type="text" name="specialization" placeholder="Specialization" style={{padding: "15px"}} value={currentDoctor.prcId} readOnly></input>
+                  <input type="text" name="prcId" placeholder="PRC ID" style={{padding: "15px"}} value={currentDoctor.prcId} readOnly></input>
                 </div>
                 <div>
                   <h3>Doctor Credentials</h3>
@@ -380,7 +384,7 @@ function AdminHome() {
                 </div>
                 <div>
                   <h3>Email Address</h3>
-                  <input type="text" name="emailAddress" placeholder="Email Address" style={{padding: "15px"}} value={currentDoctor.user.email} readOnly></input>
+                  <input type="text" name="emailAddress" placeholder="Email Address" style={{padding: "15px"}} value={currentDoctor.email} readOnly></input>
                 </div>
                 <div>
                   <h3>Contact Number</h3>
