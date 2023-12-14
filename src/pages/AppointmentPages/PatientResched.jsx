@@ -233,7 +233,7 @@ const PatientResched = () => {
       });
       if (response.ok) {
         setRescheduleStatus('Appointment Rescheduled Successfully!');
-        window.location.href = `/patresched/${appointmentId}`;
+        window.location.href = `/patresched/${username}/${appointmentId}`;
       }
       if (!response.ok) {
         setRescheduleStatus(`Failed to update appointment: ${response.statusText}`);

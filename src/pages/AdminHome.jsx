@@ -366,6 +366,10 @@ function AdminHome() {
                       readOnly
                     />                
                     </div>
+                    <div>
+                  <h3>PRC Id</h3>
+                  <input type="text" name="specialization" placeholder="Specialization" style={{padding: "15px"}} value={currentDoctor.prcId} readOnly></input>
+                </div>
                 <div>
                   <h3>Doctor Credentials</h3>
                   <input type="text" name="credentials" placeholder="Doctor Credentials" style={{width: "280px", marginBottom: "10px", padding: "15px"}} value={currentDoctor.credentials} readOnly></input>
@@ -376,7 +380,7 @@ function AdminHome() {
                 </div>
                 <div>
                   <h3>Email Address</h3>
-                  <input type="text" name="emailAddress" placeholder="Email Address" style={{padding: "15px"}} value={currentDoctor.email} readOnly></input>
+                  <input type="text" name="emailAddress" placeholder="Email Address" style={{padding: "15px"}} value={currentDoctor.user.email} readOnly></input>
                 </div>
                 <div>
                   <h3>Contact Number</h3>
