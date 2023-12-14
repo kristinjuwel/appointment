@@ -28,8 +28,6 @@ const DoctorAddClinic = () => {
         const data = await response.json();
         setDoctorUserId(data);
       } else {
-        // Handle the case when the doctor's user is not found
-        setDoctorUserId(null);
         console.error('Doctor not found');
       }
     } catch (error) {
