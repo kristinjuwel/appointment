@@ -22,6 +22,8 @@ import avatar15 from '../../assets/PatientIcons/Avatar15.png';
 import avatar16 from '../../assets/PatientIcons/Avatar16.png';
 import avatar17 from '../../assets/PatientIcons/Avatar17.png';
 import avatar18 from '../../assets/PatientIcons/Avatar18.png';
+import HomeFooter from '../../components/HomeFooter';
+import HomeNavbar from '../../components/HomeNavbar';
 
 
 const ViewProfile = () => {
@@ -80,7 +82,42 @@ const ViewProfile = () => {
       setDisplayedAvatars(avatar);
   
     }, [avatar]);
+    const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
+    useEffect( () => {
+      const fetchUser = async () => {
+        try {
+          const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
+          if (response.ok) {
+           setIsDoctorLoggedIn(true);
+   
+          } else {
+            setIsDoctorLoggedIn(false);
+    
+          }
+        } catch (error) {
+          console.error('Error fetching user:', error);
+          setIsDoctorLoggedIn(false);
+    
+        }
+      };
+      fetchUser();
+    }, [username]);
+    
+    if (!isDoctorLoggedIn) {
+      return (
+        <div>
+          <HomeNavbar />
+          <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <h1>No doctor is logged in.</h1>
+            <Link to="/doclogin"><button>Login</button></Link>
+          </div>
+          <HomeFooter />
+        </div>
+    
+      );
+    }
+   
 
   return (
     <div className="profile-container" id="container">

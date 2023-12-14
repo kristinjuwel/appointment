@@ -4,7 +4,9 @@ import DoctorFooter from '../../components/DoctorFooter';
 import React, { useState, useEffect } from 'react';
 import ClinicCard from "../../components/Clinics";
 import Popup from '../../components/Popup'
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import HomeFooter from "../../components/HomeFooter";
+import HomeNavbar from "../../components/HomeNavbar";
 
 const DoctorClinics= () => {
   const {username} = useParams();
@@ -194,7 +196,42 @@ const DoctorClinics= () => {
       console.error('Error:', error);
     }
   };
+  const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
+
+  useEffect( () => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
+        if (response.ok) {
+         setIsDoctorLoggedIn(true);
+ 
+        } else {
+          setIsDoctorLoggedIn(false);
   
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        setIsDoctorLoggedIn(false);
+  
+      }
+    };
+    fetchUser();
+  }, [username]);
+  
+  if (!isDoctorLoggedIn) {
+    return (
+      <div>
+        <HomeNavbar />
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h1>No doctor is logged in.</h1>
+          <Link to="/doclogin"><button>Login</button></Link>
+        </div>
+        <HomeFooter />
+      </div>
+  
+    );
+  }
+ 
 
   return (
     <div className="info-container" id="container" style={{height: "100vh"}}>

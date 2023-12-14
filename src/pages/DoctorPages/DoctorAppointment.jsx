@@ -6,8 +6,9 @@ import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
-import { useParams } from 'react-router-dom';
-
+import { Link, useParams } from 'react-router-dom';
+import HomeFooter from '../../components/HomeFooter';
+import HomeNavbar from '../../components/HomeNavbar';
 
 const DoctorAppointment = () => {
   const {username} = useParams();
@@ -166,6 +167,42 @@ const DoctorAppointment = () => {
     </div>
 
   );
+  const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
+
+  useEffect( () => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
+        if (response.ok) {
+         setIsDoctorLoggedIn(true);
+ 
+        } else {
+          setIsDoctorLoggedIn(false);
+  
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        setIsDoctorLoggedIn(false);
+  
+      }
+    };
+    fetchUser();
+  }, [username]);
+  
+  if (!isDoctorLoggedIn) {
+    return (
+      <div>
+        <HomeNavbar />
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h1>No doctor is logged in.</h1>
+          <Link to="/doclogin"><button>Login</button></Link>
+        </div>
+        <HomeFooter />
+      </div>
+  
+    );
+  }
+ 
 
   return (
     <div>

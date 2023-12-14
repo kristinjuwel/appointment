@@ -45,30 +45,7 @@ const DoctorProfile = () => {
   ]);
   const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
-  useEffect( () => {
-  const fetchUser = async () => {
-    try {
-      const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data);
-        setAvatar(data.user.avatar);
-        setIsDoctorLoggedIn(true);
-
-      } else {
-        setIsDoctorLoggedIn(false);
-
-      }
-    } catch (error) {
-      console.error('Error fetching user:', error);
-      setIsError(true);
-      setIsDoctorLoggedIn(false);
-
-    }
-  };
-  fetchUser();
-}, [username]);
-
+  
 
   const setDisplayedAvatars = (avatar) => {
     const avatarImports = {
@@ -159,6 +136,30 @@ const DoctorProfile = () => {
     setDisplayedAvatars(avatar);
 
   }, [avatar]);  // Add the dependency array to avoid unnecessary re-renders
+  useEffect( () => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+          setAvatar(data.user.avatar);
+          setIsDoctorLoggedIn(true);
+  
+        } else {
+          setIsDoctorLoggedIn(false);
+  
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        setIsError(true);
+        setIsDoctorLoggedIn(false);
+  
+      }
+    };
+    fetchUser();
+  }, [username]);
+  
   if (!isDoctorLoggedIn) {
     return (
       <div>
@@ -169,10 +170,9 @@ const DoctorProfile = () => {
         </div>
         <HomeFooter />
       </div>
-
+  
     );
   }
- 
   return (
     <div className="profile-container" id="container">
       <DoctorNavbar username={username} />

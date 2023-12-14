@@ -267,7 +267,7 @@ const EditDoctorProfile = () => {
     }
     setPasswordsMatchError('');
   };
-
+  
   return (
     <div className="profile-container" id="container" style={{ overflow: "hidden" }}>
       <DoctorNavbar username={loggedInUsername} />

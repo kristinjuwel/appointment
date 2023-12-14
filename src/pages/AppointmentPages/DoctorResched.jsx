@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import DoctorNavbar from '../../components/DoctorNavbar';
 import DoctorFooter from '../../components/DoctorFooter';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { parse, format } from 'date-fns';
-
+import HomeFooter from '../../components/HomeFooter';
+import HomeNavbar from '../../components/HomeNavbar';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import addWeeks from 'date-fns/addWeeks';
@@ -273,7 +274,42 @@ const DoctorResched = () => {
     }
   };
 
+  const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
+  useEffect( () => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
+        if (response.ok) {
+         setIsDoctorLoggedIn(true);
+ 
+        } else {
+          setIsDoctorLoggedIn(false);
+  
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        setIsDoctorLoggedIn(false);
+  
+      }
+    };
+    fetchUser();
+  }, [username]);
+  
+  if (!isDoctorLoggedIn) {
+    return (
+      <div>
+        <HomeNavbar />
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h1>No doctor is logged in.</h1>
+          <Link to="/doclogin"><button>Login</button></Link>
+        </div>
+        <HomeFooter />
+      </div>
+  
+    );
+  }
+ 
   return (
     <div>
       <DoctorNavbar username={username}/>
