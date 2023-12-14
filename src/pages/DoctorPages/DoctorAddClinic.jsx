@@ -157,6 +157,8 @@ const DoctorAddClinic = () => {
        const response = await fetch(`http://localhost:8080/schedule?${queryString}`, { method: 'POST' });
         if (response.ok) {
          console.log(`Schedule added successfully for ${day} using queryString`);
+         window.location.href = `/docclinic/${username}`;
+
        } else {
          // Schedule addition failed for queryString
          const errorMessage = await response.text();
