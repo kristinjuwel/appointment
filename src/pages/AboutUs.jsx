@@ -19,7 +19,7 @@ function AboutUs() {
                     <br />
                     <br />
                     <h3>OUR MISSION</h3>
-                     <p>We aim to bridge the gap between patients and doctors, <br/>making it easier to schedule and coordinate medical appointments.  </p>
+                     <p style={{fontSize:"20px"}}>We aim to bridge the gap<br/> between patients and doctors, <br/>making it easier to schedule and<br/> coordinate medical appointments.  </p>
                 </div>
                 <div className="step-card">
                         <img
@@ -42,7 +42,7 @@ function AboutUs() {
                         <br />
                         <br />
                         <h3>OUR VISION</h3>
-                        <p>We envision a world where scheduling medical appointments is convenient and <br/>accessible for everyone. We aim to optimize this process by providing a seamless <br/>and intuitive platform that empowers patients to take control of their health.</p>
+                        <p style={{fontSize:"20px"}}>We envision a world where scheduling<br/> medical appointments is convenient and <br/>accessible for everyone. We aim to optimize this<br/> process by providing a seamless and intuitive platform<br/> that empowers patients to take control of their health.</p>
                     </div>
                 </div>
         </div>

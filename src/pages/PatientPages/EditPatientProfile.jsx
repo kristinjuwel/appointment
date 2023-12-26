@@ -57,7 +57,7 @@ const EditPatientProfile = () => {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/patientdetails/${loggedInUsername}`);
+        const response = await fetch(`http://localhost:8080/patientdetails/${loggedInUsername}`);
         if (response.ok) {
           const data = await response.json();
           setUsername(data.user.username);
@@ -121,7 +121,7 @@ const EditPatientProfile = () => {
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/patuserid/${username}`);
+        const response = await fetch(`http://localhost:8080/patuserid/${username}`);
         if (response.ok) {
           setIsPatientLoggedIn(true);
         } else {
@@ -162,7 +162,7 @@ const EditPatientProfile = () => {
     }
 
     try {
-      const url = new URL(`https://spring-render-qpn7.onrender.com/editpatient/${loggedInUsername}`);
+      const url = new URL(`http://localhost:8080/editpatient/${loggedInUsername}`);
       const userData = {
         user: {
           username,
@@ -246,7 +246,7 @@ const EditPatientProfile = () => {
       return;
     }
     try {
-      const response = await fetch('https://spring-render-qpn7.onrender.com/changePass/patient', {
+      const response = await fetch('http://localhost:8080/changePass/patient', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

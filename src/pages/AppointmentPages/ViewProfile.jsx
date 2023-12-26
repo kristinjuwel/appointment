@@ -36,7 +36,7 @@ const ViewProfile = () => {
     useEffect(() => {
     const fetchUser = async () => {
         try {
-          const response = await fetch(`https://spring-render-qpn7.onrender.com/patientview/${patientUserId}`);
+          const response = await fetch(`http://localhost:8080/patientview/${patientUserId}`);
           if (response.ok) {
             const data = await response.json();
             setUser(data);
@@ -87,7 +87,7 @@ const ViewProfile = () => {
     useEffect( () => {
       const fetchUser = async () => {
         try {
-          const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
+          const response = await fetch(`http://localhost:8080/doctordetails/${username}`);
           if (response.ok) {
            setIsDoctorLoggedIn(true);
    

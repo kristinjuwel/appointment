@@ -43,7 +43,7 @@ const AddClinic = () => {
 
 
    try {
-     const url = new URL('https://spring-render-qpn7.onrender.com/clinic');
+     const url = new URL('http://localhost:8080/clinic');
      const userData = {
        name,
        address,
@@ -139,7 +139,7 @@ const AddClinic = () => {
 
 
        console.log(queryString);
-       const response = await fetch(`https://spring-render-qpn7.onrender.com/schedule?${queryString}`, { method: 'POST' });
+       const response = await fetch(`http://localhost:8080/schedule?${queryString}`, { method: 'POST' });
         if (response.ok) {
          console.log(`Schedule added successfully for ${day} using queryString`);
        } else {
@@ -187,7 +187,7 @@ const AddClinic = () => {
 
 
        console.log(queryString1);
-       const response1 = await fetch(`https://spring-render-qpn7.onrender.com/schedule?${queryString1}`, { method: 'POST' });
+       const response1 = await fetch(`http://localhost:8080/schedule?${queryString1}`, { method: 'POST' });
         if (response1.ok) {
          // Schedule added successfully for queryString1
          console.log(`Schedule added successfully for ${day} using queryString1`);

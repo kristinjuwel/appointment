@@ -29,8 +29,8 @@ const PatientAppointment = () => {
     },
   ]);
   useEffect(() => {
-    // Replace 'https://spring-render-qpn7.onrender.com/' with your actual API URL
-    fetch(`https://spring-render-qpn7.onrender.com/patuserid/${username}`)
+    // Replace 'http://localhost:8080/' with your actual API URL
+    fetch(`http://localhost:8080/patuserid/${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -39,7 +39,7 @@ const PatientAppointment = () => {
       })
       .then((data) => {
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`https://spring-render-qpn7.onrender.com/appointments?patientUserId=${data}`)
+        fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -86,7 +86,7 @@ const PatientAppointment = () => {
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/patuserid/${username}`);
+        const response = await fetch(`http://localhost:8080/patuserid/${username}`);
         if (response.ok) {
           setIsPatientLoggedIn(true);
         } else {
@@ -146,7 +146,7 @@ const PatientAppointment = () => {
       }
   
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`https://spring-render-qpn7.onrender.com/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
         method: 'PUT',
       });
   

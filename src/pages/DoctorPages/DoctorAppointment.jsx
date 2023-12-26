@@ -28,8 +28,8 @@ const DoctorAppointment = () => {
 
 
   useEffect(() => {
-    // Replace 'https://spring-render-qpn7.onrender.com/' with your actual API URL
-    fetch(`https://spring-render-qpn7.onrender.com/getDoctorUserId?username=${username}`)
+    // Replace 'http://localhost:8080/' with your actual API URL
+    fetch(`http://localhost:8080/getDoctorUserId?username=${username}`)
         .then((response) => {
         if (response.ok) {
           return response.json();
@@ -38,7 +38,7 @@ const DoctorAppointment = () => {
       })
       .then((data) => {
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`https://spring-render-qpn7.onrender.com/docappointments?doctorUserId=${data}`)
+        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -172,7 +172,7 @@ const DoctorAppointment = () => {
   useEffect( () => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/doctordetails/${username}`);
+        const response = await fetch(`http://localhost:8080/doctordetails/${username}`);
         if (response.ok) {
          setIsDoctorLoggedIn(true);
  

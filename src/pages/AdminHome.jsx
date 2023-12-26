@@ -36,6 +36,8 @@ function AdminHome() {
       contactNumber: '',
       specialization: '',
       credentials: '',
+      email: '',
+      prcID: '',
       profilePicture: '',
     }]);
   const [result, setResult] = useState('');
@@ -57,7 +59,7 @@ function AdminHome() {
   useEffect(() => {
     const fetchLoggedInAdmin = async () => {
       try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/admindetails/${username}`);
+        const response = await fetch(`http://localhost:8080/admindetails/${username}`);
         if (response.ok) {
           setIsAdminLoggedIn(true);
         } else {
@@ -74,7 +76,7 @@ function AdminHome() {
     useEffect(() => {
       const fetchSchedules = async () => {
         try {
-          const response = await fetch('https://spring-render-qpn7.onrender.com/schedules');
+          const response = await fetch('http://localhost:8080/schedules');
           
           if (!response.ok) {
             throw new Error('Failed to fetch schedules');
@@ -106,7 +108,7 @@ function AdminHome() {
     useEffect(() => {
       const fetchAllDoctors = async () => {
         try {
-          const response = await fetch('https://spring-render-qpn7.onrender.com/allusers');
+          const response = await fetch('http://localhost:8080/allusers');
   
           if (response.ok) {
             const data = await response.json();
@@ -117,7 +119,9 @@ function AdminHome() {
               contactNumber: doctorData.user.contactNumber,
               specialization: doctorData.specialization,
               credentials: doctorData.credentials,
-              profilePicture: doctorData.user.avatar
+              profilePicture: doctorData.user.avatar,
+              prcId: doctorData.prcId,
+              email: doctorData.user.email
             }));
   
             setDoctors(formattedDoctors);
@@ -204,7 +208,7 @@ function AdminHome() {
     }
   const handleLogout = async () => {
     try {
-        const response = await fetch(`https://spring-render-qpn7.onrender.com/adminlogout/${username}`, {
+        const response = await fetch(`http://localhost:8080/adminlogout/${username}`, {
         method: 'POST',
         });
 
@@ -223,7 +227,7 @@ function AdminHome() {
 
   const handleApprovalSubmit = async (doctorId) => {
     try {
-      const url = `https://spring-render-qpn7.onrender.com/approval?userId=${doctorId}&approvalStatus=${approved}`;
+      const url = `http://localhost:8080/approval?userId=${doctorId}&approvalStatus=${approved}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -245,7 +249,7 @@ function AdminHome() {
 
   const handleRejectSubmit = async (doctorId) => {
     try {
-      const url = `https://spring-render-qpn7.onrender.com/approval?userId=${doctorId}&approvalStatus=${reject}`;
+      const url = `http://localhost:8080/approval?userId=${doctorId}&approvalStatus=${reject}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -366,6 +370,10 @@ function AdminHome() {
                       readOnly
                     />                
                     </div>
+                    <div>
+                  <h3>PRC Id</h3>
+                  <input type="text" name="prcId" placeholder="PRC ID" style={{padding: "15px"}} value={currentDoctor.prcId} readOnly></input>
+                </div>
                 <div>
                   <h3>Doctor Credentials</h3>
                   <input type="text" name="credentials" placeholder="Doctor Credentials" style={{width: "280px", marginBottom: "10px", padding: "15px"}} value={currentDoctor.credentials} readOnly></input>
@@ -376,7 +384,7 @@ function AdminHome() {
                 </div>
                 <div>
                   <h3>Email Address</h3>
-                  <input type="text" name="emailAddress" placeholder="Email Address" style={{padding: "15px"}} value={currentDoctor.contactNumber} readOnly></input>
+                  <input type="text" name="emailAddress" placeholder="Email Address" style={{padding: "15px"}} value={currentDoctor.email} readOnly></input>
                 </div>
                 <div>
                   <h3>Contact Number</h3>

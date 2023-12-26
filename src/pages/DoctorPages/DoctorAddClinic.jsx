@@ -22,7 +22,7 @@ const DoctorAddClinic = () => {
  useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await fetch(`/getDoctorUserId?username=${username}`);
+      const response = await fetch(`http://localhost:8080/getDoctorUserId?username=${username}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -65,7 +65,7 @@ const DoctorAddClinic = () => {
 
 
    try {
-     const url = new URL('https://spring-render-qpn7.onrender.com/clinic');
+     const url = new URL('http://localhost:8080/clinic');
      const userData = {
        name,
        address,
@@ -122,96 +122,102 @@ const DoctorAddClinic = () => {
    const formattedMinutes = minutes.toString().padStart(2, '0');
     return `${formattedHours}:${formattedMinutes}:00`;
  }
- const handleAddSchedule = async () => {
-  if (checkedDays.length === 0) {
-    console.error('No days selected for schedule.');
-    return;
-  }
-
-  // Move fetchData logic here
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`/getDoctorUserId?username=${username}`);
-
-      if (response.ok) {
-        const data = await response.json();
-        setDoctorUserId(data);
+  const handleAddSchedule = async () => {
+   if (checkedDays.length === 0) {
+     console.error('No days selected for schedule.');
+     return;
+   }
+    for (const day of checkedDays) {
+     try {
 
 
-  for (const day of checkedDays) {
-    try {
-      // ... rest of your existing logic
-      const queryString = `name=${name}&doctorUserId=${data}&scheduleDay=${day}&startTime=${militaryStartTime}&endTime=${militaryEndTime}&slots=${document.getElementById(`${day}Slots`).value}`;
+       const startTimeElement = document.getElementById(`${day}StartTime`);
+       const startPeriodElement = document.getElementById(`${day}StartPeriod`);
+       const endTimeElement = document.getElementById(`${day}EndTime`);
+       const endPeriodElement = document.getElementById(`${day}EndPeriod`);
+    
+       if (!startTimeElement || !startPeriodElement || !endTimeElement || !endPeriodElement) {
+         throw new Error(`Could not find elements for day: ${day}`);
+       }
+    
+       const startTime = startTimeElement.value;
+       const startPeriod = startPeriodElement.value;
+       const endTime = endTimeElement.value;
+       const endPeriod = endPeriodElement.value;
+    
+       const militaryStartTime = convertTo24Hour(startTime, startPeriod);
+       const militaryEndTime = convertTo24Hour(endTime, endPeriod);
+    
+       console.log(militaryStartTime);
+       console.log(militaryEndTime);
+      const queryString = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${militaryStartTime}&endTime=${militaryEndTime}&slots=${document.getElementById(`${day}Slots`).value}`;
 
-      console.log(queryString);
-      const response = await fetch(`https://spring-render-qpn7.onrender.com/schedule?${queryString}`, { method: 'POST' });
 
-      if (response.ok) {
-        console.log(`Schedule added successfully for ${day} using queryString`);
-      } else {
-        const errorMessage = await response.text();
-        console.error(`Schedule addition failed for ${day} using queryString: ${errorMessage}`);
-      }
-    } catch (error) {
-      console.error(`Error during schedule addition for ${day}:`, error);
-    }
-  }
-} else {
-  console.error('Doctor not found');
-}
-} catch (error) {
-console.error('Error fetching data:', error);
-}
-};
+       console.log(queryString);
+       const response = await fetch(`http://localhost:8080/schedule?${queryString}`, { method: 'POST' });
+        if (response.ok) {
+         console.log(`Schedule added successfully for ${day} using queryString`);
+         window.location.href = `/docclinic/${username}`;
 
-fetchData(); // Invoke the async function immediately
-};
+       } else {
+         // Schedule addition failed for queryString
+         const errorMessage = await response.text();
+         console.error(`Schedule addition failed for ${day} using queryString: ${errorMessage}`);
+       }
+      } catch (error) {
+       console.error(`Error during schedule addition for ${day}:`, error);
+     }
+   }
+ }; 
 
-const handleAddSchedule1 = async () => {
-  if (checkedDays.length === 0) {
-    console.error('No days selected for schedule.');
-    return;
-  }
 
-  // Move fetchData logic here
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`/getDoctorUserId?username=${username}`);
+ const handleAddSchedule1 = async () => {
+   if (checkedDays.length === 0) {
+     console.error('No days selected for schedule.');
+     return;
+   }
+    for (const day of checkedDays) {
+     try {
 
-      if (response.ok) {
-        const data = await response.json();
-        setDoctorUserId(data);
- 
-  fetchData(); // Invoke the async function immediately
 
-  for (const day of checkedDays) {
-    try {
-      // ... rest of your existing logic
-      const queryString1 = `name=${name}&doctorUserId=${data}&scheduleDay=${day}&startTime=${militaryStartTime1}&endTime=${militaryEndTime1}&slots=${document.getElementById(`${day}Slots1`).value}`;
+       const startTimeElement1 = document.getElementById(`${day}StartTime1`);
+       const startPeriodElement1 = document.getElementById(`${day}StartPeriod1`);
+       const endTimeElement1 = document.getElementById(`${day}EndTime1`);
+       const endPeriodElement1 = document.getElementById(`${day}EndPeriod1`);
+    
+       if (!startTimeElement1 || !startPeriodElement1 || !endTimeElement1 || !endPeriodElement1) {
+         console.log(`Could not find elements for day: ${day}`);
+         continue; // Skip this iteration and move to the next checked day
+       }
+    
+       const startTime1 = startTimeElement1.value;
+       const startPeriod1 = startPeriodElement1.value;
+       const endTime1 = endTimeElement1.value;
+       const endPeriod1 = endPeriodElement1.value;
+    
+       const militaryStartTime1 = convertTo24Hour(startTime1, startPeriod1);
+       const militaryEndTime1 = convertTo24Hour(endTime1, endPeriod1);
+    
+       console.log(militaryStartTime1);
+       console.log(militaryEndTime1);
+        const queryString1 = `name=${name}&doctorUserId=${doctorUserId}&scheduleDay=${day}&startTime=${militaryStartTime1}&endTime=${militaryEndTime1}&slots=${document.getElementById(`${day}Slots1`).value}`;
 
-      console.log(queryString1);
-      const response1 = await fetch(`https://spring-render-qpn7.onrender.com/schedule?${queryString1}`, { method: 'POST' });
 
-      if (response1.ok) {
-        console.log(`Schedule added successfully for ${day} using queryString1`);
-      } else {
-        const errorMessage1 = await response1.text();
-        console.error(`Schedule addition failed for ${day} using queryString1: ${errorMessage1}`);
-      }
-    } catch (error) {
-      console.error(`Error during schedule addition for ${day}:`, error);
-    }
-  }
-} else {
-  console.error('Doctor not found');
-}
-} catch (error) {
-console.error('Error fetching data:', error);
-}
-};
-
-};
-
+       console.log(queryString1);
+       const response1 = await fetch(`http://localhost:8080/schedule?${queryString1}`, { method: 'POST' });
+        if (response1.ok) {
+         // Schedule added successfully for queryString1
+         console.log(`Schedule added successfully for ${day} using queryString1`);
+       } else {
+         // Schedule addition failed for queryString1
+         const errorMessage1 = await response1.text();
+         console.error(`Schedule addition failed for ${day} using queryString1: ${errorMessage1}`);
+       }
+      } catch (error) {
+       console.error(`Error during schedule addition for ${day}:`, error);
+     }
+   }
+ }; 
 
 
  const [showMondayTableData, setShowMondayTableData] = useState(false);
