@@ -25,82 +25,76 @@ const DoctorSearch = () => {
       clinicName: '',
     }
   ]);
-  const [schedules, setSchedules] = useState([
-    {
-      doctorUserId: '',
-      clinicName: ''
-    }
-  ]);
+  const [schedules, setSchedules] = useState([]);
   const [searchDoctors, setSearchDoctors] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSchedules = async () => {
-      const response = await fetch('http://localhost:8080/schedules');
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch schedules');
-      }
-
-      const schedulesData = await response.json();
-      const formattedSchedules = schedulesData.map((schedulesData) => ({
-        doctorUserId: schedulesData.doctorUserId,
-        clinicName: schedulesData.clinic.name,
-      }));
-
-      setSchedules(formattedSchedules);
-
-    };
-
-    fetchSchedules();
-  }, []);
-
-  useEffect(() => {
-    const fetchAllDoctors = async () => {
       try {
-        const response = await fetch('http://localhost:8080/allusers');
+        const response = await fetch('http://localhost:8080/schedules');
 
-        if (response.ok) {
-          const data = await response.json();
-          const formattedDoctors = data.map((doctorData) => {
-            const doctorId = doctorData.userId;
+        if (!response.ok) {
+          throw new Error('Failed to fetch schedules');
+        }
 
-            // Find the corresponding schedules for this doctorId
-            const matchingSchedules = schedules.filter((schedule) => schedule.doctorUserId === doctorId);
+        const schedulesData = await response.json();
+        const formattedSchedules = schedulesData.map((schedulesData) => ({
+          doctorUserId: schedulesData.doctorUserId,
+          clinicName: schedulesData.clinic.name,
+        }));
 
-            // Extract unique clinic names from the matching schedules
-            const uniqueClinicNames = Array.from(new Set(matchingSchedules.map((schedule) => schedule.clinicName)));
+        setSchedules(formattedSchedules);
+        try {
+          const response = await fetch('http://localhost:8080/allusers');
 
-            // Set the clinicName property in the formatted doctor object
-            const formattedDoctor = {
-              doctorId: doctorId,
-              firstName: `Dr. ${doctorData.user.firstName}`,
-              lastName: doctorData.user.lastName,
-              contactNumber: doctorData.user.contactNumber,
-              specialization: doctorData.specialization,
-              credentials: doctorData.credentials,
-              avatar: doctorData.user.avatar,
-              clinicName: uniqueClinicNames.length > 0 ? uniqueClinicNames : [],
-            };
+          if (response.ok) {
+            const data = await response.json();
+            const formattedDoctors = data.map((doctorData) => {
+              const doctorId = doctorData.userId;
 
-            return formattedDoctor;
-          });
+              // Find the corresponding schedules for this doctorId
+              const matchingSchedules = formattedSchedules.filter((schedule) => schedule.doctorUserId === doctorData.userId);
 
-          setDoctors(formattedDoctors);
-          setSearchDoctors(formattedDoctors);
-        } else {
-          setError('Failed to fetch doctors');
+              // Extract unique clinic names from the matching schedules
+              const uniqueClinicNames = Array.from(new Set(matchingSchedules.map((schedule) => schedule.clinicName)));
+
+              // Set the clinicName property in the formatted doctor object
+              const formattedDoctor = {
+                doctorId: doctorId,
+                firstName: `Dr. ${doctorData.user.firstName}`,
+                lastName: doctorData.user.lastName,
+                contactNumber: doctorData.user.contactNumber,
+                specialization: doctorData.specialization,
+                credentials: doctorData.credentials,
+                avatar: doctorData.user.avatar,
+                clinicName: uniqueClinicNames.length > 0 ? uniqueClinicNames : [],
+              };
+
+              return formattedDoctor;
+            });
+
+            setDoctors(formattedDoctors);
+            setSearchDoctors(formattedDoctors);
+          } else {
+            setError('Failed to fetch doctors');
+          }
+        } catch (error) {
+          setError('Error while fetching doctors');
+        } finally {
+          setIsLoading(false);
         }
       } catch (error) {
-        setError('Error while fetching doctors');
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchAllDoctors();
+    fetchSchedules();
   }, []);
+
 
 
   useEffect(() => {
@@ -156,7 +150,7 @@ const DoctorSearch = () => {
 
   };
 
- 
+
 
   if (!isPatientLoggedIn) {
     return (
