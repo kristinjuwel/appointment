@@ -16,7 +16,6 @@ const DoctorRegister = () => {
   const [contactNumber, setContactNumber] = useState('');
   const [email, setEmail] = useState('');
   const [prcId, setPrcId] = useState('');
-  const [licenseNumber, setlicenseNumber] = useState('');
   const [ptrNumber, setptrNumber] = useState('');
   const [specialization, setSpecialization] = useState('');
   const [credentials, setCredentials] = useState('');
@@ -91,7 +90,6 @@ const DoctorRegister = () => {
       },
         doctor: {
         prcId,
-        licenseNumber,
         ptrNumber,
         specialization,
         credentials,
@@ -326,10 +324,10 @@ const DoctorRegister = () => {
             </div>
           </div>
           <div className="reg-row">
-          <div className="reg-infield" style={{ width: "250px", marginRight: "-125px"}}> 
+          <div className="reg-infield" style={{ width: "250px", marginRight: "-175px"}}> 
               <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*PRC ID</p>
             </div>
-            <div className="reg-infield" style={{ width: "200px"}}>
+            <div className="reg-infield" style={{ width: "250px"}}>
               <input
                 type="text"
                 placeholder="0000000"
@@ -339,34 +337,10 @@ const DoctorRegister = () => {
                 onChange={(e) => setPrcId(e.target.value.replace(/\D/g, '').slice(0, 7))}
               />
             </div>
-            <div className="reg-infield" >
-              <input
-                type="text"
-                placeholder="Specialization"
-                id="specialization"
-                name="specialization"
-                value={specialization}
-                onChange={(e) => setSpecialization(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="reg-row">
-          <div className="reg-infield" style={{ width: "250px", marginRight: "-125px"}}> 
-              <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*License Number</p>
-            </div>
-            <div className="reg-infield" style={{ width: "200px"}}>
-              <input
-                id="licenseNumber"
-                placeholder="00000"
-                name="licenseNumber"
-                value={licenseNumber}
-                onChange={(e) => setlicenseNumber(e.target.value.replace(/\D/g, '').slice(0, 5))}
-              />
-            </div>
-            <div className="reg-infield" style={{ width: "250px", marginRight: "-155px"}}> 
+            <div className="reg-infield" style={{ width: "250px", marginRight: "-175px"}}> 
               <p style={{margin: "0", padding: "10px 0", color: "grey", fontSize: "12px"}}>*PTR Number</p>
             </div>
-            <div className="reg-infield" style={{ width: "230px"}}>
+            <div className="reg-infield" style={{ width: "250px"}}>
               <input
                 id="ptrNumber"
                 placeholder="0000000"
@@ -384,9 +358,18 @@ const DoctorRegister = () => {
               placeholder="Credentials"
               name="credentials"
               value={credentials}
-              onChange={(e) => setCredentials(e.target.value)}
-            style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '690px' }} />
+              onChange={(e) => setCredentials(e.target.value)}/>
           </div>
+          <div className="reg-infield" >
+              <input
+                type="text"
+                placeholder="Specialization"
+                id="specialization"
+                name="specialization"
+                value={specialization}
+                onChange={(e) => setSpecialization(e.target.value)}
+              />
+            </div> 
         </div>
           <div className="reg-row">
             <div className="reg-infield">

@@ -68,15 +68,15 @@ function FAQs() {
     return (
       <div className="faq-container" id="container" >
         <HomeNavbar />
-        <div style={{overflowY: "auto", maxHeight: "100vh",width: "100vw", margin: 0}}>
+        <div style={{overflowY: "auto", maxHeight: "90vh",width: "100vw", margin: 0, marginBottom: "100px"}}>
           <div className="faqs" style={{marginTop: "0px", marginBottom: 0}}>
-          {faqs.map((faq, i) => (
-            <FAQ faq={faq} index={i} toggleFAQ={toggleFAQ} />
-              ))}
+            {faqs.map((faq, i) => (
+              <FAQ key={faq.question} faq={faq} index={i} toggleFAQ={toggleFAQ} />
+            ))}
           </div>
         </div>
-       
-        <HomeFooter className="home-footer" />
+        
+       <div><HomeFooter /></div>
     </div>
   );
 }

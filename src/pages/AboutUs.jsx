@@ -18,8 +18,8 @@ function AboutUs() {
                     <br />
                     <br />
                     <br />
-                    <h3>OUR MISSION</h3>
-                     <p style={{fontSize:"20px"}}>We aim to bridge the gap<br/> between patients and doctors, <br/>making it easier to schedule and<br/> coordinate medical appointments.  </p>
+                    <h3 style={{fontSize: "25px"}}>OUR MISSION</h3>
+                    <p style={{fontSize: "17px", lineHeight: "1.5"}}>We aim to bridge the gap between patients<br/> and doctors, making it easier to schedule <br/> and coordinate medical appointments.  </p>
                 </div>
                 <div className="step-card">
                         <img

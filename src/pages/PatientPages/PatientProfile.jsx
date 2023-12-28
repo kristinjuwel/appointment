@@ -167,18 +167,7 @@ const PatientProfile = () => {
   
     }, [avatar]);
 
-  
-    const CustomEvent = ({ event }) => (
-      <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-        <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>{event.title}</strong>
-        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-          Clinic: {event.clinic}
-        </p>
-        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-          Status: {event.appointmentStatus}
-        </p>
-      </div>
-    );   
+ 
 
     useEffect(() => {
       const fetchLoggedInPatientId = async () => {
@@ -215,11 +204,11 @@ const PatientProfile = () => {
     }
     
   return (
-    <div className="profile-container" id="container" style={{overflow: "hidden"}}>
-        <PatientNavBar username={username}/>
-        <div className="doctorprofilecontainer" style={{marginTop: "1%", overflow: "hidden", height: "100%"}}>
+    <div className="profile-container" id="container">
+      <PatientNavBar username={username} />
+      <div className="doctorprofilecontainer" style={{marginTop: "1%", overflow: "hidden", height: "100%"}}>
         {user ? (
-          <div className="parentelement" style={{overflow: "hidden"}}>
+          <div className="parentelement">
             <div className="columns" id="columnprofileicon" style={{marginTop: '1%', height: "700px"}}>
               <div className="backgroundpop"></div>
               <div className="doctorprofileicon">
@@ -235,9 +224,9 @@ const PatientProfile = () => {
                   <i>{user.credentials}</i>
                 </p>
               </div>
-              <div className="listofdocprofilecontent" >
+              <div className="listofdocprofilecontent">
                 <ul className="profile-list">
-                  <li><a href="#columnprofileinformation">Account Details</a></li>
+                <li><a href="#account">Account Details</a></li>
                   <li><a href="#personal">Personal Information</a></li>
                   <li><a href="#additional">Additional Information</a></li>
                   <li><a href="#columnprofileappointments">Appointments</a></li>
@@ -275,9 +264,9 @@ const PatientProfile = () => {
                     </div>
                   </div>
                 </div>
-                <div className="mydoctorprofilepersonal" id="personal">
+                <div className="mydoctorprofilepersonal"  id="personal">
                   <div className="backgroundpop">
-                    <div className="doctorprofilecontenttitles">
+                    <div className="doctorprofilecontenttitles ">
                       <p><b>PERSONAL INFORMATION</b></p>
                     </div>
                     <div className="contentcolumn">
@@ -334,8 +323,8 @@ const PatientProfile = () => {
                     </div>
                   </div>
                 </div>
-                <div className="mydoctorprofilecredentials" id="additional">
-                  <div className="backgroundpop">
+                <div className="mydoctorprofilesecretary"  id="additional">
+                <div className="backgroundpop">
                     <div className="doctorprofilecontenttitles">
                       <p><b>ADDITIONAL INFORMATION</b></p>
                     </div>
@@ -376,7 +365,7 @@ const PatientProfile = () => {
               </div>
             </div>
             <div className="columns" id="columnprofileappointments" style={{
-                    marginTop: "-25px",
+                    marginTop: "1%",
                     position: "sticky", /* Set the position to sticky */
                     top: "20px", /* Adjust the top value as needed */
                     zIndex: "100", /* Set a z-index to control stacking with other elements */
@@ -395,27 +384,22 @@ const PatientProfile = () => {
                         startAccessor="start"
                         endAccessor="end"
                         style={{ height: 300, width: "84%" }}
-                        components={{
-                          event: CustomEvent, // Use the custom Event component
-                        }}
                       />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-                    </div>
-                            ) : (
-                isError ? (
-                  <p>Error fetching user profile</p>
-                ) : (
-                  <p>Loading user profile...</p>
-                )
-              )}
-      
-        </div>
-        <br />
-        <div style={{bottom: "0", position: "fixed"}}><PatientFooter /></div>
+          </div>
+        ) : (
+          isError ? (
+            <p>Error fetching user profile</p>
+          ) : (
+            <p>Loading user profile...</p>
+          )
+        )}
+      </div>
+      <PatientFooter />
     </div>
   );
 };
