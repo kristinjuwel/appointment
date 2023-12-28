@@ -68,8 +68,8 @@ const Home = () => {
                         <br />
                         <br />
                         <br />
-                        <h3>OUR MISSION</h3>
-                        <p>We aim to bridge the gap between patients and doctors, <br/>making it easier to schedule and coordinate medical appointments.  </p>
+                        <h3 style={{fontSize: "25px"}}>OUR MISSION</h3>
+                        <p style={{fontSize: "17px", lineHeight: "1.5"}}>We aim to bridge the gap between patients<br/> and doctors, making it easier to schedule <br/> and coordinate medical appointments.  </p>
                     </div>
                     <div className="step-card">
                         <img
@@ -91,8 +91,8 @@ const Home = () => {
                         <br />
                         <br />
                         <br />
-                        <h3>OUR VISION</h3>
-                        <p>We envision a world where scheduling medical appointments is convenient and <br/>accessible for everyone. We aim to optimize this process by providing a seamless <br/>and intuitive platform that empowers patients to take control of their health.</p>
+                        <h3 style={{fontSize: "25px"}}>OUR VISION</h3>
+                        <p style={{fontSize: "17px", lineHeight: "1.5"}}>We envision a world where scheduling medical<br/> appointments is convenient and accessible for everyone.<br/>  We aim to optimize this process by providing a seamless<br/> and intuitive platform that empowers patients to<br/>  take control of their health.</p>
                     </div>
                 </div>
             </div>
