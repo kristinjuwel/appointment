@@ -13,7 +13,7 @@ const ClinicCard = ({ clinic, onEdit }) => {
 
   const handleDeleteClinic = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/clinic/${clinic.clinicId}`, {
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/clinic/${clinic.clinicId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

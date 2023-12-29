@@ -3,6 +3,7 @@ import "../../styles/Register.css";
 import Popup from '../../components/Popup';
 import HomeNavbar from '../../components/HomeNavbar';
 import HomeFooter from '../../components/HomeFooter';
+import "../../styles/Load.css";
 
 
 const PatientRegister = () => {
@@ -27,7 +28,7 @@ const PatientRegister = () => {
   const [message, setMessage] = useState('');
   const [userType] = useState('patient');
   const [registrationSuccessful, setRegistrationSuccessful] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
 
 
   const handleSignup = async () => {
@@ -73,7 +74,8 @@ const PatientRegister = () => {
     }
 
     try {
-      const url = new URL('http://localhost:8080/patients');
+      setLoading(true);
+      const url = new URL('https://railway-backend-production-a8c8.up.railway.app/patients');
       const userData = {
         user: {
         username,
@@ -121,13 +123,17 @@ const PatientRegister = () => {
       console.error('Error during signup:', error);
       setSignupMessage('Error during signup. Please try again later.');
       // Handle the error or display an error message to the user
+    } finally {
+      // Set loading back to false, regardless of success or failure
+      setLoading(false);
     }
   }
 
 
   const handleVerification = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/patientverify?email=${email}&otp=${otp}`, {
+      setLoading(true);
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientverify?email=${email}&otp=${otp}`, {
         method: 'POST',
       });
 
@@ -144,6 +150,9 @@ const PatientRegister = () => {
       }
     } catch (error) {
       setMessage('An error occurred');
+    } finally {
+      // Set loading back to false, regardless of success or failure
+      setLoading(false);
     }
   };
 
@@ -416,6 +425,11 @@ const PatientRegister = () => {
         </form>
       </div>
     </div>
+    {loading && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+      )}
     <HomeFooter />
     </div>
   );
