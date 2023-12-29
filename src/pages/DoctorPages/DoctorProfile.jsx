@@ -85,25 +85,27 @@ const DoctorProfile = () => {
             throw new Error('Network response was not ok');
           })
           .then((appointmentsData) => {
-            const formattedAppointments = appointmentsData.map((appointment) => {
-              // Extract date and time components
-              const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
-              const [hours, minutes] = appointment.startTime.split(':').map(Number);
-              const [hours2, minutes2] = appointment.endTime.split(':').map(Number);
-
-              // Create Date objects for start and end times
-              const startDate = new Date(year, month - 1, day, hours, minutes);
-              const endDate = new Date(year, month - 1, day, hours2, minutes2);
-
-              // Create an appointment object
-              return {
-                title: appointment.patientName,
-                start: startDate,
-                end: endDate,
-                appointmentId: appointment.transactionNo,
-                appointmentStatus: appointment.status
-              };
-            });
+            const formattedAppointments = appointmentsData
+              .filter(appointment => appointment.clinic.deletionStatus !== "Deleted" && appointment.doctorUser.username === username)
+              .map((appointment) => {
+                // Extract date and time components
+                const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
+                const [hours, minutes] = appointment.startTime.split(':').map(Number);
+                const [hours2, minutes2] = appointment.endTime.split(':').map(Number);
+          
+                // Create Date objects for start and end times
+                const startDate = new Date(year, month - 1, day, hours, minutes);
+                const endDate = new Date(year, month - 1, day, hours2, minutes2);
+          
+                // Create an appointment object
+                return {
+                  title: appointment.patientName,
+                  start: startDate,
+                  end: endDate,
+                  appointmentId: appointment.transactionNo,
+                  appointmentStatus: appointment.status
+                };
+              });
 
             setAppointments(formattedAppointments);
           })

@@ -30,7 +30,7 @@ function PatientLogin() {
 
       if (response.ok) {
         // Login successful
-        setLoginError('');
+        setLoginError(response);
         console.log('Login successful');
         window.location.href = `/patprofile/${username}`; // Redirect to the profile page
       } else {
@@ -51,47 +51,47 @@ function PatientLogin() {
 
   return (
     <div>
-    <div className="container" id="container">
-      <HomeNavbar />
-      <div className="form-container sign-in-container">
-        <form action="#" id="signin-form">
-          <h1 style={{ color: '#0094d4' }}>Patient Login</h1>
-          <div className="infield">
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-          <div className="infield">
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          {/* <a href="#" class="forgot">Forgot your password?</a> */}
-          <button type="button" onClick={handleLogin}>
-            Login
-          </button>
-          {loginError && <p className="verification-message">{loginError}</p>}
-        </form>
-      </div>
-      <div className="overlay-container" id="overlayCon">
-        <div className="overlay">
-          <div className="overlay-panel overlay-right">
-            <h1 style={{ color: '#ffffff' }}>Hello there!</h1>
-            <p>
-              Set an appointment now! <br /> Enter your details now!
-            </p>
-            <button onClick={handleToSignup}>Register</button>
+      <div className="container" id="container">
+        <HomeNavbar />
+        <div className="form-container sign-in-container">
+          <form action="#" id="signin-form">
+            <h1 style={{ color: '#0094d4' }}>Patient Login</h1>
+            <div className="infield">
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="infield">
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            {/* <a href="#" class="forgot">Forgot your password?</a> */}
+            <button type="button" onClick={handleLogin}>
+              Login
+            </button>
+            {loginError && <p className="verification-message">{loginError}</p>}
+          </form>
+        </div>
+        <div className="overlay-container" id="overlayCon">
+          <div className="overlay">
+            <div className="overlay-panel overlay-right">
+              <h1 style={{ color: '#ffffff' }}>Hello there!</h1>
+              <p>
+                Set an appointment now! <br /> Enter your details now!
+              </p>
+              <button onClick={handleToSignup}>Register</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <HomeFooter/>
+      <HomeFooter />
     </div>
   );
 }

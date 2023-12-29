@@ -146,7 +146,7 @@ const ViewProfile = () => {
                   <li><a href="#columnprofileinformation">Account Details</a></li>
                   <li><a href="#personal">Personal Information</a></li>
                   <li><a href="#additional">Additional Information</a></li>
-                  <li><a href="#columnprofileappointments">Appointments</a></li>
+                  <li><a href={`/manageappointments/${username}/${patientUserId}`}>Appointments</a></li>
                   
                 </ul>
                          

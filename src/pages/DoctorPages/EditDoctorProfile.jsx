@@ -25,6 +25,7 @@ import { Link, useParams } from 'react-router-dom';
 
 const EditDoctorProfile = () => {
   const { loggedInUsername } = useParams();
+  const [userId, setUserId] = useState('');
   const [avatar, setAvatar] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('');
   const [isAvatarSelectionOpen, setAvatarSelectionOpen] = useState(false);
@@ -48,7 +49,9 @@ const EditDoctorProfile = () => {
   const [editMessage, setEditMessage] = useState('');
   const [secretary, setSecretary] = useState('');
   const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
-  const [isPopupVisible, setPopupVisibility] = useState(false);
+
+  const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false);
+  const [isDeleteAccountVisible, setIsDeleteAccountVisible] = useState(false);
 
   const setDisplayedAvatars = (avatar) => {
     const avatarImports = {
@@ -79,8 +82,6 @@ const EditDoctorProfile = () => {
     if (match) {
       const numericPart = match[1];
       setAvatar(`avatar${numericPart}`);
-
-      console.log(`avatar${numericPart}`);
     }
     else {
       setAvatar(`avatar00`);
@@ -96,6 +97,7 @@ const EditDoctorProfile = () => {
         const response = await fetch(`http://localhost:8080/doctordetails/${loggedInUsername}`);
         if (response.ok) {
           const data = await response.json();
+          setUserId(data.user.userId);
           setUsername(data.user.username);
           setFirstName(data.user.firstName);
           setMiddleName(data.user.middleName);
@@ -150,7 +152,7 @@ const EditDoctorProfile = () => {
       return;
     }
     const secretaryRegex = /^([^ -]+) - (\d{10}) - (\S+@\S+\.\S+) - ([^ -]+)$/;
-    
+
     if (!secretaryRegex.test(secretary)) {
       // Handle invalid format
       console.log('Invalid secretary format.');
@@ -229,13 +231,22 @@ const EditDoctorProfile = () => {
     );
   }
 
-  const closePopup = () => {
-    // Close the popup
-    setPopupVisibility(false);
+  const closeChangePassword = () => {
+    setIsChangePasswordVisible(false);
+  };
+
+  const closeDeleteAccount = () => {
+    setIsDeleteAccountVisible(false);
   };
 
   const handleChangePassword = () => {
-    setPopupVisibility(true);
+    setIsChangePasswordVisible(true);
+    setIsDeleteAccountVisible(false);
+  };
+
+  const handleDeleteAccount = () => {
+    setIsChangePasswordVisible(false);
+    setIsDeleteAccountVisible(true);
   };
 
   const handleNewPassword = async () => {
@@ -257,7 +268,7 @@ const EditDoctorProfile = () => {
       });
 
       if (response.ok) {
-        setPopupVisibility(false);
+        setIsChangePasswordVisible(false);
 
       } else {
         console.error('Failed to change password:', response.statusText);
@@ -268,8 +279,26 @@ const EditDoctorProfile = () => {
     setPasswordsMatchError('');
   };
 
+  const handleDeleteUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/doctors?userId=${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-  
+      if (response.ok) {
+        console.log('User deleted successfully');
+        window.location.reload();
+      } else {
+        console.error('Failed to delete user');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
+
   if (!isDoctorLoggedIn) {
     return (
       <div>
@@ -280,55 +309,67 @@ const EditDoctorProfile = () => {
         </div>
         <HomeFooter />
       </div>
-  
+
     );
   }
- 
+
   return (
     <div className="profile-container" id="container" style={{ overflow: "hidden" }}>
       <DoctorNavbar username={loggedInUsername} />
       <div className="editing-container">
 
-        {<Popup trigger={isPopupVisible}>
-          <h3>Please enter your current password:</h3>
-          <div className="profile-infield">
-            <input
-              type="password"
-              placeholder="Enter current password"
-              style={{ width: '550px' }}
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-            />
-          </div>
 
-          <h3>Please enter your new password: </h3>
-          <div className="profile-infield">
-            <input
-              type="password"
-              placeholder="Enter new password"
-              style={{ width: '550px' }}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-          </div>
+        {isChangePasswordVisible && (
+          <Popup trigger={isChangePasswordVisible}>
+            <h3>Please enter your current password:</h3>
+            <div className="profile-infield">
+              <input
+                type="password"
+                placeholder="Enter current password"
+                style={{ width: '565px' }}
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+            </div>
 
-          <h3>Please re-enter your new password: </h3>
-          <div className="profile-infield">
-            <input
-              type="password"
-              placeholder="Confirm new password"
-              style={{ width: '550px' }}
-              value={retypeNewPassword}
-              onChange={(e) => setRetypeNewPassword(e.target.value)}
-            />
-          </div>
+            <h3>Please enter your new password: </h3>
+            <div className="profile-infield">
+              <input
+                type="password"
+                placeholder="Enter new password"
+                style={{ width: '565px' }}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
 
-          {passwordsMatchError && <h4 style={{ justifyContent: "center", textAlign: "center", color: 'red' }}>{passwordsMatchError}</h4>}
+            <h3>Please re-enter your new password: </h3>
+            <div className="profile-infield">
+              <input
+                type="password"
+                placeholder="Confirm new password"
+                style={{ width: '565px' }}
+                value={retypeNewPassword}
+                onChange={(e) => setRetypeNewPassword(e.target.value)}
+              />
+            </div>
 
-          <button style={{ padding: 5, borderRadius: 0, width: "48.5%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px" }} onClick={handleNewPassword}>Submit Changes</button>
-          <button className='cancel' onClick={closePopup} style={{ padding: 5, borderRadius: 0, width: "48.5%", textAlign: "center", marginTop: "10px", height: "40px" }}>Discard Changes</button>
-        </Popup>
-        }
+            {passwordsMatchError && <h4 style={{ justifyContent: "center", textAlign: "center", color: 'red' }}>{passwordsMatchError}</h4>}
+
+            <button style={{ padding: 5, borderRadius: 0, width: "48.25%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px" }} onClick={handleNewPassword}>Submit Changes</button>
+            <button className='cancel' onClick={closeChangePassword} style={{ padding: 5, borderRadius: 0, width: "48.25%", textAlign: "center", marginTop: "10px", height: "40px" }}>Discard Changes</button>
+          </Popup>
+        )}
+
+        {isDeleteAccountVisible && (
+          <Popup trigger={isDeleteAccountVisible}>
+            <div style={{ textAlign: "center", marginBottom: "10px", fontSize: "20px" }}><b>Are you sure you want to delete your account?</b></div>
+
+            <button onClick={handleDeleteUser} style={{ padding: 5, borderRadius: 0, width: "48.5%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px", backgroundColor: "#b22222" }} >Delete Account</button>
+            <button className='cancel' onClick={closeDeleteAccount} style={{ padding: 5, borderRadius: 0, width: "48.5%", textAlign: "center", marginTop: "10px", height: "40px" }}>Cancel</button>
+          </Popup>
+        )}
+
         <div className="edit-steps">
           <div className="edit-card" style={{ marginTop: '-5%' }}>
             <h1>Edit Doctor Profile</h1>
@@ -534,9 +575,12 @@ const EditDoctorProfile = () => {
             </div>
             <br />
             <br />
-            <button type="button" onClick={handleEdit} style={{ marginLeft: "18%", borderRadius: 0, width: "300px" }}>Save Changes</button>
-            <button type="button" onClick={handleChangePassword} style={{ marginLeft: "50px", borderRadius: 0, width: "300px", backgroundColor: "gray" }}>Change Password</button>
-            {editMessage && <p>{editMessage}</p>}
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button type="button" onClick={handleEdit} style={{ borderRadius: 0, width: "230px" }}>Save Changes</button>
+              <button type="button" onClick={handleChangePassword} style={{ marginLeft: "25px", borderRadius: 0, width: "230px", backgroundColor: "gray" }}>Change Password</button>
+              <button type="button" onClick={handleDeleteAccount} style={{ marginLeft: "25px", borderRadius: 0, width: "230px", backgroundColor: "#b22222" }}>Delete Account</button>
+              {editMessage && <p>{editMessage}</p>}
+            </div>
             <br />
             <br />
             <br />

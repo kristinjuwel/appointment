@@ -10,6 +10,8 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import parse from 'date-fns/parse';
 import getDay from 'date-fns/getDay';
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "../../styles/Load.css";
+
 const SetAppointment = () => {
   const {  username, doctorId } = useParams();
   const [error, setError] = useState(null);
@@ -20,6 +22,7 @@ const SetAppointment = () => {
   const [selectedClinicId, setSelectedClinicId] = useState('');
   const [patientUserId, setPatientUserId] = useState('');
   const [isPatientLoggedIn, setIsPatientLoggedIn] = useState('');
+  const [loading, setLoading] = useState(false);
   const [schedules, setSchedules] = useState([
     {
       scheduleId: '',
@@ -71,16 +74,20 @@ const SetAppointment = () => {
             throw new Error('Network response was not ok');
           })
           .then((appointmentsData) => {
-            const formattedAppointments = appointmentsData.map((appointment) => {
+            // Filter appointments based on clinic deletion status
+            const filteredAppointments = appointmentsData.filter(appointment => appointment.clinic.deletionStatus !== "Deleted");
+          
+            // Map the filtered appointments to the desired format
+            const formattedAppointments = filteredAppointments.map((appointment) => {
               // Extract date and time components
               const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
               const [hours, minutes] = appointment.startTime.split(':').map(Number);
               const [hours2, minutes2] = appointment.endTime.split(':').map(Number);
-
+          
               // Create Date objects for start and end times
               const startDate = new Date(year, month - 1, day, hours, minutes);
               const endDate = new Date(year, month - 1, day, hours2, minutes2);
-
+          
               // Create an appointment object
               return {
                 title: 'Dr. ' + appointment.doctorName,
@@ -133,6 +140,7 @@ const SetAppointment = () => {
 
   const handleCancel = async (appointmentId) => {
     try {
+      setLoading(true);
       // Find the appointment with the provided appointmentId
       const appointmentToCancel = appointments.find(appointment => appointment.appointmentId === appointmentId);
   
@@ -157,6 +165,9 @@ const SetAppointment = () => {
       }
     } catch (error) {
       setError('Error cancelling appointment:', error);
+    } finally {
+      // Set loading back to false, regardless of success or failure
+      setLoading(false);
     }
   };
   
@@ -188,7 +199,9 @@ const SetAppointment = () => {
         if (response.ok) {
           const data = await response.json();
 
-          const formattedSchedules = data.map(schedule => ({
+          const formattedSchedules = data
+          .filter(schedule => schedule.clinic.deletionStatus !== "Deleted")
+          .map(schedule => ({
             scheduleId: schedule.scheduleId,
             clinicId: schedule.clinicId,
             avatar: schedule.doctor.user.avatar,
@@ -205,6 +218,7 @@ const SetAppointment = () => {
             number: schedule.clinic.officeNumber,
             email: schedule.clinic.officeEmail
           }));
+
 
           setSchedules(formattedSchedules);
 
@@ -300,6 +314,7 @@ const SetAppointment = () => {
     setSelectedClinicId(selectedClinic?.clinicId || '');
     setSelectedDay('');
     setSelectedDate('');
+    setResponse('');
 
   };
 
@@ -450,6 +465,7 @@ const SetAppointment = () => {
                     setSelectedDay(e.target.value);
                     setSelectedSched('');
                     setSelectedDate('');
+                    setResponse('');
                   }}
                 >
                   {/* Initial blank option */}
@@ -479,6 +495,7 @@ const SetAppointment = () => {
                     const selectedTimeslot = e.target.value;
                     setSelectedDate('');
                     setSelectedSched(selectedTimeslot);
+                    setResponse('');
                   }}
                 >
                   {/* Initial blank option */}
@@ -549,14 +566,15 @@ const SetAppointment = () => {
                         backgroundColor: getBackgroundColor(appointment.appointmentStatus),
                         paddingLeft: '10px',      }}>
                         {appointment.title} <br />
+                        {appointment.clinic} <br />
                         {format(appointment.start, "MM/dd/yyyy EEEE")} <br />
                         {format(appointment.start, "h:mm a")} - {format(appointment.end, "h:mm a")}  <br />
                         {appointment.appointmentStatus} <br />
                       </td>
-                      <td><button style={{ borderRadius: 0, width: "100%", height: "100%" }} onClick={() => handleReschedule(appointment.appointmentId)}>Reschedule</button></td>
+                      <td><button style={{ borderRadius: 5, width: "100%", height: "100%" }} onClick={() => handleReschedule(appointment.appointmentId)}>Reschedule</button></td>
                     </tr>
                     <tr>
-                      <td><button className='cancel' onClick={() => handleCancel(appointment.appointmentId)} type="submit">Cancel</button></td>
+                      <td><button className='cancel' style={{ borderRadius: 5}} onClick={() => handleCancel(appointment.appointmentId)} type="submit">Cancel</button></td>
                     </tr>
                   </table>
                 )
@@ -570,6 +588,11 @@ const SetAppointment = () => {
           </div>
         </div>
       </div>
+      {loading && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+      )}
       <PatientFooter />
     </div>
   );

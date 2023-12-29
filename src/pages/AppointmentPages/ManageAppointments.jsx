@@ -9,9 +9,12 @@ import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import HomeFooter from '../../components/HomeFooter';
 import HomeNavbar from '../../components/HomeNavbar';
+import "../../styles/Load.css";
 
 const ManageAppointments = () => {
   const { username, patientUserId } = useParams();
+  const [loading, setLoading] = useState(false);
+
 
   const [appointments, setAppointments] = useState([
     {
@@ -19,11 +22,13 @@ const ManageAppointments = () => {
       clinic: '',
       address: '',
       patientUserId: '',
+      doctorUsername: '',
       start: new Date(),
       end: new Date(),  // 5:00 PM
       appointmentId: '',
       appointmentStatus: '',
-      slots: ''
+      slots: '',
+      deletionStatus: '',
     },
   ]);
 
@@ -38,6 +43,7 @@ const ManageAppointments = () => {
     getDay,
     locales
   })
+
   const getBackgroundColor = (status) => {
     switch (status) {
       case 'Cancelled':
@@ -48,6 +54,8 @@ const ManageAppointments = () => {
         return '#FFFFDC';
       case 'Approved by Doctor':
         return '#BAFFC4';
+      case 'Completed':
+        return '#ffffff';
       default:
         return 'lightgray';
     }
@@ -63,27 +71,36 @@ const ManageAppointments = () => {
         return '#F8F547';
       case 'Approved by Doctor':
         return '#48DE66';
+      case 'Completed':
+        return 'lightgray';
       default:
         return 'lightgray';
     }
   };
-  const CustomEvent = ({ event }) => (
-    <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
-      <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        {event.clinic}
-      </strong>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        {event.title}
-      </p>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBackgroundColor(event.appointmentStatus) }}>
-        {event.appointmentStatus}
-      </p>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        Remaining Slots: {event.slots}
-      </p>
-    </div>
 
-  );
+  const CustomEvent = ({ event }) => {
+    // Check if the event is not marked as deleted and doctorUsername matches the specified username
+    if (event.deletionStatus === "Deleted" || event.doctorUsername !== username) {
+      return null; // Skip rendering if the event is deleted or doctorUsername doesn't match
+    }
+    return (
+      <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
+        <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+          {event.clinic}
+        </strong>
+        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+          {event.title}
+        </p>
+        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBackgroundColor(event.appointmentStatus) }}>
+          {event.appointmentStatus}
+        </p>
+        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+          Remaining Slots: {event.slots}
+        </p>
+      </div>
+
+    );
+  };
 
 
   useEffect(() => {
@@ -104,18 +121,19 @@ const ManageAppointments = () => {
           // Create Date objects for start and end times
           const startDate = new Date(year, month - 1, day, hours, minutes);
           const endDate = new Date(year, month - 1, day, hours2, minutes2);
-
           // Create an appointment object
           return {
             title: appointment.patientName,
             clinic: appointment.clinicName,
             address: appointment.address,
             patientUserId: appointment.patientUserId,
+            doctorUsername: appointment.doctorUser.username,
             start: startDate,
             end: endDate,
             appointmentId: appointment.transactionNo,
             appointmentStatus: appointment.status,
-            slots: appointment.slots
+            slots: appointment.slots,
+            deletionStatus: appointment.clinic.deletionStatus,
 
 
           };
@@ -131,12 +149,19 @@ const ManageAppointments = () => {
 
   const handleCancel = async (appointmentId) => {
     try {
+      setLoading(true);
+
       // Find the appointment with the provided appointmentId
       const appointmentToCancel = appointments.find(appointment => appointment.appointmentId === appointmentId);
 
       if (!appointmentToCancel) {
         // Handle the case where the appointment with the given ID is not found
         console.error('Appointment not found');
+        return;
+      }
+      if (appointmentToCancel.appointmentStatus === 'Completed') {
+        // Display error message as a pop-up
+        window.alert('Appointment is already completed. It cannot be cancelled');
         return;
       }
 
@@ -160,28 +185,40 @@ const ManageAppointments = () => {
       }
     } catch (error) {
       console.error('Error cancelling appointment:', error);
+
+    } finally {
+      // Set loading back to false, regardless of success or failure
+      setLoading(false);
     }
   };
-
-
 
   const handleReschedule = async (appointmentId) => {
-    const appointmentToCancel = appointments.find(appointment => appointment.appointmentId === appointmentId);
+    try {
 
-    if (!appointmentToCancel) {
-      // Handle the case where the appointment with the given ID is not found
-      console.error('Appointment not found');
-      return;
-    }
+      const appointmentToCancel = appointments.find(appointment => appointment.appointmentId === appointmentId);
 
-    // Check if the appointment is already cancelled
-    if (appointmentToCancel.appointmentStatus === 'Cancelled') {
-      // Display error message as a pop-up
-      window.alert('Appointment is already cancelled. It cannot be rescheduled.');
-      return;
+      if (!appointmentToCancel) {
+        console.error('Appointment not found');
+        return;
+      }
+      if (appointmentToCancel.appointmentStatus === 'Completed') {
+        window.alert('Appointment is already completed. It cannot be rescheduled.');
+        return;
+      }
+
+      if (appointmentToCancel.appointmentStatus === 'Cancelled') {
+        window.alert('Appointment is already cancelled. It cannot be rescheduled.');
+        return;
+      }
+
+
+      // Navigate to the reschedule page after the delay
+      window.location.href = `/docresched/${username}/${appointmentId}`;
+    } catch (error) {
+      console.error('Error rescheduling appointment:', error);
     }
-    window.location.href = `/docresched/${username}/${appointmentId}`;
   };
+
 
   const handleViewProfile = async (patientUserId) => {
     const appointmentToCancel = appointments.find(appointment => appointment.patientUserId === patientUserId);
@@ -197,23 +234,25 @@ const ManageAppointments = () => {
 
   const handleApprove = async (appointmentId) => {
     try {
-      // Find the appointment with the provided appointmentId
+      setLoading(true);
+
       const appointmentToCancel = appointments.find(appointment => appointment.appointmentId === appointmentId);
 
       if (!appointmentToCancel) {
-        // Handle the case where the appointment with the given ID is not found
         console.error('Appointment not found');
         return;
       }
 
-      // Check if the appointment is already cancelled
       if (appointmentToCancel.appointmentStatus === 'Cancelled') {
-        // Display error message as a pop-up
         window.alert('Appointment is already cancelled');
         return;
       }
 
-      // Proceed with the request to cancel the appointment
+      if (appointmentToCancel.appointmentStatus === 'Completed') {
+        window.alert('Appointment is already completed');
+        return;
+      }
+
       const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Approved by Doctor`, {
         method: 'PUT',
       });
@@ -221,16 +260,51 @@ const ManageAppointments = () => {
       if (response.ok) {
         window.location.reload();
       } else {
-        console.error('Error cancelling appointment');
+        console.error('Error approving appointment');
       }
     } catch (error) {
-      console.error('Error cancelling appointment:', error);
+      console.error('Error approving appointment:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleSetAsComplete = async (appointmentId) => {
+    try {
+      setLoading(true);
+
+      const appointmentToCancel = appointments.find(appointment => appointment.appointmentId === appointmentId);
+
+      if (!appointmentToCancel) {
+        console.error('Appointment not found');
+        return;
+      }
+      if (appointmentToCancel.appointmentStatus === 'Completed') {
+        window.alert('Appointment is already completed');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Completed`, {
+        method: 'PUT',
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        console.error('Error marking appointment as completed');
+      }
+    } catch (error) {
+      console.error('Error marking appointment as completed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   appointments.sort((a, b) => {
     const statusOrder = {
-      'Cancelled': 4,
+      'Cancelled': 5,
+      'Completed': 4,
       'Rescheduled': 3,
       'Scheduled by Patient': 2,
       'Approved by Doctor': 1,
@@ -240,26 +314,26 @@ const ManageAppointments = () => {
   });
   const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
-  useEffect( () => {
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await fetch(`http://localhost:8080/doctordetails/${username}`);
         if (response.ok) {
-         setIsDoctorLoggedIn(true);
- 
+          setIsDoctorLoggedIn(true);
+
         } else {
           setIsDoctorLoggedIn(false);
-  
+
         }
       } catch (error) {
         console.error('Error fetching user:', error);
         setIsDoctorLoggedIn(false);
-  
+
       }
     };
     fetchUser();
   }, [username]);
-  
+
   if (!isDoctorLoggedIn) {
     return (
       <div>
@@ -270,10 +344,10 @@ const ManageAppointments = () => {
         </div>
         <HomeFooter />
       </div>
-  
+
     );
   }
- 
+
   return (
     <div>
       <DoctorNavbar username={username} />
@@ -305,54 +379,72 @@ const ManageAppointments = () => {
           </table>
 
           <div style={{ overflowY: 'auto', maxHeight: '580px' }}>
-            {appointments.map((appointment, index) => (
-              <table key={index} style={{ width: "480px" }}>
-                <br />
-                <tr>
-                  <td
-                    rowSpan={2}
-                    width={200}
-                    style={{
-                      backgroundColor: getBackgroundColor(appointment.appointmentStatus),
-                      paddingTop: '0',
-                      paddingBottom: '0',
-                      paddingLeft: '10px',
-                      borderStyle: 'dashed',
-                      borderWidth: '2px',
-                      borderColor: getBorderColor(appointment.appointmentStatus),
-                    }}
-                  >
-                    {appointment.clinic} <br />
-                    {appointment.address} <br />
-                    {format(appointment.start, 'MM/dd/yyyy EEEE')} <br />
-                    {format(appointment.start, 'h:mm a')} - {format(appointment.end, 'h:mm a')} <br />
-                    <div style={{ borderColor: getBorderColor(appointment.appointmentStatus) }}>{appointment.appointmentStatus}</div>
-                  </td>
+            {appointments
+              .filter(appointment => appointment.doctorUsername === username && appointment.deletionStatus !== "Deleted")
+              .map((appointment, index) => (
+                <table key={index} style={{ width: "480px" }}>
+                  <br />
+                  <tr>
+                    <td
+                      rowSpan={2}
+                      width={200}
+                      style={{
+                        backgroundColor: getBackgroundColor(appointment.appointmentStatus),
+                        paddingTop: '0',
+                        paddingBottom: '0',
+                        paddingLeft: '10px',
+                        borderStyle: 'dashed',
+                        borderWidth: '2px',
+                        borderRadius: '5px',
+                        borderColor: getBorderColor(appointment.appointmentStatus),
+                      }}
+                    >
+                      {appointment.clinic} <br />
+                      {appointment.address} <br />
+                      {format(appointment.start, 'MM/dd/yyyy EEEE')} <br />
+                      {format(appointment.start, 'h:mm a')} - {format(appointment.end, 'h:mm a')} <br />
+                      <div style={{ borderColor: getBorderColor(appointment.appointmentStatus) }}>{appointment.appointmentStatus}</div>
+                    </td>
+                    <td>
+                      <button style={{ padding: 10, marginLeft: "10px", height: "65px", width: "100%", backgroundColor: "#14452f ", borderRadius: '5px' }} onClick={() => handleSetAsComplete(appointment.appointmentId)} type='submit'>
+                        Set as completed
+                      </button>
+                    </td>
+                    <td>
+                      <button style={{ padding: 10, marginLeft: "10px", width: "100%", height: "65px", borderRadius: '5px' }} onClick={() => handleReschedule(appointment.appointmentId)}>
+                        Reschedule Appointment
+                      </button>
+                    </td>
 
-                  <td colSpan={2}>
-                    <button style={{ borderRadius: 0, padding: 10, marginLeft: "10px", width: "100%", height: "65px" }} onClick={() => handleReschedule(appointment.appointmentId)}>
-                      Reschedule Appointment
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <button style={{ padding: 10, marginLeft: "10px", height: "65px", borderRadius: 0, width: "100%", backgroundColor: "#76AD83" }} onClick={() => handleApprove(appointment.appointmentId)} type='submit'>
-                      Approve Appointment
-                    </button>
-                  </td>
-                  <td>
-                    <button className='cancel' style={{ padding: 0, marginLeft: "10px", height: "65px", width: "100%" }} onClick={() => handleCancel(appointment.appointmentId)} type='submit'>
-                      Cancel Appointment
-                    </button>
-                  </td>
-                </tr>
-              </table>
-            ))}
+                  </tr>
+                  <tr>
+                    <td>
+                      <button style={{ padding: 10, marginLeft: "10px", height: "65px", width: "100%", backgroundColor: "#76AD83", borderRadius: '5px' }} onClick={() => handleApprove(appointment.appointmentId)} type='submit'>
+                        Approve Appointment
+                      </button>
+                    </td>
+                    <td>
+                      <button className='cancel' style={{ padding: 0, marginLeft: "10px", height: "65px", width: "100%", borderRadius: '5px' }} onClick={() => handleCancel(appointment.appointmentId)} type='submit'>
+                        Cancel Appointment
+                      </button>
+                    </td>
+                  </tr>
+
+                </table>
+
+
+              ))}
+
+
           </div>
 
         </div>
       </div>
+      {loading && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+      )}
       <DoctorFooter />
     </div>
   )

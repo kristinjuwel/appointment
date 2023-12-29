@@ -24,7 +24,7 @@ const DoctorClinics = () => {
   const [slots, setSlots] = useState('');
   const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
   const [showAddNewClinicSched, setShowAddNewClinicSched] = useState(false);
-  
+
   const toggleAddNewClinicSched = () => {
     setShowAddNewClinicSched(!showAddNewClinicSched);
   };
@@ -37,7 +37,8 @@ const DoctorClinics = () => {
       officeNumber: '',
       officeEmail: '',
       hospital: '',
-      clinicId: ''
+      clinicId: '',
+      deletionStatus: '',
     },
   ]);
 
@@ -76,12 +77,12 @@ const DoctorClinics = () => {
               officeEmail: '' + schedule.clinic.officeEmail,
               hospital: '' + schedule.clinic.hospital,
               clinicId: '' + schedule.clinic.clinicId,
+              deletionStatus: '' + schedule.clinic.deletionStatus,
             });
 
             clinicIdsAdded.push(clinicId);
           }
         });
-
         setSchedules(formattedClinics);
       } catch (error) {
         // Handle errors
@@ -142,17 +143,6 @@ const DoctorClinics = () => {
     }
   };
 
-  const handleDelete = async (clinic) => {
-    const response = await fetch(`http://localhost:8080/clinic/${clinic.clinicId}`, {
-      method: 'DELETE'
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to delete clinic');
-    }
-
-  };
-
   const closePopup = () => {
     // Close the popup
     setPopupVisibility(false);
@@ -168,7 +158,7 @@ const DoctorClinics = () => {
 
       const scheduleData = await response.json();
       setAllSchedules(scheduleData);
-      
+
 
     } catch (error) {
       // Handle errors
@@ -202,9 +192,6 @@ const DoctorClinics = () => {
       console.error('Error:', error);
     }
   };
-
-
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -286,28 +273,31 @@ const DoctorClinics = () => {
     }
   };
 
+
   return (
     <div className="info-container" id="container" style={{ height: "100vh" }}>
       <DoctorNavbar username={username} />
-      <div className="info-container">
+      <div className="info-container" style={{ maxHeight: "90vh", overflowY: "auto" }}>
         <h1>All My Clinics</h1>
-        <br />
-        <div style={{ display: "block", marginLeft: "6%", marginRight: "auto", width: "90%" }}>
-          <div className="doctor-grid">
-            {schedules.map((schedule, index) => (
-              <ClinicCard
-                key={index}
-                clinic={schedule}
-                onEdit={() => handleEdit(schedule)}
-                onDelete={() => handleDelete(schedule)}  // Pass the entire schedule object
-              />
-            ))}
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", margin: "auto", alignItems: "center" }}>
+            {schedules
+              .filter(schedule => schedule.deletionStatus !== "Deleted")
+              .map((schedule, index) => (
+                <ClinicCard
+                  key={index}
+                  clinic={schedule}
+                  onEdit={() => handleEdit(schedule)}
+                />
+              ))}
+
           </div>
         </div>
       </div>
       <DoctorFooter />
 
-      {/* Popup */}
+
+
       <Popup trigger={isPopupVisible}>
         <form action="#" id="signin-form" onSubmit={(e) => e.preventDefault()}>
           <div className="infield" style={{ maxHeight: "300px", overflowY: "auto", overflowX: "hidden" }}>
@@ -421,69 +411,69 @@ const DoctorClinics = () => {
                 </div>
               ))}
             </div>
-                <button onClick={toggleAddNewClinicSched} className="addSched" style={{ justifyContent: 'center', padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "15px", height: "40px", marginRight: "10px"}}>
-                    Add New Clinic Schedule
-                </button>
-                {showAddNewClinicSched && (
-                <div className="addNewClinicSched">
-                  <br></br>
+            <button onClick={toggleAddNewClinicSched} className="addSched" style={{ justifyContent: 'center', padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "15px", height: "40px", marginRight: "10px" }}>
+              Add New Clinic Schedule
+            </button>
+            {showAddNewClinicSched && (
+              <div className="addNewClinicSched">
+                <br></br>
                 <h3>New Clinic Schedule</h3>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                      <div style={{ display: "flex", flexDirection: "row" }}>
-                        <div style={{ display: "flex", flexDirection: "column", marginRight: "20px" }}>
-                          <h5>Day</h5>
-                          <input
-                            type="text"
-                            placeholder= "Monday"
-                            onChange={(e) => setScheduleDay(e.target.value)}
-                            style={{ width: "255px" }}
-                          />
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <h5>Slots</h5>
-                            <input
-                              type="text"
-                              placeholder= "10"
-                              onChange={(e) => setSlots(e.target.value)}
-                              style={{ width: "255px" }}
-                            />
-                        </div>
-                      </div>
-                    </div>         
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div style={{ display: "flex", flexDirection: "column", marginRight: "20px" }}>
+                      <h5>Day</h5>
+                      <input
+                        type="text"
+                        placeholder="Monday"
+                        onChange={(e) => setScheduleDay(e.target.value)}
+                        style={{ width: "255px" }}
+                      />
+                    </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                      <div style={{ display: "flex", flexDirection: "row" }}>
-                        <div style={{ display: "flex", flexDirection: "column", marginRight: "20px" }}>
-                        <h5>Start Time</h5>
-                          <input
-                            type="text"
-                            placeholder= "09:00:00"
-                            onChange={(e) => setStartTime(e.target.value)}
-                            style={{ width: "255px" }}
-                          />
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <h5>End Time</h5>
-                            <input
-                              type="text"
-                              placeholder= "12:00:00"
-                              onChange={(e) => setEndTime(e.target.value)}
-                              style={{ width: "255px" }}
-                            />
-                        </div>
-                      </div>
-                    </div>    
-                    <button onClick={() => addSchedule()} style={{ justifyContent: 'center', padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px" }}>
-                    Save Clinic Schedule
-                  </button>
-    
+                      <h5>Slots</h5>
+                      <input
+                        type="text"
+                        placeholder="10"
+                        onChange={(e) => setSlots(e.target.value)}
+                        style={{ width: "255px" }}
+                      />
+                    </div>
+                  </div>
                 </div>
-                 )}
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div style={{ display: "flex", flexDirection: "column", marginRight: "20px" }}>
+                      <h5>Start Time</h5>
+                      <input
+                        type="text"
+                        placeholder="09:00:00"
+                        onChange={(e) => setStartTime(e.target.value)}
+                        style={{ width: "255px" }}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <h5>End Time</h5>
+                      <input
+                        type="text"
+                        placeholder="12:00:00"
+                        onChange={(e) => setEndTime(e.target.value)}
+                        style={{ width: "255px" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <button onClick={() => addSchedule()} style={{ justifyContent: 'center', padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px" }}>
+                  Save Clinic Schedule
+                </button>
 
-                <button style={{padding: 5, borderRadius: 0, width: "48.7%", textAlign: "center", marginTop: "15px", height: "40px", marginRight: "10px"}} onClick={handleSubmit}>Submit Changes</button>
-                <button className='cancel' onClick={closePopup} style={{padding: 5, borderRadius: 0, width: "49%", textAlign: "center", marginTop: "15px", height: "40px"}}>Discard Changes</button>
               </div>
-            </form>
-          </Popup>
+            )}
+
+            <button style={{ padding: 5, borderRadius: 0, width: "48.7%", textAlign: "center", marginTop: "15px", height: "40px", marginRight: "10px" }} onClick={handleSubmit}>Submit Changes</button>
+            <button className='cancel' onClick={closePopup} style={{ padding: 5, borderRadius: 0, width: "49%", textAlign: "center", marginTop: "15px", height: "40px" }}>Discard Changes</button>
+          </div>
+        </form>
+      </Popup>
     </div>
   );
 };
