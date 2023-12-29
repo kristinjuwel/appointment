@@ -357,6 +357,7 @@ const SetAppointment = () => {
   }
   const handleBookAppointment = async () => {
     try {
+      setLoading(true);
       // Validate your appointment data here if needed
 
       const url = `https://railway-backend-production-a8c8.up.railway.app/appointment?patientId=${patientUserId}&scheduleId=${selectedSched}&scheduleDate=${selectedDate}&status=${status}`;
@@ -377,6 +378,9 @@ const SetAppointment = () => {
     } catch (error) {
       setError('Error adding appointment:', error);
       // Handle the error or provide feedback to the user
+    } finally {
+      // Set loading back to false, regardless of success or failure
+      setLoading(false);
     }
   };
 
