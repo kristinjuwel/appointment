@@ -22,7 +22,7 @@ const DoctorAddClinic = () => {
  useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/getDoctorUserId?username=${username}`);
+      const response = await fetch(`http://localhost:8080/getDoctorUserId?username=${username}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -65,7 +65,7 @@ const DoctorAddClinic = () => {
 
 
    try {
-     const url = new URL('https://railway-backend-production-a8c8.up.railway.app/clinic');
+     const url = new URL('http://localhost:8080/clinic');
      const userData = {
        name,
        address,
@@ -154,7 +154,7 @@ const DoctorAddClinic = () => {
 
 
        console.log(queryString);
-       const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/schedule?${queryString}`, { method: 'POST' });
+       const response = await fetch(`http://localhost:8080/schedule?${queryString}`, { method: 'POST' });
         if (response.ok) {
          console.log(`Schedule added successfully for ${day} using queryString`);
          window.location.href = `/docclinic/${username}`;
@@ -204,7 +204,7 @@ const DoctorAddClinic = () => {
 
 
        console.log(queryString1);
-       const response1 = await fetch(`https://railway-backend-production-a8c8.up.railway.app/schedule?${queryString1}`, { method: 'POST' });
+       const response1 = await fetch(`http://localhost:8080/schedule?${queryString1}`, { method: 'POST' });
         if (response1.ok) {
          // Schedule added successfully for queryString1
          console.log(`Schedule added successfully for ${day} using queryString1`);

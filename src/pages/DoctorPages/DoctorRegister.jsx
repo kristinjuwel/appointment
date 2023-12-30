@@ -72,7 +72,7 @@ const DoctorRegister = () => {
     }
 
     try {
-      const url = new URL('https://railway-backend-production-a8c8.up.railway.app/doctors');
+      const url = new URL('http://localhost:8080/doctors');
       const userData = {
         user: {
         username,
@@ -126,7 +126,7 @@ const DoctorRegister = () => {
 
   const handleVerification = async () => {
     try {
-      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctorverify?email=${email}&otp=${otp}`, {
+      const response = await fetch(`http://localhost:8080/doctorverify?email=${email}&otp=${otp}`, {
         method: 'POST',
       });
 
@@ -135,7 +135,7 @@ const DoctorRegister = () => {
         setMessage(verificationResult);
         if (verificationResult === 'Successful verification.') {
           // Now, get the doctor's user ID
-          const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/getDoctorUserId?username=${username}`);
+          const response = await fetch(`http://localhost:8080/getDoctorUserId?username=${username}`);
           if (response.ok) {
             const data = await response.json();
             const doctorUserId = data;

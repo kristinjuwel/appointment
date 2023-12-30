@@ -43,7 +43,7 @@ const AddClinic = () => {
 
 
    try {
-     const url = new URL('https://railway-backend-production-a8c8.up.railway.app/clinic');
+     const url = new URL('http://localhost:8080/clinic');
      const userData = {
        name,
        address,
@@ -139,7 +139,7 @@ const AddClinic = () => {
 
 
        console.log(queryString);
-       const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/schedule?${queryString}`, { method: 'POST' });
+       const response = await fetch(`http://localhost:8080/schedule?${queryString}`, { method: 'POST' });
         if (response.ok) {
          console.log(`Schedule added successfully for ${day} using queryString`);
        } else {
@@ -187,7 +187,7 @@ const AddClinic = () => {
 
 
        console.log(queryString1);
-       const response1 = await fetch(`https://railway-backend-production-a8c8.up.railway.app/schedule?${queryString1}`, { method: 'POST' });
+       const response1 = await fetch(`http://localhost:8080/schedule?${queryString1}`, { method: 'POST' });
         if (response1.ok) {
          // Schedule added successfully for queryString1
          console.log(`Schedule added successfully for ${day} using queryString1`);
@@ -334,7 +334,8 @@ const AddClinic = () => {
    <HomeNavbar/>
    <div className="reg-container" id="reg-container">
     
-     <div className="register">
+     
+<div className="register" style={{marginTop: "30px"}}>
        <h1 style={{ color: '#0094d4'}}>Add Clinic</h1>
        <form action="#" id="register-form" >
            <div className="reg-infield">             

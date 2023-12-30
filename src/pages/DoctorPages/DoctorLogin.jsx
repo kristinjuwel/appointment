@@ -22,7 +22,7 @@ function DoctorLogin() {
 
   const handleLogin = async () => {
     try {
-      const url = new URL('https://railway-backend-production-a8c8.up.railway.app/doctorlogin');
+      const url = new URL('http://localhost:8080/doctorlogin');
       url.searchParams.append('username', username);
       url.searchParams.append('password', password);
 
