@@ -13,6 +13,7 @@ import "../../styles/Load.css";
 
 const ManageAppointments = () => {
   const { username, patientUserId } = useParams();
+  const [appointmentActions, setAppointmentActions] = useState({});
   const [showActions, setShowActions] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -113,7 +114,7 @@ const ManageAppointments = () => {
         throw new Error('Network response was not ok');
       })
       .then((appointmentsData) => {
-        const formattedAppointments = appointmentsData.map((appointment) => {
+        const formattedAppointments = appointmentsData.map((appointment, index) => {
           // Extract date and time components
           const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
           const [hours, minutes] = appointment.startTime.split(':').map(Number);
@@ -122,6 +123,11 @@ const ManageAppointments = () => {
           // Create Date objects for start and end times
           const startDate = new Date(year, month - 1, day, hours, minutes);
           const endDate = new Date(year, month - 1, day, hours2, minutes2);
+
+          setAppointmentActions(prevState => ({
+            ...prevState,
+            [index]: false
+          }));
           // Create an appointment object
           return {
             title: appointment.patientName,
@@ -407,23 +413,26 @@ const ManageAppointments = () => {
                       <div style={{ borderColor: getBorderColor(appointment.appointmentStatus) }}>{appointment.appointmentStatus}</div>
                     </td>
                     <td>
-                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                    <div style={{ position: 'relative', display: 'inline-block' }} key={index}>
                       <button
                         style={{
                           padding: 10,
                           marginLeft: "10px",
-                          height: showActions ? '32px' : '65px',
+                          height: appointmentActions[index] ? '32px' : '65px',
                           width: "250px",
                           borderRadius: '5px',
-                          backgroundColor: showActions ? '#fff' : '#fff',
-                          color: showActions ? '#000000' : '#333'
+                          backgroundColor: appointmentActions[index] ? '#fff' : '#fff',
+                          color: appointmentActions[index] ? '#000000' : '#333'
                         }}
-                        onClick={() => setShowActions(!showActions)}
+                        onClick={() => setAppointmentActions(prevState => ({
+                          ...prevState,
+                          [index]: !prevState[index]
+                        }))}
                       >
                         Appointment Options
                       </button>
 
-                      {showActions && (
+                      {appointmentActions[index] && (
                         <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 1 }}>
                           <button
                             style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#0094d4', color: '#fff', marginLeft: "10px" }}
