@@ -64,7 +64,7 @@ const DoctorCard = ({ doctor }) => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await fetch('http://localhost:8080/schedules');
+        const response = await fetch('https://railway-backend-production-a8c8.up.railway.app/schedules');
         
         if (!response.ok) {
           throw new Error('Failed to fetch schedules');

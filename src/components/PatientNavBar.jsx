@@ -12,7 +12,7 @@ const PatientNavBar = ({ username }) => {
   const fetchUser = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/patientdetails/${username}`);
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientdetails/${username}`);
       
       if (response.ok) {
         const data = await response.json();
@@ -37,7 +37,7 @@ const PatientNavBar = ({ username }) => {
 
   const handleLogout = async () => {
     try {
-        const response = await fetch(`http://localhost:8080/patientlogout/${username}`, {
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientlogout/${username}`, {
         method: 'POST',
         });
 

@@ -94,7 +94,7 @@ const EditDoctorProfile = () => {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/doctordetails/${loggedInUsername}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctordetails/${loggedInUsername}`);
         if (response.ok) {
           const data = await response.json();
           setUserId(data.user.userId);
@@ -164,7 +164,7 @@ const EditDoctorProfile = () => {
 
 
     try {
-      const url = new URL(`http://localhost:8080/editdoctor/${loggedInUsername}`);
+      const url = new URL(`https://railway-backend-production-a8c8.up.railway.app/editdoctor/${loggedInUsername}`);
       const userData = {
         user: {
           username,
@@ -255,7 +255,7 @@ const EditDoctorProfile = () => {
       return;
     }
     try {
-      const response = await fetch('http://localhost:8080/changePass/doctor', {
+      const response = await fetch('https://railway-backend-production-a8c8.up.railway.app/changePass/doctor', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -281,7 +281,7 @@ const EditDoctorProfile = () => {
 
   const handleDeleteUser = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/doctors?userId=${userId}`, {
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctors?userId=${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
