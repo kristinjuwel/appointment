@@ -78,6 +78,7 @@ function AdminHome() {
 
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [currentDoctor, setCurrentDoctor] = useState('');
   const [currentPatient, setCurrentPatient] = useState('');
   const [schedules, setSchedules] = useState([
@@ -323,6 +324,7 @@ function AdminHome() {
 
   const handleApprovalSubmit = async (doctorId) => {
     try {
+      setLoading(true);
       const url = `https://railway-backend-production-a8c8.up.railway.app/approval?userId=${doctorId}&approvalStatus=${approved}`;
       const response = await fetch(url, {
         method: 'POST',
@@ -340,6 +342,9 @@ function AdminHome() {
     } catch (error) {
       console.error('Error submitting approval:', error);
       setResult('Error submitting approval');
+    }finally {
+      // Set loading back to false, regardless of success or failure
+      setLoading(false);
     }
   };
 
@@ -439,7 +444,7 @@ function AdminHome() {
                           type="text"
                           name="docName"
                           placeholder="Doctor Name"
-                          style={{ width: "400px", marginBottom: "0px" }}
+                          style={{ width: "335px", marginBottom: "0px" }}
                           value={`${currentDoctor.firstName} ${currentDoctor.lastName}`}
                           readOnly
                         />
@@ -451,7 +456,7 @@ function AdminHome() {
                           type="text"
                           name="prcId"
                           placeholder="PRC ID"
-                          style={{ width: "100%", marginBottom: "0px" }}
+                          style={{ width: "335px", marginBottom: "0px" }}
                           value={currentDoctor.prcId}
                           readOnly
                         />
@@ -712,7 +717,11 @@ function AdminHome() {
       </div>
       </div>
       <div style={{ bottom: "0", position: "fixed" }}>
-        
+      {loading && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+      )}
         <HomeFooter />
       </div>
 
