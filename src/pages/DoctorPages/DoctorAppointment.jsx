@@ -11,7 +11,7 @@ import HomeFooter from '../../components/HomeFooter';
 import HomeNavbar from '../../components/HomeNavbar';
 
 const DoctorAppointment = () => {
-  const {username} = useParams();
+  const { username } = useParams();
   const [appointments, setAppointments] = useState([
     {
       title: '',
@@ -22,15 +22,16 @@ const DoctorAppointment = () => {
       end: new Date(),  // 5:00 PM
       appointmentId: '',
       appointmentStatus: '',
-      slots: ''
+      slots: '',
+      deletionStatus: '',
     },
   ]);
 
 
   useEffect(() => {
-    // Replace 'http://localhost:8080/' with your actual API URL
-    fetch(`http://localhost:8080/getDoctorUserId?username=${username}`)
-        .then((response) => {
+    // Replace 'https://railway-backend-production-a8c8.up.railway.app/' with your actual API URL
+    fetch(`https://railway-backend-production-a8c8.up.railway.app/getDoctorUserId?username=${username}`)
+      .then((response) => {
         if (response.ok) {
           return response.json();
         }
@@ -38,7 +39,7 @@ const DoctorAppointment = () => {
       })
       .then((data) => {
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
+        fetch(`https://railway-backend-production-a8c8.up.railway.app/docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -66,10 +67,11 @@ const DoctorAppointment = () => {
                 end: endDate,
                 appointmentId: appointment.transactionNo,
                 appointmentStatus: appointment.status,
-                slots: appointment.slots
+                slots: appointment.slots,
+                deletionStatus: appointment.clinic.deletionStatus,
               };
-            });
 
+            });
             setAppointments(formattedAppointments);
           })
           .catch(() => {
@@ -93,7 +95,7 @@ const DoctorAppointment = () => {
     getDay,
     locales
   })
-  
+
   const getBackgroundColor = (status) => {
     switch (status) {
       case 'Cancelled':
@@ -104,12 +106,14 @@ const DoctorAppointment = () => {
         return '#FFFFDC';
       case 'Approved by Doctor':
         return '#BAFFC4';
+      case 'Completed':
+        return '#ffffff';
       default:
         return 'lightgray';
     }
   };
 
-  
+
 
 
   const filterAndAggregateAppointments = (appointments) => {
@@ -117,20 +121,23 @@ const DoctorAppointment = () => {
     const uniqueAppointments = {};
 
     // Iterate through each appointment
-    appointments.forEach(appointment => {
-      const { title, patientUserId, clinic } = appointment;
+    appointments.forEach((appointment) => {
+      const { title, patientUserId, clinic, deletionStatus } = appointment;
 
-      // Check if the title already exists in uniqueAppointments
-      if (!uniqueAppointments[title]) {
-        // If not, create an entry with an array containing the current appointment
-        uniqueAppointments[title] = {
-          title,
-          patientUserId,
-          clinics: [clinic],
-        };
-      } else {
-        // If yes, append the clinic to the existing array
-        uniqueAppointments[title].clinics.push(clinic);
+      // Check if the appointment is not marked as deleted
+      if (deletionStatus !== "Deleted") {
+        // Check if the title already exists in uniqueAppointments
+        if (!uniqueAppointments[title]) {
+          // If not, create an entry with an array containing the current appointment
+          uniqueAppointments[title] = {
+            title,
+            patientUserId,
+            clinics: [clinic],
+          };
+        } else {
+          // If yes, append the clinic to the existing array
+          uniqueAppointments[title].clinics.push(clinic);
+        }
       }
     });
 
@@ -140,55 +147,59 @@ const DoctorAppointment = () => {
     return resultAppointments;
   };
 
-
   const resultAppointments = filterAndAggregateAppointments(appointments);
 
-
-    
 
   const handleManage = async (patientUserId) => {
     window.location.href = `/manageappointments/${username}/${patientUserId}`;
   };
-  
-  const CustomEvent = ({ event }) => (
-    <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
-      <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        {event.clinic}
-      </strong>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        {event.title}
-      </p>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBackgroundColor(event.appointmentStatus) }}>
-        {event.appointmentStatus}
-      </p>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        Remaining Slots: {event.slots}
-      </p>
-    </div>
 
-  );
+  const CustomEvent = ({ event }) => {
+    // Check if the event is not marked as deleted
+    if (event.deletionStatus === "Deleted") {
+      return null; // Skip rendering if the event is deleted
+    }
+
+    return (
+      <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
+        <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+          {event.clinic}
+        </strong>
+        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+          {event.title}
+        </p>
+        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBackgroundColor(event.appointmentStatus) }}>
+          {event.appointmentStatus}
+        </p>
+        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+          Remaining Slots: {event.slots}
+        </p>
+      </div>
+    );
+  };
+
   const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
-  useEffect( () => {
+  useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/doctordetails/${username}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctordetails/${username}`);
         if (response.ok) {
-         setIsDoctorLoggedIn(true);
- 
+          setIsDoctorLoggedIn(true);
+
         } else {
           setIsDoctorLoggedIn(false);
-  
+
         }
       } catch (error) {
         console.error('Error fetching user:', error);
         setIsDoctorLoggedIn(false);
-  
+
       }
     };
     fetchUser();
   }, [username]);
-  
+
   if (!isDoctorLoggedIn) {
     return (
       <div>
@@ -199,10 +210,10 @@ const DoctorAppointment = () => {
         </div>
         <HomeFooter />
       </div>
-  
+
     );
   }
- 
+
 
   return (
     <div>
@@ -222,29 +233,29 @@ const DoctorAppointment = () => {
           <div style={{ marginLeft: "30px" }}>
             <h1>My Clinic</h1>
             {resultAppointments.map((appointment, index) => (
-              <table key={index} style={{borderBottom: "1px solid lightgrey"}}>
+              <table key={index} style={{ borderBottom: "1px solid lightgrey" }}>
                 <tr>
                   <td width={250}>{appointment.title}</td>
-                  
+
                 </tr>
                 <tr >
                   <td width={250}>
-                
+
                     {Array.from(new Set(appointment.clinics)).map((clinic, clinicIndex) => (
                       <span key={clinicIndex}>{clinic}{clinicIndex !== appointment.clinics.length - 1 ? <br /> : ''}</span>
                     ))}
                   </td>
-                  
+
                 </tr>
                 <tr>
-                  <td ><button style={{ borderRadius: 0, width: "260px", height: "40px"}} onClick={() => handleManage(appointment.patientUserId)}>Manage Appointments</button></td>
-                  </tr>
+                  <td ><button style={{ borderRadius: 0, width: "260px", height: "40px" }} onClick={() => handleManage(appointment.patientUserId)}>Manage Appointments</button></td>
+                </tr>
               </table>
 
             ))}
           </div>
         ) : (
-          
+
           <div style={{ marginLeft: "1%" }}>
             <p>You have no appointments yet.</p>
           </div>

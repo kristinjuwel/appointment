@@ -30,6 +30,7 @@ import HomeNavbar from '../../components/HomeNavbar';
 const EditPatientProfile = () => {
   const { loggedInUsername } = useParams();
   const [isPatientLoggedIn, setIsPatientLoggedIn] = useState('');
+  const [userId, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
@@ -51,15 +52,17 @@ const EditPatientProfile = () => {
   const [avatar, setAvatar] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('');
   const [passwordsMatchError, setPasswordsMatchError] = useState('');
+  const [isChangePasswordVisible, setIsChangePasswordVisible] = useState(false);
+  const [isDeleteAccountVisible, setIsDeleteAccountVisible] = useState(false);
+
 
   useEffect(() => {
-
-
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/patientdetails/${loggedInUsername}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientdetails/${loggedInUsername}`);
         if (response.ok) {
           const data = await response.json();
+          setUserId(data.user.userId);
           setUsername(data.user.username);
           setFirstName(data.user.firstName);
           setMiddleName(data.user.middleName);
@@ -75,10 +78,12 @@ const EditPatientProfile = () => {
           setPhilhealthId(data.philhealthId);
           setHmo(data.hmo);
           setAvatar(data.user.avatar);
+          setIsPatientLoggedIn(true);
         } else {
         }
       } catch (error) {
         console.error('Error fetching user:', error);
+        setIsPatientLoggedIn(false);
 
       }
 
@@ -118,24 +123,6 @@ const EditPatientProfile = () => {
 
   }, [avatar]);
 
-  useEffect(() => {
-    const fetchLoggedInPatientId = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/patuserid/${username}`);
-        if (response.ok) {
-          setIsPatientLoggedIn(true);
-        } else {
-          setIsPatientLoggedIn(false);
-        }
-      } catch (error) {
-        setIsPatientLoggedIn(false);
-        // Handle the error or provide feedback to the user
-      }
-    };
-
-    fetchLoggedInPatientId();
-  }, [username]);
-
   const handleEdit = async () => {
     // Check if any of the fields are empty
     if (
@@ -162,7 +149,7 @@ const EditPatientProfile = () => {
     }
 
     try {
-      const url = new URL(`http://localhost:8080/editpatient/${loggedInUsername}`);
+      const url = new URL(`https://railway-backend-production-a8c8.up.railway.app/editpatient/${loggedInUsername}`);
       const userData = {
         user: {
           username,
@@ -229,15 +216,22 @@ const EditPatientProfile = () => {
     setAvatarSelectionOpen(false);
   };
 
-  const [isPopupVisible, setPopupVisibility] = useState(false);
+  const closeChangePassword = () => {
+    setIsChangePasswordVisible(false);
+  };
 
-  const closePopup = () => {
-    // Close the popup
-    setPopupVisibility(false);
+  const closeDeleteAccount = () => {
+    setIsDeleteAccountVisible(false);
   };
 
   const handleChangePassword = () => {
-    setPopupVisibility(true);
+    setIsChangePasswordVisible(true);
+    setIsDeleteAccountVisible(false);
+  };
+
+  const handleDeleteAccount = () => {
+    setIsChangePasswordVisible(false);
+    setIsDeleteAccountVisible(true);
   };
 
   const handleNewPassword = async () => {
@@ -246,7 +240,7 @@ const EditPatientProfile = () => {
       return;
     }
     try {
-      const response = await fetch('http://localhost:8080/changePass/patient', {
+      const response = await fetch('https://railway-backend-production-a8c8.up.railway.app/changePass/patient', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -259,7 +253,7 @@ const EditPatientProfile = () => {
       });
 
       if (response.ok) {
-        setPopupVisibility(false);
+        setIsChangePasswordVisible(false);
 
       } else {
         console.error('Failed to change password:', response.statusText);
@@ -283,52 +277,82 @@ const EditPatientProfile = () => {
 
     );
   }
+  const handleDeleteUser = async () => {
+    try {
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patients?userId=${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log('User deleted successfully');
+        window.location.reload();
+      } else {
+        console.error('Failed to delete user');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
 
   return (
     <div className="profile-container" id="container">
       <PatientNavBar username={loggedInUsername} />
       <div className="editing-container" style={{ height: "95vh" }}>
 
-        {<Popup trigger={isPopupVisible}>
-          <h3>Please enter your current password:</h3>
-          <div className="profile-infield">
-            <input
-              type="password"
-              placeholder="Enter current password"
-              style={{ width: '550px' }}
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-            />
-          </div>
+        {isChangePasswordVisible && (
+          <Popup trigger={isChangePasswordVisible}>
+            <h3>Please enter your current password:</h3>
+            <div className="profile-infield">
+              <input
+                type="password"
+                placeholder="Enter current password"
+                style={{ width: '565px' }}
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+            </div>
 
-          <h3>Please enter your new password: </h3>
-          <div className="profile-infield">
-            <input
-              type="password"
-              placeholder="Enter new password"
-              style={{ width: '550px' }}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-          </div>
+            <h3>Please enter your new password: </h3>
+            <div className="profile-infield">
+              <input
+                type="password"
+                placeholder="Enter new password"
+                style={{ width: '565px' }}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
 
-          <h3>Please re-enter your new password: </h3>
-          <div className="profile-infield">
-            <input
-              type="password"
-              placeholder="Confirm new password"
-              style={{ width: '550px' }}
-              value={retypeNewPassword}
-              onChange={(e) => setRetypeNewPassword(e.target.value)}
-            />
-          </div>
+            <h3>Please re-enter your new password: </h3>
+            <div className="profile-infield">
+              <input
+                type="password"
+                placeholder="Confirm new password"
+                style={{ width: '565px' }}
+                value={retypeNewPassword}
+                onChange={(e) => setRetypeNewPassword(e.target.value)}
+              />
+            </div>
 
-          {passwordsMatchError && <h4 style={{ justifyContent: "center", textAlign: "center", color: 'red' }}>{passwordsMatchError}</h4>}
+            {passwordsMatchError && <h4 style={{ justifyContent: "center", textAlign: "center", color: 'red' }}>{passwordsMatchError}</h4>}
 
-          <button style={{ padding: 5, borderRadius: 0, width: "48.5%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px" }} onClick={handleNewPassword}>Submit Changes</button>
-          <button className='cancel' onClick={closePopup} style={{ padding: 5, borderRadius: 0, width: "48.5%", textAlign: "center", marginTop: "10px", height: "40px" }}>Discard Changes</button>
-        </Popup>
-        }
+            <button style={{ padding: 5, borderRadius: 0, width: "48.25%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px" }} onClick={handleNewPassword}>Submit Changes</button>
+            <button className='cancel' onClick={closeChangePassword} style={{ padding: 5, borderRadius: 0, width: "48.25%", textAlign: "center", marginTop: "10px", height: "40px" }}>Discard Changes</button>
+          </Popup>
+        )}
+
+        {isDeleteAccountVisible && (
+          <Popup trigger={isDeleteAccountVisible}>
+            <div style={{ textAlign: "center", marginBottom: "10px", fontSize: "20px" }}><b>Are you sure you want to delete your account?</b></div>
+
+            <button onClick={handleDeleteUser} style={{ padding: 5, borderRadius: 0, width: "48.5%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px", backgroundColor: "#b22222" }} >Delete Account</button>
+            <button className='cancel' onClick={closeDeleteAccount} style={{ padding: 5, borderRadius: 0, width: "48.5%", textAlign: "center", marginTop: "10px", height: "40px" }}>Cancel</button>
+          </Popup>
+        )}
+
         <div className="edit-steps">
           <div className="edit-card" style={{ marginTop: '-5%' }}>
             <h1>Edit Patient Profile</h1>
@@ -470,7 +494,7 @@ const EditPatientProfile = () => {
                     onChange={(e) => setSex(e.target.value)} />
                 </div>
               </div>
-              <div className='container-card'>
+              <div className='container-card' >
                 <b>Address:</b>
                 <div className="profile-infield" style={{ width: "44vw" }}>
                   <input type="text"
@@ -526,9 +550,12 @@ const EditPatientProfile = () => {
             </div>
             <br />
             <br />
-            <button type="button" onClick={handleEdit} style={{ marginLeft: "18%", borderRadius: 0, width: "300px" }}>Save Changes</button>
-            <button type="button" onClick={handleChangePassword} style={{ marginLeft: "50px", borderRadius: 0, width: "300px", backgroundColor: "gray" }}>Change Password</button>
-            {editMessage && <p>{editMessage}</p>}
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button type="button" onClick={handleEdit} style={{ borderRadius: 0, width: "230px" }}>Save Changes</button>
+              <button type="button" onClick={handleChangePassword} style={{ marginLeft: "25px", borderRadius: 0, width: "230px", backgroundColor: "gray" }}>Change Password</button>
+              <button type="button" onClick={handleDeleteAccount} style={{ marginLeft: "25px", borderRadius: 0, width: "230px", backgroundColor: "#b22222" }}>Delete Account</button>
+              {editMessage && <p>{editMessage}</p>}
+            </div>
             <br />
             <br />
             <br />

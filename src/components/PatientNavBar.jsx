@@ -6,11 +6,13 @@ const PatientNavBar = ({ username }) => {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
   const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
 
   const fetchUser = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:8080/patientdetails/${username}`);
+      setLoading(true);
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientdetails/${username}`);
       
       if (response.ok) {
         const data = await response.json();
@@ -23,6 +25,9 @@ const PatientNavBar = ({ username }) => {
     } catch (error) {
       setIsError(true);
       console.error('Error during fetchUser:', error);
+    } finally {
+      // Set loading back to false, regardless of success or failure
+      setLoading(false);
     }
   }, [username]);
 
@@ -32,7 +37,7 @@ const PatientNavBar = ({ username }) => {
 
   const handleLogout = async () => {
     try {
-        const response = await fetch(`http://localhost:8080/patientlogout/${username}`, {
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientlogout/${username}`, {
         method: 'POST',
         });
 
@@ -85,6 +90,11 @@ const PatientNavBar = ({ username }) => {
         </li>
       </ul>
     </nav>
+    {loading && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+      )}
   </div>
   )
 }

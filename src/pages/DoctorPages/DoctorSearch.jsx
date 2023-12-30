@@ -33,7 +33,7 @@ const DoctorSearch = () => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await fetch('http://localhost:8080/schedules');
+        const response = await fetch('https://railway-backend-production-a8c8.up.railway.app/schedules');
 
         if (!response.ok) {
           throw new Error('Failed to fetch schedules');
@@ -47,19 +47,24 @@ const DoctorSearch = () => {
 
         setSchedules(formattedSchedules);
         try {
-          const response = await fetch('http://localhost:8080/allusers');
-
+          const response = await fetch('https://railway-backend-production-a8c8.up.railway.app/allusers');
+        
           if (response.ok) {
             const data = await response.json();
             const formattedDoctors = data.map((doctorData) => {
               const doctorId = doctorData.userId;
-
+        
+              // Check if deletionStatus is 'deleted'
+              if (doctorData.user.deletionStatus === 'Deleted') {
+                return null; // Skip this doctor if deleted
+              }
+        
               // Find the corresponding schedules for this doctorId
               const matchingSchedules = formattedSchedules.filter((schedule) => schedule.doctorUserId === doctorData.userId);
-
+        
               // Extract unique clinic names from the matching schedules
               const uniqueClinicNames = Array.from(new Set(matchingSchedules.map((schedule) => schedule.clinicName)));
-
+        
               // Set the clinicName property in the formatted doctor object
               const formattedDoctor = {
                 doctorId: doctorId,
@@ -71,10 +76,11 @@ const DoctorSearch = () => {
                 avatar: doctorData.user.avatar,
                 clinicName: uniqueClinicNames.length > 0 ? uniqueClinicNames : [],
               };
-
+        
               return formattedDoctor;
-            });
-
+            }).filter(Boolean); // Filter out null values (i.e., deleted doctors)
+        
+            // Now formattedDoctors will only include doctors with deletionStatus !== 'deleted'
             setDoctors(formattedDoctors);
             setSearchDoctors(formattedDoctors);
           } else {
@@ -85,6 +91,7 @@ const DoctorSearch = () => {
         } finally {
           setIsLoading(false);
         }
+        
       } catch (error) {
         setError(error.message);
       } finally {
@@ -100,7 +107,7 @@ const DoctorSearch = () => {
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/patuserid/${username}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`);
         if (response.ok) {
           setIsPatientLoggedIn(true);
         } else {

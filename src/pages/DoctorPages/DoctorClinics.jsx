@@ -24,7 +24,7 @@ const DoctorClinics = () => {
   const [slots, setSlots] = useState('');
   const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
   const [showAddNewClinicSched, setShowAddNewClinicSched] = useState(false);
-  
+
   const toggleAddNewClinicSched = () => {
     setShowAddNewClinicSched(!showAddNewClinicSched);
   };
@@ -37,7 +37,8 @@ const DoctorClinics = () => {
       officeNumber: '',
       officeEmail: '',
       hospital: '',
-      clinicId: ''
+      clinicId: '',
+      deletionStatus: '',
     },
   ]);
 
@@ -45,7 +46,7 @@ const DoctorClinics = () => {
     const fetchData = async () => {
       try {
         // Fetch doctor's user ID
-        const userResponse = await fetch(`http://localhost:8080/getDoctorUserId?username=${username}`);
+        const userResponse = await fetch(`https://railway-backend-production-a8c8.up.railway.app/getDoctorUserId?username=${username}`);
 
         if (!userResponse.ok) {
           throw new Error('Failed to fetch doctor user ID');
@@ -54,7 +55,7 @@ const DoctorClinics = () => {
         const userData = await userResponse.json();
 
         // Fetch doctor's schedule and clinics
-        const clinicsResponse = await fetch(`http://localhost:8080/docsched/${userData}`);
+        const clinicsResponse = await fetch(`https://railway-backend-production-a8c8.up.railway.app/docsched/${userData}`);
 
         if (!clinicsResponse.ok) {
           throw new Error('Failed to fetch doctor schedule and clinics');
@@ -76,12 +77,12 @@ const DoctorClinics = () => {
               officeEmail: '' + schedule.clinic.officeEmail,
               hospital: '' + schedule.clinic.hospital,
               clinicId: '' + schedule.clinic.clinicId,
+              deletionStatus: '' + schedule.clinic.deletionStatus,
             });
 
             clinicIdsAdded.push(clinicId);
           }
         });
-
         setSchedules(formattedClinics);
       } catch (error) {
         // Handle errors
@@ -111,7 +112,7 @@ const DoctorClinics = () => {
   const handleSubmit = async () => {
     try {
       if (clinicId) {
-        const response = await fetch(`http://localhost:8080/clinic/${clinicId}`, {
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/clinic/${clinicId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -142,17 +143,6 @@ const DoctorClinics = () => {
     }
   };
 
-  const handleDelete = async (clinic) => {
-    const response = await fetch(`http://localhost:8080/clinic/${clinic.clinicId}`, {
-      method: 'DELETE'
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to delete clinic');
-    }
-
-  };
-
   const closePopup = () => {
     // Close the popup
     setPopupVisibility(false);
@@ -160,7 +150,7 @@ const DoctorClinics = () => {
 
   const fetchScheduleByClinicId = async (clinicId) => {
     try {
-      const response = await fetch(`http://localhost:8080/searchByClinicId/${clinicId}`);
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/searchByClinicId/${clinicId}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch schedule data');
@@ -168,7 +158,7 @@ const DoctorClinics = () => {
 
       const scheduleData = await response.json();
       setAllSchedules(scheduleData);
-      
+
 
     } catch (error) {
       // Handle errors
@@ -178,7 +168,7 @@ const DoctorClinics = () => {
 
   const updateSchedule = async (scheduleId, updatedScheduleDay, updatedStartTime, updatedEndTime, updatedSlots) => {
     try {
-      const url = `http://localhost:8080/schedule/${scheduleId}?scheduleDay=${updatedScheduleDay}&startTime=${updatedStartTime}&endTime=${updatedEndTime}&slots=${updatedSlots}`;
+      const url = `https://railway-backend-production-a8c8.up.railway.app/schedule/${scheduleId}?scheduleDay=${updatedScheduleDay}&startTime=${updatedStartTime}&endTime=${updatedEndTime}&slots=${updatedSlots}`;
 
       const response = await fetch(url, {
         method: 'PUT',
@@ -203,13 +193,10 @@ const DoctorClinics = () => {
     }
   };
 
-
-
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/doctordetails/${username}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctordetails/${username}`);
         if (response.ok) {
           setIsDoctorLoggedIn(true);
 
@@ -265,7 +252,7 @@ const DoctorClinics = () => {
 
   const addSchedule = async () => {
     try {
-      const url = `http://localhost:8080/schedule?name=${allSchedules[0].clinic.name}&doctorUserId=${allSchedules[0].doctorUserId}&scheduleDay=${scheduleDay}&startTime=${startTime}&endTime=${endTime}&slots=${slots}`;
+      const url = `https://railway-backend-production-a8c8.up.railway.app/schedule?name=${allSchedules[0].clinic.name}&doctorUserId=${allSchedules[0].doctorUserId}&scheduleDay=${scheduleDay}&startTime=${startTime}&endTime=${endTime}&slots=${slots}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -286,28 +273,31 @@ const DoctorClinics = () => {
     }
   };
 
+
   return (
     <div className="info-container" id="container" style={{ height: "100vh" }}>
       <DoctorNavbar username={username} />
-      <div className="info-container">
+      <div className="info-container" style={{ maxHeight: "90vh", overflowY: "auto" }}>
         <h1>All My Clinics</h1>
-        <br />
-        <div style={{ display: "block", marginLeft: "6%", marginRight: "auto", width: "90%" }}>
-          <div className="doctor-grid">
-            {schedules.map((schedule, index) => (
-              <ClinicCard
-                key={index}
-                clinic={schedule}
-                onEdit={() => handleEdit(schedule)}
-                onDelete={() => handleDelete(schedule)}  // Pass the entire schedule object
-              />
-            ))}
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", margin: "auto", alignItems: "center" }}>
+            {schedules
+              .filter(schedule => schedule.deletionStatus !== "Deleted")
+              .map((schedule, index) => (
+                <ClinicCard
+                  key={index}
+                  clinic={schedule}
+                  onEdit={() => handleEdit(schedule)}
+                />
+              ))}
+
           </div>
         </div>
       </div>
       <DoctorFooter />
 
-      {/* Popup */}
+
+
       <Popup trigger={isPopupVisible}>
         <form action="#" id="signin-form" onSubmit={(e) => e.preventDefault()}>
           <div className="infield" style={{ maxHeight: "300px", overflowY: "auto", overflowX: "hidden" }}>
@@ -421,69 +411,69 @@ const DoctorClinics = () => {
                 </div>
               ))}
             </div>
-                <button onClick={toggleAddNewClinicSched} className="addSched" style={{ justifyContent: 'center', padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "15px", height: "40px", marginRight: "10px"}}>
-                    Add New Clinic Schedule
-                </button>
-                {showAddNewClinicSched && (
-                <div className="addNewClinicSched">
-                  <br></br>
+            <button onClick={toggleAddNewClinicSched} className="addSched" style={{ justifyContent: 'center', padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "15px", height: "40px", marginRight: "10px" }}>
+              Add New Clinic Schedule
+            </button>
+            {showAddNewClinicSched && (
+              <div className="addNewClinicSched">
+                <br></br>
                 <h3>New Clinic Schedule</h3>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                      <div style={{ display: "flex", flexDirection: "row" }}>
-                        <div style={{ display: "flex", flexDirection: "column", marginRight: "20px" }}>
-                          <h5>Day</h5>
-                          <input
-                            type="text"
-                            placeholder= "Monday"
-                            onChange={(e) => setScheduleDay(e.target.value)}
-                            style={{ width: "255px" }}
-                          />
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <h5>Slots</h5>
-                            <input
-                              type="text"
-                              placeholder= "10"
-                              onChange={(e) => setSlots(e.target.value)}
-                              style={{ width: "255px" }}
-                            />
-                        </div>
-                      </div>
-                    </div>         
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div style={{ display: "flex", flexDirection: "column", marginRight: "20px" }}>
+                      <h5>Day</h5>
+                      <input
+                        type="text"
+                        placeholder="Monday"
+                        onChange={(e) => setScheduleDay(e.target.value)}
+                        style={{ width: "255px" }}
+                      />
+                    </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                      <div style={{ display: "flex", flexDirection: "row" }}>
-                        <div style={{ display: "flex", flexDirection: "column", marginRight: "20px" }}>
-                        <h5>Start Time</h5>
-                          <input
-                            type="text"
-                            placeholder= "09:00:00"
-                            onChange={(e) => setStartTime(e.target.value)}
-                            style={{ width: "255px" }}
-                          />
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <h5>End Time</h5>
-                            <input
-                              type="text"
-                              placeholder= "12:00:00"
-                              onChange={(e) => setEndTime(e.target.value)}
-                              style={{ width: "255px" }}
-                            />
-                        </div>
-                      </div>
-                    </div>    
-                    <button onClick={() => addSchedule()} style={{ justifyContent: 'center', padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px" }}>
-                    Save Clinic Schedule
-                  </button>
-    
+                      <h5>Slots</h5>
+                      <input
+                        type="text"
+                        placeholder="10"
+                        onChange={(e) => setSlots(e.target.value)}
+                        style={{ width: "255px" }}
+                      />
+                    </div>
+                  </div>
                 </div>
-                 )}
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div style={{ display: "flex", flexDirection: "column", marginRight: "20px" }}>
+                      <h5>Start Time</h5>
+                      <input
+                        type="text"
+                        placeholder="09:00:00"
+                        onChange={(e) => setStartTime(e.target.value)}
+                        style={{ width: "255px" }}
+                      />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <h5>End Time</h5>
+                      <input
+                        type="text"
+                        placeholder="12:00:00"
+                        onChange={(e) => setEndTime(e.target.value)}
+                        style={{ width: "255px" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <button onClick={() => addSchedule()} style={{ justifyContent: 'center', padding: 5, borderRadius: 0, width: "100%", textAlign: "center", marginTop: "10px", height: "40px", marginRight: "10px" }}>
+                  Save Clinic Schedule
+                </button>
 
-                <button style={{padding: 5, borderRadius: 0, width: "48.7%", textAlign: "center", marginTop: "15px", height: "40px", marginRight: "10px"}} onClick={handleSubmit}>Submit Changes</button>
-                <button className='cancel' onClick={closePopup} style={{padding: 5, borderRadius: 0, width: "49%", textAlign: "center", marginTop: "15px", height: "40px"}}>Discard Changes</button>
               </div>
-            </form>
-          </Popup>
+            )}
+
+            <button style={{ padding: 5, borderRadius: 0, width: "48.7%", textAlign: "center", marginTop: "15px", height: "40px", marginRight: "10px" }} onClick={handleSubmit}>Submit Changes</button>
+            <button className='cancel' onClick={closePopup} style={{ padding: 5, borderRadius: 0, width: "49%", textAlign: "center", marginTop: "15px", height: "40px" }}>Discard Changes</button>
+          </div>
+        </form>
+      </Popup>
     </div>
   );
 };

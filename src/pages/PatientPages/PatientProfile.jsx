@@ -56,18 +56,22 @@ const PatientProfile = () => {
     useEffect(() => {
     const fetchUser = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/patientdetails/${username}`);
+          const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientdetails/${username}`);
           if (response.ok) {
             const data = await response.json();
             setUser(data);
             setPatientUserId(data.userId);
             setAvatar(data.user.avatar);
+            setIsPatientLoggedIn(true);
+
           } else {
             setIsError(true);
           }
         } catch (error) {
           console.error('Error fetching user:', error);
           setIsError(true);
+          setIsPatientLoggedIn(false);
+
         }
     };
 
@@ -103,53 +107,60 @@ const PatientProfile = () => {
 
 
   useEffect(() => {
-    // Define a function to format appointments
-    const formatAppointments = (appointmentsData) => {
-      return appointmentsData.map((appointment) => {
-        const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
-        const [hours, minutes] = appointment.startTime.split(':').map(Number);
-        const [hours2, minutes2] = appointment.endTime.split(':').map(Number);
-
-        const startDate = new Date(year, month - 1, day, hours, minutes);
-        const endDate = new Date(year, month - 1, day, hours2, minutes2);
-
-        return {
-          title: 'Dr. ' + appointment.doctorName,
-          clinic: appointment.clinicName,
-          address: appointment.address,
-          number: appointment.clinic.officeNumber,
-          start: startDate,
-          end: endDate,
-          appointmentId: appointment.transactionNo,
-          appointmentStatus: appointment.status,
-        };
-      });
-    };
-
-
-
-    // Fetch appointments when the component mounts
-    const fetchAppointments = async () => {
-      try {
-        const appointmentsResponse = await fetch(`http://localhost:8080/appointments?patientUserId=${patientUserId}`);
-
-        if (appointmentsResponse.ok) {
-          const appointmentsData = await appointmentsResponse.json();
-          const formattedAppointments = formatAppointments(appointmentsData);
-          setAppointments(formattedAppointments);
-        } else {
-          throw new Error('Network response was not ok');
+    fetch(`https://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
-      } catch (error) {
-        // Handle errors
-        console.error(error);
-      }
-    };
+        throw new Error('Network response was not ok');
+      })
+      .then((data) => {
+        fetch(`https://railway-backend-production-a8c8.up.railway.app/appointments?patientUserId=${data}`)
+          .then((appointmentsResponse) => {
+            if (appointmentsResponse.ok) {
+              return appointmentsResponse.json();
+            }
+            throw new Error('Network response was not ok');
+          })
+          .then((appointmentsData) => {
+            const formattedAppointments = appointmentsData
+              .filter(appointment => appointment.clinic.deletionStatus !== "Deleted" && appointment.patientUser.username === username)
+              .map((appointment) => {
+                // Extract date and time components
+                const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
+                const [hours, minutes] = appointment.startTime.split(':').map(Number);
+                const [hours2, minutes2] = appointment.endTime.split(':').map(Number);
+          
+                // Create Date objects for start and end times
+                const startDate = new Date(year, month - 1, day, hours, minutes);
+                const endDate = new Date(year, month - 1, day, hours2, minutes2);
+          
+                // Create an appointment object
+                return {
+                  title: 'Dr. ' + appointment.doctorName,
+                  clinic: appointment.clinicName,
+                  address: appointment.address,
+                  number: appointment.clinic.officeNumber,
+                  start: startDate,
+                  end: endDate,
+                  appointmentId: appointment.transactionNo,
+                  appointmentStatus: appointment.status,
+                };
+              });
 
-    fetchAppointments();
-  }, [patientUserId]); 
+            setAppointments(formattedAppointments);
+          })
+          .catch((error) => {
+            // Handle errors
+            console.error(error);
+          });
 
-
+      })
+      .catch((error) => {
+        setIsError(true);
+        console.error('Error:', error);
+      });
+  }, [username]);
     const locales = {
       "en-US": require("date-fns/locale/en-US")
     }
@@ -169,25 +180,7 @@ const PatientProfile = () => {
 
  
 
-    useEffect(() => {
-      const fetchLoggedInPatientId = async () => {
-        try {
-          const response = await fetch(`http://localhost:8080/patuserid/${username}`);
-          if (response.ok) {
-            const userId = await response.json();
-            setPatientUserId(userId);
-            setIsPatientLoggedIn(true);
-          } else {
-            setIsPatientLoggedIn(false);
-          }
-        } catch (error) {
-          setIsPatientLoggedIn(false);
-          // Handle the error or provide feedback to the user
-        }
-      };
-  
-      fetchLoggedInPatientId();
-    }, [username]); 
+
   
     if (!isPatientLoggedIn) {
       return (

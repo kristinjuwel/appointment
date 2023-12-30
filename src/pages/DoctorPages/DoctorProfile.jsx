@@ -69,7 +69,7 @@ const DoctorProfile = () => {
     setSelectedAvatar(avatarImports[avatar] || avatar00);
   };
   useEffect(() => {
-    fetch(`http://localhost:8080/getDoctorUserId?username=${username}`)
+    fetch(`https://railway-backend-production-a8c8.up.railway.app/getDoctorUserId?username=${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -77,7 +77,7 @@ const DoctorProfile = () => {
         throw new Error('Network response was not ok');
       })
       .then((data) => {
-        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
+        fetch(`https://railway-backend-production-a8c8.up.railway.app/docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -85,25 +85,27 @@ const DoctorProfile = () => {
             throw new Error('Network response was not ok');
           })
           .then((appointmentsData) => {
-            const formattedAppointments = appointmentsData.map((appointment) => {
-              // Extract date and time components
-              const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
-              const [hours, minutes] = appointment.startTime.split(':').map(Number);
-              const [hours2, minutes2] = appointment.endTime.split(':').map(Number);
-
-              // Create Date objects for start and end times
-              const startDate = new Date(year, month - 1, day, hours, minutes);
-              const endDate = new Date(year, month - 1, day, hours2, minutes2);
-
-              // Create an appointment object
-              return {
-                title: appointment.patientName,
-                start: startDate,
-                end: endDate,
-                appointmentId: appointment.transactionNo,
-                appointmentStatus: appointment.status
-              };
-            });
+            const formattedAppointments = appointmentsData
+              .filter(appointment => appointment.clinic.deletionStatus !== "Deleted" && appointment.doctorUser.username === username)
+              .map((appointment) => {
+                // Extract date and time components
+                const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
+                const [hours, minutes] = appointment.startTime.split(':').map(Number);
+                const [hours2, minutes2] = appointment.endTime.split(':').map(Number);
+          
+                // Create Date objects for start and end times
+                const startDate = new Date(year, month - 1, day, hours, minutes);
+                const endDate = new Date(year, month - 1, day, hours2, minutes2);
+          
+                // Create an appointment object
+                return {
+                  title: appointment.patientName,
+                  start: startDate,
+                  end: endDate,
+                  appointmentId: appointment.transactionNo,
+                  appointmentStatus: appointment.status
+                };
+              });
 
             setAppointments(formattedAppointments);
           })
@@ -139,7 +141,7 @@ const DoctorProfile = () => {
   useEffect( () => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/doctordetails/${username}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctordetails/${username}`);
         if (response.ok) {
           const data = await response.json();
           setUser(data);
