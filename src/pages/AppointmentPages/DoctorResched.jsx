@@ -44,7 +44,7 @@ const DoctorResched = () => {
   ]);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/getDoctorUserId?username=${username}`)
+    fetch(`https://railway-backend-production-a8c8.up.railway.app/getDoctorUserId?username=${username}`)
         .then((response) => {
         if (response.ok) {
           return response.json();
@@ -52,7 +52,7 @@ const DoctorResched = () => {
         throw new Error('Network response was not ok');
       })
       .then((data) => {
-        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
+        fetch(`https://railway-backend-production-a8c8.up.railway.app/docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -100,7 +100,7 @@ const DoctorResched = () => {
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/appointment/${appointmentId}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/appointment/${appointmentId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -167,7 +167,7 @@ const DoctorResched = () => {
 
   const handleReschedule = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
         method: 'PUT',
         // No need for headers when not sending a JSON payload
       });
@@ -279,7 +279,7 @@ const DoctorResched = () => {
   useEffect( () => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/doctordetails/${username}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctordetails/${username}`);
         if (response.ok) {
          setIsDoctorLoggedIn(true);
  
