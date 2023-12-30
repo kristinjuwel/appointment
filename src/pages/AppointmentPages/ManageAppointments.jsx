@@ -435,24 +435,24 @@ const ManageAppointments = () => {
                       {appointmentActions[index] && (
                         <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 1 }}>
                           <button
-                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#0094d4', color: '#fff', marginLeft: "10px" }}
-                            onClick={() => handleSetAsComplete(appointment.appointmentId)}
-                            type='submit'
-                          >
-                            Set as completed
-                          </button>
-                          <button
-                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#FF7400', color: '#fff', marginLeft: "10px" }}
-                            onClick={() => handleReschedule(appointment.appointmentId)}
-                          >
-                            Reschedule Appointment
-                          </button>
-                          <button
                             style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#76AD83', color: '#fff', marginLeft: "10px" }}
                             onClick={() => handleApprove(appointment.appointmentId)}
                             type='submit'
                           >
                             Approve Appointment
+                          </button>
+                          <button
+                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#FA8072', color: '#fff', marginLeft: "10px" }}
+                            onClick={() => handleReschedule(appointment.appointmentId)}
+                          >
+                            Reschedule Appointment
+                          </button>
+                          <button
+                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#0094d4', color: '#fff', marginLeft: "10px" }}
+                            onClick={() => handleSetAsComplete(appointment.appointmentId)}
+                            type='submit'
+                          >
+                            Set as completed
                           </button>
                         </div>
                       )}
