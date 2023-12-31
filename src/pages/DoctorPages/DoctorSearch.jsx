@@ -33,7 +33,7 @@ const DoctorSearch = () => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await fetch('http://localhost:8080/schedules');
+        const response = await fetch('http://railway-backend-production-a8c8.up.railway.app/schedules');
 
         if (!response.ok) {
           throw new Error('Failed to fetch schedules');
@@ -47,7 +47,7 @@ const DoctorSearch = () => {
 
         setSchedules(formattedSchedules);
         try {
-          const response = await fetch('http://localhost:8080/allusers');
+          const response = await fetch('http://railway-backend-production-a8c8.up.railway.app/allusers');
         
           if (response.ok) {
             const data = await response.json();
@@ -107,7 +107,7 @@ const DoctorSearch = () => {
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/patuserid/${username}`);
+        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`);
         if (response.ok) {
           setIsPatientLoggedIn(true);
         } else {

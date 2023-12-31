@@ -55,8 +55,8 @@ const SetAppointment = () => {
     },
   ]);
   useEffect(() => {
-    // Replace 'http://localhost:8080/' with your actual API URL
-    fetch(`http://localhost:8080/patuserid/${username}`)
+    // Replace 'http://railway-backend-production-a8c8.up.railway.app/' with your actual API URL
+    fetch(`http://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -66,7 +66,7 @@ const SetAppointment = () => {
       .then((data) => {
         setPatientUserId(data);
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
+        fetch(`http://railway-backend-production-a8c8.up.railway.app/appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -119,7 +119,7 @@ const SetAppointment = () => {
 
 
   const getSlots = async (selectedDate) => {
-        const response = await fetch(`http://localhost:8080/checkSlots/${selectedSched}/${selectedDate}`);
+        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/checkSlots/${selectedSched}/${selectedDate}`);
         if (response.ok) {
           const data = await response.text();
           setResponse(data);
@@ -156,7 +156,7 @@ const SetAppointment = () => {
       }
   
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`http://localhost:8080/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
         method: 'PUT',
       });
   
@@ -194,7 +194,7 @@ const SetAppointment = () => {
   useEffect(() => {
     const fetchDoctorSchedules = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/docsched/${doctorId}`);
+        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/docsched/${doctorId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -321,7 +321,7 @@ const SetAppointment = () => {
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/patuserid/${username}`);
+        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`);
         if (response.ok) {
           const userId = await response.json();
           setPatientUserId(userId);
@@ -360,7 +360,7 @@ const SetAppointment = () => {
       setLoading(true);
       // Validate your appointment data here if needed
 
-      const url = `http://localhost:8080/appointment?patientId=${patientUserId}&scheduleId=${selectedSched}&scheduleDate=${selectedDate}&status=${status}`;
+      const url = `http://railway-backend-production-a8c8.up.railway.app/appointment?patientId=${patientUserId}&scheduleId=${selectedSched}&scheduleDate=${selectedDate}&status=${status}`;
 
       const response = await fetch(url, {
         method: 'POST',

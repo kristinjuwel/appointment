@@ -29,8 +29,8 @@ const DoctorAppointment = () => {
 
 
   useEffect(() => {
-    // Replace 'http://localhost:8080/' with your actual API URL
-    fetch(`http://localhost:8080/getDoctorUserId?username=${username}`)
+    // Replace 'http://railway-backend-production-a8c8.up.railway.app/' with your actual API URL
+    fetch(`http://railway-backend-production-a8c8.up.railway.app/getDoctorUserId?username=${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -39,7 +39,7 @@ const DoctorAppointment = () => {
       })
       .then((data) => {
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/docappointments?doctorUserId=${data}`)
+        fetch(`http://railway-backend-production-a8c8.up.railway.app/docappointments?doctorUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -183,7 +183,7 @@ const DoctorAppointment = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/doctordetails/${username}`);
+        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/doctordetails/${username}`);
         if (response.ok) {
           setIsDoctorLoggedIn(true);
 

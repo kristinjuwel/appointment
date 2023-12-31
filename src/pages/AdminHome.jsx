@@ -107,7 +107,7 @@ function AdminHome() {
   useEffect(() => {
     const fetchLoggedInAdmin = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/admindetails/${username}`);
+        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/admindetails/${username}`);
         if (response.ok) {
           setIsAdminLoggedIn(true);
         } else {
@@ -124,7 +124,7 @@ function AdminHome() {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await fetch('http://localhost:8080/schedules');
+        const response = await fetch('http://railway-backend-production-a8c8.up.railway.app/schedules');
 
         if (!response.ok) {
           throw new Error('Failed to fetch schedules');
@@ -154,7 +154,7 @@ function AdminHome() {
   useEffect(() => {
     const fetchAllDoctors = async () => {
       try {
-        const response = await fetch('http://localhost:8080/allusers');
+        const response = await fetch('http://railway-backend-production-a8c8.up.railway.app/allusers');
 
         if (response.ok) {
           const data = await response.json();
@@ -187,7 +187,7 @@ function AdminHome() {
 
   const fetchAllPatients = async () => {
     try {
-      const response = await fetch('http://localhost:8080/allpatients');
+      const response = await fetch('http://railway-backend-production-a8c8.up.railway.app/allpatients');
 
       if (response.ok) {
         const data = await response.json();
@@ -302,7 +302,7 @@ function AdminHome() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/adminlogout/${username}`, {
+      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/adminlogout/${username}`, {
         method: 'POST',
       });
 
@@ -321,7 +321,7 @@ function AdminHome() {
 
   const handleApprovalSubmit = async (doctorId) => {
     try {
-      const url = `http://localhost:8080/approval?userId=${doctorId}&approvalStatus=${approved}`;
+      const url = `http://railway-backend-production-a8c8.up.railway.app/approval?userId=${doctorId}&approvalStatus=${approved}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -343,7 +343,7 @@ function AdminHome() {
 
   const handleRejectSubmit = async (doctorId) => {
     try {
-      const url = `http://localhost:8080/approval?userId=${doctorId}&approvalStatus=${reject}`;
+      const url = `http://railway-backend-production-a8c8.up.railway.app/approval?userId=${doctorId}&approvalStatus=${reject}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -371,7 +371,7 @@ function AdminHome() {
   //Delete user
   const handleDeleteUser = async (userId, userType) => {
     try {
-      const response = await fetch(`http://localhost:8080/${userType}?userId=${userId}`, {
+      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/${userType}?userId=${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

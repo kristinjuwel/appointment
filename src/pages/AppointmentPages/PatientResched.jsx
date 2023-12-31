@@ -48,7 +48,7 @@ const PatientResched = () => {
 
 
   useEffect(() => {
-    fetch(`http://localhost:8080/patuserid/${username}`)
+    fetch(`http://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -57,7 +57,7 @@ const PatientResched = () => {
       })
       .then((data) => {
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://localhost:8080/appointments?patientUserId=${data}`)
+        fetch(`http://railway-backend-production-a8c8.up.railway.app/appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -104,7 +104,7 @@ const PatientResched = () => {
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/appointment/${appointmentId}`);
+        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/appointment/${appointmentId}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -158,7 +158,7 @@ const PatientResched = () => {
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/patuserid/${username}`);
+        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`);
         if (response.ok) {
           setIsPatientLoggedIn(true);
         } else {
@@ -190,13 +190,13 @@ const PatientResched = () => {
   const getSlots = async (selectedDate) => {
     try {
       // Step 1: Get the scheduleId based on the appointmentId
-      const response1 = await fetch(`http://localhost:8080/getScheduleId/${appointmentId}`);
+      const response1 = await fetch(`http://railway-backend-production-a8c8.up.railway.app/getScheduleId/${appointmentId}`);
 
       if (response1.ok) {
         const data1 = await response1.json();
 
         // Step 2: Get slots information based on the scheduleId and selectedDate
-        const response2 = await fetch(`http://localhost:8080/checkSlots/${data1}/${selectedDate}`);
+        const response2 = await fetch(`http://railway-backend-production-a8c8.up.railway.app/checkSlots/${data1}/${selectedDate}`);
 
         if (response2.ok) {
           const data2 = await response2.text();
@@ -230,7 +230,7 @@ const PatientResched = () => {
     try {
       setLoading(true);
 
-      const response = await fetch(`http://localhost:8080/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
+      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
         method: 'PUT',
         // No need for headers when not sending a JSON payload
       });
