@@ -27,6 +27,7 @@ const DoctorRegister = () => {
   const [message, setMessage] = useState('');
   const [userType] = useState('doctor');
   const [registrationSuccessful, setRegistrationSuccessful] = useState(false);
+  const [loading, setLoading] = useState(false);
   
   const handleSignup = async () => {
     // Check if any of the fields are empty
@@ -72,6 +73,7 @@ const DoctorRegister = () => {
     }
 
     try {
+      setLoading(true);
       const url = new URL('https://railway-backend-production-a8c8.up.railway.app/doctors');
       const userData = {
         user: {
@@ -121,11 +123,15 @@ const DoctorRegister = () => {
       console.error('Error during signup:', error);
       setSignupMessage('Error during signup. Please try again later.');
       // Handle the error or display an error message to the user
+    }finally {
+      // Set loading back to false, regardless of success or failure
+      setLoading(false);
     }
   }
 
   const handleVerification = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctorverify?email=${email}&otp=${otp}`, {
         method: 'POST',
       });
@@ -151,6 +157,9 @@ const DoctorRegister = () => {
       }
     } catch (error) {
       setMessage('An error occurred');
+    }finally {
+      // Set loading back to false, regardless of success or failure
+      setLoading(false);
     }
   };
   
@@ -189,7 +198,10 @@ const DoctorRegister = () => {
 
 
   const handleChange = (e) => {
-    setContactNumber(e.target.value);
+    const userInput = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setContactNumber(userInput);
+
+    console.log(userInput);
   };
 
   return (
@@ -416,6 +428,11 @@ const DoctorRegister = () => {
           )} 
       </div>
     </div>
+    {loading && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+      )}
     <HomeFooter />
     </div>
   );

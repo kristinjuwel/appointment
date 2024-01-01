@@ -13,6 +13,8 @@ import "../../styles/Load.css";
 
 const ManageAppointments = () => {
   const { username, patientUserId } = useParams();
+  const [appointmentActions, setAppointmentActions] = useState({});
+  const [showActions, setShowActions] = useState(false);
   const [loading, setLoading] = useState(false);
 
 
@@ -112,7 +114,7 @@ const ManageAppointments = () => {
         throw new Error('Network response was not ok');
       })
       .then((appointmentsData) => {
-        const formattedAppointments = appointmentsData.map((appointment) => {
+        const formattedAppointments = appointmentsData.map((appointment, index) => {
           // Extract date and time components
           const [year, month, day] = appointment.scheduleDate.split('-').map(Number);
           const [hours, minutes] = appointment.startTime.split(':').map(Number);
@@ -121,6 +123,11 @@ const ManageAppointments = () => {
           // Create Date objects for start and end times
           const startDate = new Date(year, month - 1, day, hours, minutes);
           const endDate = new Date(year, month - 1, day, hours2, minutes2);
+
+          setAppointmentActions(prevState => ({
+            ...prevState,
+            [index]: false
+          }));
           // Create an appointment object
           return {
             title: appointment.patientName,
@@ -164,7 +171,19 @@ const ManageAppointments = () => {
         window.alert('Appointment is already completed. It cannot be cancelled');
         return;
       }
+      const currentDateTime = new Date();
+      const appointmentStartTime = appointmentToCancel.start;
 
+      // Calculate the difference in milliseconds
+      const timeDifference = appointmentStartTime - currentDateTime;
+
+      // Define the duration of 24 hours in milliseconds
+      const twentyFourHoursInMilliseconds = 24 * 60 * 60 * 1000;
+
+      if (timeDifference < twentyFourHoursInMilliseconds) {
+        window.alert('The appointment cannot be cancelled 24 hours before the appointment.');
+        return;
+      }
       // Check if the appointment is already cancelled
       if (appointmentToCancel.appointmentStatus === 'Cancelled') {
         // Display error message as a pop-up
@@ -205,6 +224,20 @@ const ManageAppointments = () => {
         window.alert('Appointment is already completed. It cannot be rescheduled.');
         return;
       }
+      const currentDateTime = new Date();
+      const appointmentStartTime = appointmentToCancel.start;
+
+      // Calculate the difference in milliseconds
+      const timeDifference = appointmentStartTime - currentDateTime;
+
+      // Define the duration of 24 hours in milliseconds
+      const twentyFourHoursInMilliseconds = 24 * 60 * 60 * 1000;
+
+      if (timeDifference < twentyFourHoursInMilliseconds) {
+        window.alert('The appointment cannot be rescheduled 24 hours before the appointment.');
+        return;
+      }
+      
 
       if (appointmentToCancel.appointmentStatus === 'Cancelled') {
         window.alert('Appointment is already cancelled. It cannot be rescheduled.');
@@ -279,8 +312,18 @@ const ManageAppointments = () => {
         console.error('Appointment not found');
         return;
       }
+
       if (appointmentToCancel.appointmentStatus === 'Completed') {
         window.alert('Appointment is already completed');
+        return;
+      }
+
+      const currentDateTime = new Date();
+
+  
+      
+      if (currentDateTime < appointmentToCancel.end) {
+        window.alert('The appointment cannot be set as completed.');
         return;
       }
 
@@ -289,7 +332,6 @@ const ManageAppointments = () => {
       });
 
       if (response.ok) {
-        window.location.reload();
       } else {
         console.error('Error marking appointment as completed');
       }
@@ -378,7 +420,7 @@ const ManageAppointments = () => {
             </tr>
           </table>
 
-          <div style={{ overflowY: 'auto', maxHeight: '580px' }}>
+          <div style={{ overflowY: 'auto', maxHeight: '650px' }}>
             {appointments
               .filter(appointment => appointment.doctorUsername === username && appointment.deletionStatus !== "Deleted")
               .map((appointment, index) => (
@@ -390,8 +432,8 @@ const ManageAppointments = () => {
                       width={200}
                       style={{
                         backgroundColor: getBackgroundColor(appointment.appointmentStatus),
-                        paddingTop: '0',
-                        paddingBottom: '0',
+                        paddingTop: '5px',
+                        paddingBottom: '5px',
                         paddingLeft: '10px',
                         borderStyle: 'dashed',
                         borderWidth: '2px',
@@ -406,25 +448,56 @@ const ManageAppointments = () => {
                       <div style={{ borderColor: getBorderColor(appointment.appointmentStatus) }}>{appointment.appointmentStatus}</div>
                     </td>
                     <td>
-                      <button style={{ padding: 10, marginLeft: "10px", height: "65px", width: "100%", backgroundColor: "#14452f ", borderRadius: '5px' }} onClick={() => handleSetAsComplete(appointment.appointmentId)} type='submit'>
-                        Set as completed
+                    <div style={{ position: 'relative', display: 'inline-block' }} key={index}>
+                      <button
+                        style={{
+                          padding: 10,
+                          marginLeft: "10px",
+                          height: appointmentActions[index] ? '32px' : '65px',
+                          width: "250px",
+                          borderRadius: '5px',
+                          backgroundColor: appointmentActions[index] ? '#fff' : '#fff',
+                          color: appointmentActions[index] ? '#000000' : '#333'
+                        }}
+                        onClick={() => setAppointmentActions(prevState => ({
+                          ...prevState,
+                          [index]: !prevState[index]
+                        }))}
+                      >
+                        Appointment Options
                       </button>
-                    </td>
-                    <td>
-                      <button style={{ padding: 10, marginLeft: "10px", width: "100%", height: "65px", borderRadius: '5px' }} onClick={() => handleReschedule(appointment.appointmentId)}>
-                        Reschedule Appointment
-                      </button>
-                    </td>
+
+                      {appointmentActions[index] && (
+                        <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 1 }}>
+                          <button
+                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#76AD83', color: '#fff', marginLeft: "10px" }}
+                            onClick={() => handleApprove(appointment.appointmentId)}
+                            type='submit'
+                          >
+                            Approve Appointment
+                          </button>
+                          <button
+                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#FA8072', color: '#fff', marginLeft: "10px" }}
+                            onClick={() => handleReschedule(appointment.appointmentId)}
+                          >
+                            Reschedule Appointment
+                          </button>
+                          <button
+                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#0094d4', color: '#fff', marginLeft: "10px" }}
+                            onClick={() => handleSetAsComplete(appointment.appointmentId)}
+                            type='submit'
+                          >
+                            Set as completed
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
 
                   </tr>
                   <tr>
                     <td>
-                      <button style={{ padding: 10, marginLeft: "10px", height: "65px", width: "100%", backgroundColor: "#76AD83", borderRadius: '5px' }} onClick={() => handleApprove(appointment.appointmentId)} type='submit'>
-                        Approve Appointment
-                      </button>
-                    </td>
-                    <td>
-                      <button className='cancel' style={{ padding: 0, marginLeft: "10px", height: "65px", width: "100%", borderRadius: '5px' }} onClick={() => handleCancel(appointment.appointmentId)} type='submit'>
+                      <button className='cancel' style={{ padding: 0, marginLeft: "10px", height: "65px", width: "250px", borderRadius: '5px' }} onClick={() => handleCancel(appointment.appointmentId)} type='submit'>
                         Cancel Appointment
                       </button>
                     </td>

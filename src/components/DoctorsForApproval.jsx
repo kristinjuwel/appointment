@@ -54,10 +54,10 @@ const DoctorForApproval = ({ doctor, onReview }) => {
               style={{float:"left", marginRight:"5%", width:"110px"}}
             />
           )}
-          <div style={{marginLeft: "40%"}}>
+          <div style={{marginLeft: "40%", width: "200px"}}>
             <h2 style={{lineHeight: 1, marginBottom: "10px"}}>{doctor.firstName}</h2>
             <h2 style={{lineHeight: 0.5, marginBottom: "10px"}}>{doctor.lastName}</h2>
-            <div style={{textAlign: "left", marginLeft: "5%", overflowY: 'auto', maxHeight: '150px' }}>
+            <div style={{textAlign: "left", overflowY: 'auto', maxHeight: '120px'}}>
               <p style={{margin: 0}}><b>Contact Number: </b>{doctor.contactNumber}</p>
               <p style={{margin: 0}}><b>Specialization: </b>{doctor.specialization}</p>
               <p style={{margin: 0}}><b>Credentials: </b> {doctor.credentials}</p>

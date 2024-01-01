@@ -412,7 +412,7 @@ const SetAppointment = () => {
           }}
         />
 
-        <div style={{ marginLeft: "30px" }}>
+        <div style={{ marginLeft: "30px", marginTop: "-10px" }}>
           <h1>{schedules[0].doctorName}</h1>
           <h2>Specialization: {schedules[0].specialization}</h2>
           <h3>Contact Number: {schedules[0].contactNumber}</h3>
@@ -575,10 +575,10 @@ const SetAppointment = () => {
                         {format(appointment.start, "h:mm a")} - {format(appointment.end, "h:mm a")}  <br />
                         {appointment.appointmentStatus} <br />
                       </td>
-                      <td><button style={{ borderRadius: 5, width: "100%", height: "100%" }} onClick={() => handleReschedule(appointment.appointmentId)}>Reschedule</button></td>
+                      <td><button style={{ borderRadius: 5, width: "100%", minHeight: "7vh", maxHeight: "10vvh" }} onClick={() => handleReschedule(appointment.appointmentId)}>Reschedule</button></td>
                     </tr>
                     <tr>
-                      <td><button className='cancel' style={{ borderRadius: 5}} onClick={() => handleCancel(appointment.appointmentId)} type="submit">Cancel</button></td>
+                      <td><button className='cancel' style={{ borderRadius: 5, minHeight: "7vh", maxHeight: "10vvh"}} onClick={() => handleCancel(appointment.appointmentId)} type="submit">Cancel</button></td>
                     </tr>
                   </table>
                 )
