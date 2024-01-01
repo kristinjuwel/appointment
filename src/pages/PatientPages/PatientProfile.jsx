@@ -355,6 +355,7 @@ const PatientProfile = () => {
                     </div>
                   </div>
                 </div>
+                
               </div>
             </div>
             <div className="columns" id="columnprofileappointments" style={{

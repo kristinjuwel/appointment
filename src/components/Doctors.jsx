@@ -129,8 +129,8 @@ const DoctorCard = ({ doctor }) => {
     window.location.href = `/setappointment/${username}/${doctor.doctorId}`;
   };
   return (
-    <div className="doctor-card">
-      <div className="doctor-info">
+    <div className="doctor-card" style={{height: "380px"}}>
+      <div className="doctor-info" style={{height: "350px"}}>
         <div style={{ display: 'flex', alignItems: 'center', height: '110px' }}>
           {selectedAvatar && (
             <img

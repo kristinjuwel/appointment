@@ -37,7 +37,7 @@ const PatientNavBar = ({ username }) => {
 
   const handleLogout = async () => {
     try {
-        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientlogout/${username}`, {
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientlogout/${username}`, {
         method: 'POST',
         });
 

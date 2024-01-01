@@ -140,6 +140,7 @@ const AddClinic = () => {
 
        console.log(queryString);
        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/schedule?${queryString}`, { method: 'POST' });
+
         if (response.ok) {
          console.log(`Schedule added successfully for ${day} using queryString`);
        } else {
@@ -188,6 +189,7 @@ const AddClinic = () => {
 
        console.log(queryString1);
        const response1 = await fetch(`https://railway-backend-production-a8c8.up.railway.app/schedule?${queryString1}`, { method: 'POST' });
+
         if (response1.ok) {
          // Schedule added successfully for queryString1
          console.log(`Schedule added successfully for ${day} using queryString1`);

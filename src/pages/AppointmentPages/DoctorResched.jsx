@@ -15,6 +15,7 @@ const DoctorResched = () => {
   const { username, appointmentId } = useParams();
   const [rescheduleChoice, setRescheduleChoice] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [rescheduleStatus, setRescheduleStatus] =  useState('');
   const [latestAppointment, setLatestAppointment] = useState([
     {
@@ -167,6 +168,8 @@ const DoctorResched = () => {
 
   const handleReschedule = async () => {
     try {
+      setLoading(true);
+
       const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/appointment/${appointmentId}?scheduleDate=${rescheduleChoice}`, {
         method: 'PUT',
         // No need for headers when not sending a JSON payload
@@ -184,6 +187,8 @@ const DoctorResched = () => {
     } catch (error) {
       console.error('Error updating appointment:', error.message);
       setError('Error updating appointment:', error.message);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -376,6 +381,11 @@ const DoctorResched = () => {
         </div>
     
           </div>
+          {loading && (
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+      )}
           <DoctorFooter />
         </div>
       );
