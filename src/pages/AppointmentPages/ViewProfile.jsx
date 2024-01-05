@@ -36,7 +36,7 @@ const ViewProfile = () => {
     useEffect(() => {
     const fetchUser = async () => {
         try {
-          const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/patientview/${patientUserId}`);
+          const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientview/${patientUserId}`);
           if (response.ok) {
             const data = await response.json();
             setUser(data);
@@ -87,7 +87,7 @@ const ViewProfile = () => {
     useEffect( () => {
       const fetchUser = async () => {
         try {
-          const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/doctordetails/${username}`);
+          const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctordetails/${username}`);
           if (response.ok) {
            setIsDoctorLoggedIn(true);
    
