@@ -46,7 +46,7 @@ const DoctorClinics = () => {
     const fetchData = async () => {
       try {
         // Fetch doctor's user ID
-        const userResponse = await fetch(`http://railway-backend-production-a8c8.up.railway.app/getDoctorUserId?username=${username}`);
+        const userResponse = await fetch(`https://railway-backend-production-a8c8.up.railway.app/getDoctorUserId?username=${username}`);
 
         if (!userResponse.ok) {
           throw new Error('Failed to fetch doctor user ID');
@@ -55,7 +55,7 @@ const DoctorClinics = () => {
         const userData = await userResponse.json();
 
         // Fetch doctor's schedule and clinics
-        const clinicsResponse = await fetch(`http://railway-backend-production-a8c8.up.railway.app/docsched/${userData}`);
+        const clinicsResponse = await fetch(`https://railway-backend-production-a8c8.up.railway.app/docsched/${userData}`);
 
         if (!clinicsResponse.ok) {
           throw new Error('Failed to fetch doctor schedule and clinics');
@@ -112,7 +112,7 @@ const DoctorClinics = () => {
   const handleSubmit = async () => {
     try {
       if (clinicId) {
-        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/clinic/${clinicId}`, {
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/clinic/${clinicId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ const DoctorClinics = () => {
 
   const fetchScheduleByClinicId = async (clinicId) => {
     try {
-      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/searchByClinicId/${clinicId}`);
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/searchByClinicId/${clinicId}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch schedule data');
@@ -168,7 +168,7 @@ const DoctorClinics = () => {
 
   const updateSchedule = async (scheduleId, updatedScheduleDay, updatedStartTime, updatedEndTime, updatedSlots) => {
     try {
-      const url = `http://railway-backend-production-a8c8.up.railway.app/schedule/${scheduleId}?scheduleDay=${updatedScheduleDay}&startTime=${updatedStartTime}&endTime=${updatedEndTime}&slots=${updatedSlots}`;
+      const url = `https://railway-backend-production-a8c8.up.railway.app/schedule/${scheduleId}?scheduleDay=${updatedScheduleDay}&startTime=${updatedStartTime}&endTime=${updatedEndTime}&slots=${updatedSlots}`;
 
       const response = await fetch(url, {
         method: 'PUT',
@@ -196,7 +196,7 @@ const DoctorClinics = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/doctordetails/${username}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/doctordetails/${username}`);
         if (response.ok) {
           setIsDoctorLoggedIn(true);
 
@@ -252,7 +252,7 @@ const DoctorClinics = () => {
 
   const addSchedule = async () => {
     try {
-      const url = `http://railway-backend-production-a8c8.up.railway.app/schedule?name=${allSchedules[0].clinic.name}&doctorUserId=${allSchedules[0].doctorUserId}&scheduleDay=${scheduleDay}&startTime=${startTime}&endTime=${endTime}&slots=${slots}`;
+      const url = `https://railway-backend-production-a8c8.up.railway.app/schedule?name=${allSchedules[0].clinic.name}&doctorUserId=${allSchedules[0].doctorUserId}&scheduleDay=${scheduleDay}&startTime=${startTime}&endTime=${endTime}&slots=${slots}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
