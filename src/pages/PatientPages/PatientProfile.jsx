@@ -56,7 +56,7 @@ const PatientProfile = () => {
     useEffect(() => {
     const fetchUser = async () => {
         try {
-          const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/patientdetails/${username}`);
+          const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientdetails/${username}`);
           if (response.ok) {
             const data = await response.json();
             setUser(data);
@@ -107,7 +107,7 @@ const PatientProfile = () => {
 
 
   useEffect(() => {
-    fetch(`http://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`)
+    fetch(`https://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -115,7 +115,7 @@ const PatientProfile = () => {
         throw new Error('Network response was not ok');
       })
       .then((data) => {
-        fetch(`http://railway-backend-production-a8c8.up.railway.app/appointments?patientUserId=${data}`)
+        fetch(`https://railway-backend-production-a8c8.up.railway.app/appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
