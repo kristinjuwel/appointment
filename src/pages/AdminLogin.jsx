@@ -10,7 +10,7 @@ const AdminLogin = () => {
     
     const handleLogin = async () => {
         try {
-        const url = new URL('http://railway-backend-production-a8c8.up.railway.app/adminlogin');
+        const url = new URL('https://railway-backend-production-a8c8.up.railway.app/adminlogin');
         url.searchParams.append('username', username);
         url.searchParams.append('password', password);
 
