@@ -20,7 +20,7 @@ function PatientLogin() {
 
   const handleLogin = async () => {
     try {
-      const url = new URL('http://railway-backend-production-a8c8.up.railway.app/patientlogin');
+      const url = new URL('https://railway-backend-production-a8c8.up.railway.app/patientlogin');
       url.searchParams.append('username', username);
       url.searchParams.append('password', password);
 
