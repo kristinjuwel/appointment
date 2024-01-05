@@ -75,7 +75,7 @@ const PatientRegister = () => {
 
     try {
       setLoading(true);
-      const url = new URL('http://railway-backend-production-a8c8.up.railway.app/patients');
+      const url = new URL('https://railway-backend-production-a8c8.up.railway.app/patients');
       const userData = {
         user: {
         username,
@@ -133,7 +133,7 @@ const PatientRegister = () => {
   const handleVerification = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/patientverify?email=${email}&otp=${otp}`, {
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientverify?email=${email}&otp=${otp}`, {
         method: 'POST',
       });
 
