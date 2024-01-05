@@ -107,7 +107,7 @@ function AdminHome() {
   useEffect(() => {
     const fetchLoggedInAdmin = async () => {
       try {
-        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/admindetails/${username}`);
+        const response = await fetch(`http://localhost:8080/admindetails/${username}`);
         if (response.ok) {
           setIsAdminLoggedIn(true);
         } else {
@@ -124,7 +124,7 @@ function AdminHome() {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await fetch('http://railway-backend-production-a8c8.up.railway.app/schedules');
+        const response = await fetch('http://localhost:8080/schedules');
 
         if (!response.ok) {
           throw new Error('Failed to fetch schedules');
@@ -154,7 +154,7 @@ function AdminHome() {
   useEffect(() => {
     const fetchAllDoctors = async () => {
       try {
-        const response = await fetch('http://railway-backend-production-a8c8.up.railway.app/allusers');
+        const response = await fetch('http://localhost:8080/allusers');
 
         if (response.ok) {
           const data = await response.json();
@@ -187,7 +187,7 @@ function AdminHome() {
 
   const fetchAllPatients = async () => {
     try {
-      const response = await fetch('http://railway-backend-production-a8c8.up.railway.app/allpatients');
+      const response = await fetch('http://localhost:8080/allpatients');
 
       if (response.ok) {
         const data = await response.json();
@@ -302,7 +302,7 @@ function AdminHome() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/adminlogout/${username}`, {
+      const response = await fetch(`http://localhost:8080/adminlogout/${username}`, {
         method: 'POST',
       });
 
@@ -321,7 +321,7 @@ function AdminHome() {
 
   const handleApprovalSubmit = async (doctorId) => {
     try {
-      const url = `http://railway-backend-production-a8c8.up.railway.app/approval?userId=${doctorId}&approvalStatus=${approved}`;
+      const url = `http://localhost:8080/approval?userId=${doctorId}&approvalStatus=${approved}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -343,7 +343,7 @@ function AdminHome() {
 
   const handleRejectSubmit = async (doctorId) => {
     try {
-      const url = `http://railway-backend-production-a8c8.up.railway.app/approval?userId=${doctorId}&approvalStatus=${reject}`;
+      const url = `http://localhost:8080/approval?userId=${doctorId}&approvalStatus=${reject}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -369,9 +369,14 @@ function AdminHome() {
   };
 
   //Delete user
-  const handleDeleteUser = async (userId, userType) => {
+  const handleDeleteUser = async () => {
+    const userId = selectedProfile === 'patients'
+    ? currentPatient.patientId
+    : selectedProfile === 'doctors'
+        ? currentDoctor.doctorId
+        : '';
     try {
-      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/${userType}?userId=${userId}`, {
+      const response = await fetch(`http://localhost:8080/${selectedProfile}?userId=${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -389,17 +394,6 @@ function AdminHome() {
     }
   };
 
-
-  const handleDeleteDoctor = () => {
-    handleDeleteUser(currentDoctor.doctorId, 'doctors');
-    setPopupVisibility(false); // Close the popup after deletion
-  };
-
-  // Call handleDeleteUser with the currentPatient's patientId and 'patients' as userType
-  const handleDeletePatient = () => {
-    handleDeleteUser(currentPatient.patientId, 'patients');
-    setPopupVisibility(false); // Close the popup after deletion
-  };
 
   const handleReview = (doctorId) => {
     // Set the currentDoctor state based on the doctorId
@@ -568,7 +562,7 @@ function AdminHome() {
                       marginRight: "10px",
                       backgroundColor: "#b22222"
                     }}
-                    onClick={handleDeleteDoctor}>
+                    onClick={handleDeleteUser}>
                       Delete Account
                 </button>
                 ) : (
@@ -718,7 +712,7 @@ function AdminHome() {
             marginRight: "10px",
             backgroundColor: "#b22222"
           }}
-          onClick={handleDeletePatient}
+          onClick={handleDeleteUser}
         >
           Delete Account
         </button>
@@ -786,9 +780,9 @@ function AdminHome() {
       </div>
 
          
-      <div className="doctor-grid" style={{ marginLeft: "7%" }}>
+      <div className="doctor-grid" style={{ marginLeft: "7%", marginRight: "3%" }}>
         {selectedProfile === 'doctors' ? (
-          <div className="doctor-grid" style={{ marginLeft: "7%" }}>
+          <div className="doctor-grid" style={{ marginRight: "3.5%" }}>
           <div >
             <div className="verified-accounts">
           <h2>Verified Accounts</h2>
