@@ -59,7 +59,7 @@ const EditPatientProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/patientdetails/${loggedInUsername}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patientdetails/${loggedInUsername}`);
         if (response.ok) {
           const data = await response.json();
           setUserId(data.user.userId);
@@ -149,7 +149,7 @@ const EditPatientProfile = () => {
     }
 
     try {
-      const url = new URL(`http://railway-backend-production-a8c8.up.railway.app/editpatient/${loggedInUsername}`);
+      const url = new URL(`https://railway-backend-production-a8c8.up.railway.app/editpatient/${loggedInUsername}`);
       const userData = {
         user: {
           username,
@@ -240,7 +240,7 @@ const EditPatientProfile = () => {
       return;
     }
     try {
-      const response = await fetch('http://railway-backend-production-a8c8.up.railway.app/changePass/patient', {
+      const response = await fetch('https://railway-backend-production-a8c8.up.railway.app/changePass/patient', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -279,7 +279,7 @@ const EditPatientProfile = () => {
   }
   const handleDeleteUser = async () => {
     try {
-      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/patients?userId=${userId}`, {
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patients?userId=${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
