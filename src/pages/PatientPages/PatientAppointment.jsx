@@ -31,8 +31,8 @@ const PatientAppointment = () => {
     },
   ]);
   useEffect(() => {
-    // Replace 'http://railway-backend-production-a8c8.up.railway.app/' with your actual API URL
-    fetch(`http://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`)
+    // Replace 'https://railway-backend-production-a8c8.up.railway.app/' with your actual API URL
+    fetch(`https://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -41,7 +41,7 @@ const PatientAppointment = () => {
       })
       .then((data) => {
         // Once you have the patientUserId, make another request to get appointments
-        fetch(`http://railway-backend-production-a8c8.up.railway.app/appointments?patientUserId=${data}`)
+        fetch(`https://railway-backend-production-a8c8.up.railway.app/appointments?patientUserId=${data}`)
           .then((appointmentsResponse) => {
             if (appointmentsResponse.ok) {
               return appointmentsResponse.json();
@@ -92,7 +92,7 @@ const PatientAppointment = () => {
   useEffect(() => {
     const fetchLoggedInPatientId = async () => {
       try {
-        const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`);
+        const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/patuserid/${username}`);
         if (response.ok) {
           setIsPatientLoggedIn(true);
         } else {
@@ -159,7 +159,7 @@ const PatientAppointment = () => {
       }
 
       // Proceed with the request to cancel the appointment
-      const response = await fetch(`http://railway-backend-production-a8c8.up.railway.app/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
+      const response = await fetch(`https://railway-backend-production-a8c8.up.railway.app/appointmentChange/${appointmentId}?newStatus=Cancelled`, {
         method: 'PUT',
       });
 
