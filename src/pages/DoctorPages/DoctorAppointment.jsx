@@ -109,10 +109,26 @@ const DoctorAppointment = () => {
       case 'Completed':
         return '#ffffff';
       default:
-        return 'lightgray';
+        return 'transparent';
     }
   };
 
+  const getBorderColor = (status) => {
+    switch (status) {
+      case 'Cancelled':
+        return '#fc6e51';
+      case 'Rescheduled':
+        return '#FF7400';
+      case 'Scheduled by Patient':
+        return '#f9e076';
+      case 'Approved by Doctor':
+        return '#48DE66';
+      case 'Completed':
+        return 'lightgray';
+      default:
+        return 'transparent';
+    }
+  };
 
 
 
@@ -155,28 +171,47 @@ const DoctorAppointment = () => {
   };
 
   const CustomEvent = ({ event }) => {
-    // Check if the event is not marked as deleted
+    const [isClicked, setIsClicked] = useState(false);
     if (event.deletionStatus === "Deleted") {
-      return null; // Skip rendering if the event is deleted
+      return null; 
     }
 
+    const handleEventClick = () => {
+      setIsClicked(!isClicked);
+    };
+
+    const backgroundColor = isClicked ? getBorderColor(event.appointmentStatus) : getBackgroundColor(event.appointmentStatus);
+    const borderColor = getBorderColor(event.appointmentStatus);
+
     return (
-      <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
-        <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-          {event.clinic}
-        </strong>
-        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-          {event.title}
-        </p>
-        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', backgroundColor: getBackgroundColor(event.appointmentStatus) }}>
-          {event.appointmentStatus}
-        </p>
-        <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-          Remaining Slots: {event.slots}
-        </p>
+      <div
+        className="rbc-event"
+        style={{
+          border: `0.5px solid ${borderColor}`,
+          backgroundColor: backgroundColor,
+          color: 'black',
+          cursor: 'pointer', // Add a pointer cursor to indicate it's clickable
+        }}
+        onClick={handleEventClick}
+      >
+        <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
+          <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+            {event.clinic}
+          </strong>
+          <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+            {event.title}
+          </p>
+          <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+            {event.appointmentStatus}
+          </p>
+          <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+            Remaining Slots: {event.slots}
+          </p>
+        </div>
       </div>
     );
   };
+
 
   const [isDoctorLoggedIn, setIsDoctorLoggedIn] = useState('');
 
