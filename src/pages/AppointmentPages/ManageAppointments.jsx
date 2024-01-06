@@ -46,7 +46,7 @@ const ManageAppointments = () => {
     locales
   })
 
-  const getBackgroundColor = (status) => {
+   const getBackgroundColor = (status) => {
     switch (status) {
       case 'Cancelled':
         return '#FCA694';
@@ -59,33 +59,50 @@ const ManageAppointments = () => {
       case 'Completed':
         return '#ffffff';
       default:
-        return 'lightgray';
+        return 'transparent';
     }
   };
 
   const getBorderColor = (status) => {
     switch (status) {
       case 'Cancelled':
-        return '#A41D00';
+        return '#fc6e51';
       case 'Rescheduled':
         return '#FF7400';
       case 'Scheduled by Patient':
-        return '#F8F547';
+        return '#f9e076';
       case 'Approved by Doctor':
         return '#48DE66';
       case 'Completed':
         return 'lightgray';
       default:
-        return 'lightgray';
+        return 'transparent';
     }
   };
 
   const CustomEvent = ({ event }) => {
-    // Check if the event is not marked as deleted and doctorUsername matches the specified username
+    const [isClicked, setIsClicked] = useState(false);
     if (event.deletionStatus === "Deleted" || event.doctorUsername !== username) {
-      return null; // Skip rendering if the event is deleted or doctorUsername doesn't match
+      return null; 
     }
+    const handleEventClick = () => {
+      setIsClicked(!isClicked);
+    };
+
+    const backgroundColor = isClicked ? getBorderColor(event.appointmentStatus) : getBackgroundColor(event.appointmentStatus);
+    const borderColor = getBorderColor(event.appointmentStatus);
+
     return (
+      <div
+        className="rbc-event"
+        style={{
+          border: `0.5px solid ${borderColor}`,
+          backgroundColor: backgroundColor,
+          color: 'black',
+          cursor: 'pointer',
+        }}
+        onClick={handleEventClick}
+      >
       <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
         <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
           {event.clinic}
@@ -100,10 +117,9 @@ const ManageAppointments = () => {
           Remaining Slots: {event.slots}
         </p>
       </div>
-
+      </div>
     );
   };
-
 
   useEffect(() => {
     fetch(`https://railway-backend-production-a8c8.up.railway.app/appointments?patientUserId=${patientUserId}`)
@@ -400,7 +416,7 @@ const ManageAppointments = () => {
                         paddingTop: '5px',
                         paddingBottom: '5px',
                         paddingLeft: '10px',
-                        borderStyle: 'dashed',
+                        borderStyle: 'solid',
                         borderWidth: '2px',
                         borderRadius: '5px',
                         borderColor: getBorderColor(appointment.appointmentStatus),
