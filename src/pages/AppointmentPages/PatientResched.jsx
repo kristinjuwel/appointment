@@ -295,17 +295,42 @@ const PatientResched = () => {
   })
 
   
-  const CustomEvent = ({ event }) => (
-    <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
-      <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>{event.title}</strong>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        Clinic: {event.clinic}
-      </p>
-      <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
-        Status: {event.appointmentStatus}
-      </p>
-    </div>
-  );
+ 
+  const CustomEvent = ({ event }) => {
+    const [isClicked, setIsClicked] = useState(false);
+
+    const handleEventClick = () => {
+      // Toggle the click state when the event is clicked
+      setIsClicked(!isClicked);
+    };
+
+    const backgroundColor = isClicked ? getBorderColor(event.appointmentStatus) : getBackgroundColor(event.appointmentStatus);
+    const borderColor = getBorderColor(event.appointmentStatus);
+
+    return (
+      <div
+        className="rbc-event"
+        style={{
+          border: `0.5px solid ${borderColor}`,
+          backgroundColor: backgroundColor,
+          color: 'black',
+          cursor: 'pointer', // Add a pointer cursor to indicate it's clickable
+        }}
+        onClick={handleEventClick}
+      >
+        <div style={{ margin: '5px 0', whiteSpace: 'nowrap', overflowY: 'auto', maxHeight: "55px", textOverflow: 'ellipsis' }}>
+          <strong style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>{event.title}</strong>
+          <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+            Clinic: {event.clinic}
+          </p>
+          <p style={{ margin: '0px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}>
+            Status: {event.appointmentStatus}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
 
   const getBackgroundColor = (status) => {
     switch (status) {
@@ -317,25 +342,30 @@ const PatientResched = () => {
         return '#FFFFDC';
       case 'Approved by Doctor':
         return '#BAFFC4';
+      case 'Completed':
+        return '#ffffff';
       default:
-        return 'lightgray';
+        return 'transparent';
     }
   };
 
   const getBorderColor = (status) => {
     switch (status) {
       case 'Cancelled':
-        return '#A41D00';
+        return '#fc6e51';
       case 'Rescheduled':
         return '#FF7400';
       case 'Scheduled by Patient':
-        return '#F8F547';
+        return '#f9e076';
       case 'Approved by Doctor':
         return '#48DE66';
-      default:
+      case 'Completed':
         return 'lightgray';
+      default:
+        return 'transparent';
     }
   };
+
   
   return (
     <div>
