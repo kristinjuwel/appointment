@@ -380,13 +380,13 @@ const ManageAppointments = () => {
           events={appointments}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 700, width: "70%" }}
+          style={{ height: 650, width: "65%" }}
           components={{
             event: CustomEvent, // Use the custom Event component
           }}
         />
 
-        <div style={{ marginLeft: "30px" }}>
+      <div style={{ marginLeft: "20px", marginRight: "-100px" }}>
           <h1 style={{ marginTop: "0" }}>Appointment History</h1>
           <table style={{ width: "520px" }}>
             <tr >
@@ -401,7 +401,7 @@ const ManageAppointments = () => {
             </tr>
           </table>
 
-          <div style={{ overflowY: 'auto', maxHeight: '650px' }}>
+          <div style={{ overflowY: 'auto', maxHeight: '650px', width: "450px", marginRight: "-100px" }}>
             {appointments
               .filter(appointment => appointment.doctorUsername === username && appointment.deletionStatus !== "Deleted")
               .map((appointment, index) => (
@@ -416,7 +416,7 @@ const ManageAppointments = () => {
                         paddingTop: '5px',
                         paddingBottom: '5px',
                         paddingLeft: '10px',
-                        borderStyle: 'solid',
+                        borderStyle: 'dashed',
                         borderWidth: '2px',
                         borderRadius: '5px',
                         borderColor: getBorderColor(appointment.appointmentStatus),
@@ -434,8 +434,9 @@ const ManageAppointments = () => {
                         style={{
                           padding: 10,
                           marginLeft: "10px",
-                          height: appointmentActions[index] ? '32px' : '65px',
-                          width: "250px",
+                          minHeight: appointmentActions[index] ? '55px' : '75px',
+                          maxHeight: appointmentActions[index] ? '65px' : '100px',
+                          width: "210px",
                           borderRadius: '5px',
                           backgroundColor: appointmentActions[index] ? '#fff' : '#fff',
                           color: appointmentActions[index] ? '#000000' : '#333'
@@ -451,20 +452,20 @@ const ManageAppointments = () => {
                       {appointmentActions[index] && (
                         <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 1 }}>
                           <button
-                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#76AD83', color: '#fff', marginLeft: "10px" }}
+                            style={{ padding: 7, width: "210px", borderRadius: '5px', backgroundColor: '#76AD83', color: '#fff', marginLeft: "10px" }}
                             onClick={() => handleApprove(appointment.appointmentId)}
                             type='submit'
                           >
                             Approve Appointment
                           </button>
                           <button
-                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#FA8072', color: '#fff', marginLeft: "10px" }}
+                            style={{ padding: 7, width: "210px", borderRadius: '5px', backgroundColor: '#FA8072', color: '#fff', marginLeft: "10px" }}
                             onClick={() => handleReschedule(appointment.appointmentId)}
                           >
                             Reschedule Appointment
                           </button>
                           <button
-                            style={{ padding: 7, width: "250px", borderRadius: '5px', backgroundColor: '#0094d4', color: '#fff', marginLeft: "10px" }}
+                            style={{ padding: 7, width: "210px", borderRadius: '5px', backgroundColor: '#0094d4', color: '#fff', marginLeft: "10px" }}
                             onClick={() => handleSetAsComplete(appointment.appointmentId)}
                             type='submit'
                           >
@@ -478,7 +479,7 @@ const ManageAppointments = () => {
                   </tr>
                   <tr>
                     <td>
-                      <button className='cancel' style={{ padding: 0, marginLeft: "10px", height: "65px", width: "250px", borderRadius: '5px' }} onClick={() => handleCancel(appointment.appointmentId)} type='submit'>
+                      <button className='cancel' style={{ padding: 0, marginLeft: "10px", height: "75px", width: "210px", borderRadius: '5px', maxHeight: "100px" }} onClick={() => handleCancel(appointment.appointmentId)} type='submit'>
                         Cancel Appointment
                       </button>
                     </td>
@@ -489,10 +490,8 @@ const ManageAppointments = () => {
 
               ))}
 
-
+            </div>
           </div>
-
-        </div>
       </div>
       {loading && (
         <div className="spinner-container">

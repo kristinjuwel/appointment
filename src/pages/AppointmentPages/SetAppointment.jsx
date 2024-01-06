@@ -433,7 +433,7 @@ const SetAppointment = () => {
           events={appointments.filter(appointment => appointment.title === schedules[0].doctorName)}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 700, width: "70%" }}
+          style={{ height: 650, width: "65%" }}
           components={{
             event: CustomEvent, // Use the custom Event component
           }}
